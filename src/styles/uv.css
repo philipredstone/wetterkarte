@@ -1,0 +1,144 @@
+.content-section {
+    padding: 2rem 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.card-header {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.card-header h1 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+}
+
+.weather-info {
+    background: #f7f9fc;
+    border: 1px solid #e1e8f0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.weather-status {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.status-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #eef7ff;
+    border: 1px solid #dce9f9;
+    border-radius: 8px;
+    padding: 1rem;
+    max-width: 500px;
+    width: 100%;
+    justify-content: center;
+}
+
+.status-icon {
+    color: #007acc;
+    transform: translateY(5%);
+}
+
+.status-text {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.update-info {
+    color: #707070;
+    text-align: right;
+}
+
+.back-link {
+    color: #000;
+}
+
+/* Erklärung der UV-Skala */
+.uv-level-explanation {
+    margin-top: 2rem;
+    background-color: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: left;
+    max-width: 600px;
+    margin: 2rem auto 0;
+}
+
+.uv-level-explanation h3 {
+    margin-top: 0;
+    font-size: 1.25rem;
+    color: #333;
+    text-align: center;
+}
+
+.uv-level-explanation ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.uv-level-explanation li {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.uv-badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    margin-right: 0.5rem;
+    color: #333;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.uv-badge.uv-risk-low {
+    background-color: #daf5da;
+}
+
+.uv-badge.uv-risk-moderate {
+    background-color: #fff8cd;
+}
+
+.uv-badge.uv-risk-high {
+    background-color: #ffe4c4;
+}
+
+.uv-badge.uv-risk-very-high {
+    background-color: #ffc9c9;
+}
+
+.uv-badge.uv-risk-extreme {
+    background-color: #f2c9ff;
+}

@@ -1,0 +1,120 @@
+---
+import "../../styles/gewitter.css";
+
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Faq from "../../components/Faq.astro";
+import WeatherMap from "../../components/WeatherMap.astro";
+import { getCity, getStatics } from "../../scripts/city";
+import HorizontalNavigation from "../../components/HorizontalNavigation.astro";
+
+export async function getStaticPaths() {
+  return getStatics();
+}
+
+const city = getCity(Astro.params.city);
+
+const title = `Gewitter in ${city.name} - Wettervorhersage`;
+const description = `Aktuelle Gewitterprognose für ${city.name}. Erfahren Sie, ob in Ihrer Region Gewitter auftreten, und bleiben Sie stets informiert.`;
+
+const questions = [
+  {
+    question: "Welche Datenquellen werden für die Gewittervorhersage genutzt?",
+    answer:
+      "Unsere Gewittervorhersage basiert auf den zuverlässigen Daten des <a href='https://www.dwd.de/DE/forschung/wettervorhersage/num_modellierung/01_num_vorhersagemodelle/regionalmodell_icon_d2.html' target='_blank'><strong>DWD ICON D2</strong></a>-Modells sowie des <a href='https://dwd-geoportal.de/products/G_D5M/' target='_blank'>DWD ICON EU</a>-Modells. Zusätzlich integrieren wir Radolan-Daten, um präzise Regenradarinformationen zu liefern.",
+  },
+  {
+    question: "Wie häufig werden die Wetterdaten aktualisiert?",
+    answer:
+      "Die Wetterdaten werden mehrmals stündlich aktualisiert, sodass Sie stets die aktuellsten Informationen zu Gewittern erhalten.",
+  },
+  {
+    question: "Wie genau ist die Gewitterprognose?",
+    answer:
+      "Unsere Prognose basiert auf modernen Wettermodellen und Echtzeitdaten. Trotz fortschrittlicher Technik können lokale und kurzfristige Wetterveränderungen zu Abweichungen führen.",
+  },
+  {
+    question: "Sind die Vorhersagen auch für andere Regionen verfügbar?",
+    answer:
+      "Unsere Gewittervorhersagen konzentrieren sich primär auf Deutschland. Für angrenzende Regionen können jedoch Radar-Daten zur Verfügung stehen. Prüfen Sie dazu bitte die spezifischen Angaben auf der jeweiligen Seite.",
+  },
+  {
+    question: "Wie werden Radardaten integriert?",
+    answer:
+      "Radardaten werden in Echtzeit erfasst und mit den Vorhersagemodellen kombiniert. Diese Integration ermöglicht es uns, ein umfassendes und aktuelles Bild der Wetterlage zu zeichnen.",
+  },
+  {
+    question: "Woher stammen die Radardaten?",
+    answer:
+      "Die Radardaten werden vom Deutschen Wetterdienst (DWD) bereitgestellt und basieren auf dem Radolan-System, das präzise Informationen über Niederschlag und Gewitter liefert.",
+  },
+];
+---
+
+<Layout title={title} description={description}>
+  <Header currentPath="/gewitter/"/>
+
+  <main>
+    <section class="content-section">
+      <article>
+        <div class="card">
+          <div class="card-header">
+            <h1>Gewitter in {city.name}</h1>
+          </div>
+          <HorizontalNavigation city={city.key} currentPath="gewitter" />
+          <div class="card-body">
+            <p>
+              Entdecken Sie unsere detaillierte Gewittervorhersage für {
+                city.name
+              }. Erfahren Sie, ob in Ihrer Region heute oder in den nächsten
+              sieben Tagen Gewitter, Blitz und Donner auftreten. Dank
+              hochaktueller Wetterdaten, interaktiver Karten und
+              Live-Radar-Updates sind Sie bestens vorbereitet, um schnell und
+              sicher auf wechselhaftes Wetter zu reagieren.
+            </p>
+
+            <div
+              class="weather-info"
+              id="weather-widget"
+              data-lat={city.coords[0]}
+              data-lng={city.coords[1]}
+              data-city={city.name}
+            >
+              <div class="weather-status">
+                <div class="status-box">
+                  <span class="status-icon"><img src="/images/lightning-bolt.svg" alt="Gewitter" height="48" width="48"></span>
+                  <p id="today-message" class="status-text">
+                    Gewitter-Daten werden geladen…&nbsp;
+                  </p>
+                </div>
+                <div class="status-box">
+                  <p id="seven-day-message" class="status-text">
+                    Gewitter-Daten werden geladen…&nbsp;
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <p class="update-info" id="update-info">&nbsp;</p>
+          </div>
+        </div>
+
+        <h2>Live Regenradar</h2>
+        <br />
+          <WeatherMap
+            layerselect={false}
+            layer="radar"
+            type="widget"
+            center={[city.coords[0], city.coords[1]]}
+          />
+
+        <Faq questions={questions} />
+      </article>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script src="../../scripts/gewitter.ts"></script>
+</Layout>

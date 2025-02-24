@@ -1,0 +1,129 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import WeatherMap from "../components/WeatherMap.astro";
+import Footer from "../components/Footer.astro";
+import Faq from "../components/Faq.astro";
+
+const title =
+	"48-Stunden Wetterkarte: Vorhersagen für Deutschland";
+const description =	"Kostenlose Wetterkarte Deutschland mit Echtzeit-Regenradar ✓ Stündliche Temperatur- & Windvorhersage ✓ 48h Wetterprognose ✓ Präzise & aktuell";
+
+const questions = [
+  {
+    question: "Welche Datenquellen werden genutzt?",
+    answer: "Für die Wettervorhersagen in Deutschland setzen wir auf das <a href='https://www.dwd.de/DE/forschung/wettervorhersage/num_modellierung/01_num_vorhersagemodelle/regionalmodell_icon_d2.html' target='_blank'><strong>DWD ICON D2 Modell</strong></a>. Ergänzt wird dies durch das <a href='https://dwd-geoportal.de/products/G_D5M/' target='_blank'>DWD ICON EU-Modell</a> für umliegende Länder. Unterstützt wird die Prognose durch Radolan-Daten, die aktuelle Radaraufnahmen für ein präzises Echtzeit-Regenradar liefern."
+  },
+  {
+    question: "Wie häufig werden die Wetterdaten aktualisiert?",
+    answer: "Unsere Wetterdaten werden mehrmals stündlich aktualisiert, um Ihnen stets die aktuellsten Informationen zu liefern."
+  },  
+  {
+    question: "Wie funktionieren die interaktiven Wetterkarten?",
+    answer: "Mit unseren interaktiven Karten können Sie verschiedene Wetterparameter wie Regen, Temperatur und Wind visualisieren. Passen Sie den Zeitraum flexibel an, um sowohl die aktuelle Lage als auch die Prognosen für die nächsten 48 Stunden detailliert zu betrachten."
+  },
+  {
+    question: "Ist die Website auch mobil optimiert?",
+    answer: "Ja, unsere Seite ist vollständig responsiv gestaltet und bietet auf Smartphones, Tablets sowie Laptops eine optimale Darstellung der Wettervorhersagen."
+  },
+  {
+    question: "Was bedeuten die Farben auf der Wetterkarte?",
+    answer: "Die Farben auf der Wetterkarte repräsentieren verschiedene Wetterparameter. Beispielsweise stehen Blautöne oft für Niederschlag und Regen, während Rottöne höhere Temperaturen anzeigen. Weitere Farben können Windstärken oder andere meteorologische Daten visualisieren. Die Legende auf der Karte erklärt im Detail, welche Farbe für welchen Parameter steht."
+  },
+  {
+    question: "Was ist eine Wetterkarte?",
+    answer: "Eine Wetterkarte ist eine visuelle Darstellung aktueller Wetterdaten, wie Temperatur, Niederschlag, Windrichtung und -geschwindigkeit. Sie hilft dabei, das Wettergeschehen auf einen Blick zu erfassen und regionale Unterschiede sichtbar zu machen."
+  },
+  {
+    question: "Wie liest man eine Wetterkarte?",
+    answer: "Um eine Wetterkarte zu lesen, sollten Sie zunächst die Legende und die Farbcodierung beachten. Die Karte zeigt Ihnen, wo es gerade regnet, wo es warm oder kühl ist und wie stark der Wind weht. Mit Hilfe der verschiedenen Symbole und Farben können Sie schnell erkennen, wie sich das Wetter in Ihrer Region entwickelt."
+  }
+];
+
+---
+
+<Layout title={title} description={description}>
+	<Header currentPath="/"/>
+	<main>
+		<WeatherMap layerselect={true} layer="temp" zoom={6} center={[51.163375, 10.447683]} type="fullscreen" />
+
+		<section class="content-section">
+			<article>
+				<header>
+					<h1>
+						48-Stunden Wettervorhersage für Deutschland - präzise
+						Vorhersage mit wetterkarte.org
+					</h1>
+				</header>
+
+				<p>
+					<strong>wetterkarte.org</strong> liefert Ihnen eine hochpräzise,
+					<strong>live</strong> Wettervorhersage für Deutschland und Europa.
+					Dabei kommen modernste Technologien zum Einsatz: Das bewährte
+					<strong>DWD ICON D2 Modell</strong> und aktuelle <strong
+						>Radolan-Radardaten</strong
+					> direkt vom <strong>Deutschen Wetterdienst (DWD)</strong> garantieren
+					zuverlässige Informationen zu Regen, Temperatur und Wind – mehrmals
+					stündlich aktualisiert.
+				</p>
+
+				<h2>Unsere Hauptfunktionen im Überblick</h2>
+				<ul>
+					<li>
+						<strong>Echtzeit-Regenradar:</strong> Erleben Sie die dynamische
+						Darstellung von Regenbewegungen in Echtzeit - unsere Radar-Daten
+						werden alle 5 Minuten aktualisiert.
+					</li>
+					<li>
+						<strong>DWD ICON Prognosen:</strong> Erhalten Sie detaillierte
+						Vorhersagen zu Temperatur, Wind und Niederschlag basierend
+						auf den präzisen ICON Modell-Daten, die regelmäßig erneuert
+						werden.
+					</li>
+					<li>
+						<strong>Interaktive Wetterkarten:</strong> Unsere benutzerfreundlichen,
+						interaktiven Karten visualisieren klar die aktuelle Wetterlage
+						und die Entwicklungen der nächsten 48 Stunden.
+					</li>
+				</ul>
+
+				<br />
+
+				<Faq questions={questions} />
+			</article>
+		</section>
+
+	</main>
+
+	<Footer />
+</Layout>
+
+<style>
+	.content-section {
+		padding: 2rem 1.5rem;
+		max-width: 900px;
+		margin: 0 auto;
+	}
+
+	.content-section h1 {
+		font-size: 2rem;
+		margin-bottom: 1rem;
+		font-weight: 700;
+	}
+
+	.content-section p {
+		margin-bottom: 1rem;
+		line-height: 1.8;
+	}
+
+	.content-section li {
+		margin-left: 2rem;
+	}
+
+	a[target="_blank"]::after {
+		content: " ↪";
+		font-size: 0.8em;
+		margin-left: 0.2em;
+		vertical-align: text-top;
+	}
+</style>

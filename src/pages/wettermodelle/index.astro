@@ -1,0 +1,318 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+
+const title =
+    "Wettermodelle: Umfassende Analyse, Vergleich und Details | wetterkarte.org";
+const description =
+    "Detaillierte Informationen über Wettermodelle (DWD ICON, ECMWF, GFS, uvm.). Vergleichen Sie globale und regionale Modelle, Auflösungen, Genauigkeiten und Anwendungsbereiche. Erfahren Sie alles über numerische Wettervorhersage, Datenassimilation, Parametrisierung und zukünftige Entwicklungen.";
+const keywords =
+    "Wettermodelle, DWD, ICON, ECMWF, GFS, Wettervorhersage, numerische Wettervorhersage, globales Wettermodell, regionales Wettermodell, Auflösung, Genauigkeit, Wetterprognose, Deutschland, Europa, Klimamodell, DWD ICON-D2, Open Source, Wetterdaten, Datenassimilation, Parametrisierung, Ensemble-Vorhersage, MOS, Nowcasting";
+---
+
+<Layout title={title} description={description} keywords={keywords}>
+    <Header currentPath="" />
+
+    <main>
+        <section class="content-section">
+            <h1>Wettermodelle: Ein umfassender Überblick und detaillierte Analyse</h1>
+            <p>
+                Auf dieser Seite präsentieren wir Ihnen eine umfassende Analyse und einen tiefgehenden Vergleich der wichtigsten Wettermodelle, die weltweit und regional im Einsatz sind. Von den hochmodernen Systemen des Deutschen Wetterdienstes (DWD) über internationale Modelle wie ECMWF und GFS bis hin zu spezialisierten Ansätzen wie AROME und Nowcasting-Systemen – hier finden Sie alle relevanten Informationen zur numerischen Wettervorhersage, den zugrunde liegenden physikalischen Prinzipien, den angewandten Rechenmethoden und den Herausforderungen der Datenassimilation.
+            </p>
+            <p>
+                Unsere detaillierte Auflistung umfasst auch technische Hintergründe, historische Entwicklungen und zukünftige Perspektiven. Durch den Vergleich von globalen, regionalen und mesoskaligen Modellen möchten wir Ihnen helfen, die Unterschiede in der Auflösung, Genauigkeit und Anwendungsbreite besser zu verstehen.
+            </p>
+
+            <section class="section">
+                <h2>1. Einführung in die numerische Wettervorhersage (NWV)</h2>
+                <p>
+                    Wettermodelle basieren auf den physikalischen Gesetzen der Hydrodynamik und Thermodynamik. Komplexe mathematische Gleichungen simulieren die Dynamik der Atmosphäre, um aktuelle Zustände und zukünftige Entwicklungen vorherzusagen.
+                </p>
+                <ol>
+                    <li>
+                        <b>Datenerfassung:</b> Messwerte werden weltweit erfasst – z.B. von Satelliten, Wetterstationen, Radar und Wetterballons.
+                    </li>
+                    <li>
+                        <b>Datenassimilation:</b> Integration dieser Daten in das Modell, um den exakten "Anfangszustand" zu bestimmen.
+                    </li>
+                    <li>
+                        <b>Modellrechnung:</b> Numerische Lösung der Gleichungen in kleinen Zeitschritten.
+                    </li>
+                    <li>
+                        <b>Erstellung der Vorhersage:</b> Visualisierung der Ergebnisse in Karten, Diagrammen und Berichten.
+                    </li>
+                </ol>
+            </section>
+
+            <section class="section">
+                <h2>2. Der Deutsche Wetterdienst (DWD) und seine Modelle</h2>
+                <p>
+                    Der DWD nutzt eine Reihe moderner Modelle zur Wettervorhersage, darunter das globale ICON-Modell sowie regionale Varianten, die speziell auf die Anforderungen in Europa und Deutschland zugeschnitten sind.
+                </p>
+                <h3>2.1 ICON (Globales Modell)</h3>
+                <ul>
+                    <li><b>Horizontale Auflösung:</b> ca. 13 km</li>
+                    <li><b>Vertikale Auflösung:</b> 90 Schichten (bis zu 75 km)</li>
+                    <li><b>Vorhersagezeitraum:</b> bis zu 180 Stunden (7,5 Tage)</li>
+                    <li><b>Aktualisierung:</b> Mehrmals täglich</li>
+                    <li><b>Datenassimilation:</b> 4D-Var</li>
+                </ul>
+                <h3>2.2 ICON-EU (Regionales Modell für Europa)</h3>
+                <ul>
+                    <li><b>Horizontale Auflösung:</b> ca. 6,5 km</li>
+                    <li><b>Vertikale Auflösung:</b> 60 Schichten</li>
+                    <li><b>Vorhersagezeitraum:</b> bis zu 120 Stunden (5 Tage)</li>
+                </ul>
+                <h3>2.3 ICON-D2 (Hochauflösendes Modell für Deutschland)</h3>
+                <ul>
+                    <li><b>Horizontale Auflösung:</b> ca. 2,1 km</li>
+                    <li><b>Vertikale Auflösung:</b> 65 Schichten</li>
+                    <li><b>Vorhersagegebiet:</b> Deutschland und angrenzende Regionen</li>
+                    <li><b>Vorhersagezeitraum:</b> bis zu 48 Stunden</li>
+                    <li><b>Aktualisierung:</b> Alle 3 Stunden (geplant stündlich ab Q4 2024)</li>
+                    <li><b>Besonderheiten:</b> Explizite Konvektionsberechnung ohne Parametrisierung</li>
+                </ul>
+
+                <h3>Tabelle: DWD-Modelle im Vergleich</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Modell</th>
+                            <th>Horizontale Auflösung</th>
+                            <th>Vertikale Auflösung</th>
+                            <th>Vorhersagezeitraum</th>
+                            <th>Update</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ICON</td>
+                            <td>ca. 13 km</td>
+                            <td>90 Schichten (bis 75 km)</td>
+                            <td>bis zu 180 Std.</td>
+                            <td>Mehrmals täglich</td>
+                        </tr>
+                        <tr>
+                            <td>ICON-EU</td>
+                            <td>ca. 6,5 km</td>
+                            <td>60 Schichten</td>
+                            <td>bis zu 120 Std.</td>
+                            <td>Mehrmals täglich</td>
+                        </tr>
+                        <tr>
+                            <td>ICON-D2</td>
+                            <td>ca. 2,1 km</td>
+                            <td>65 Schichten</td>
+                            <td>bis zu 48 Std.</td>
+                            <td>Alle 3 Std.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section">
+                <h2>3. Weitere wichtige Wettermodelle (global und regional)</h2>
+                <h3>3.1 ECMWF (Europäisches Zentrum für mittelfristige Wettervorhersage)</h3>
+                <ul>
+                    <li><b>Modell:</b> IFS (Integrated Forecasting System)</li>
+                    <li><b>Horizontale Auflösung:</b> ca. 9 km</li>
+                    <li><b>Vorhersagezeitraum:</b> bis zu 10 Tage</li>
+                </ul>
+                <h3>3.2 GFS (Global Forecast System)</h3>
+                <ul>
+                    <li><b>Betreiber:</b> NOAA</li>
+                    <li><b>Horizontale Auflösung:</b> ca. 25 km</li>
+                    <li><b>Vorhersagezeitraum:</b> bis zu 16 Tage</li>
+                </ul>
+                <h3>3.3 AROME (Météo-France)</h3>
+                <ul>
+                    <li><b>Modelltyp:</b> Regional</li>
+                    <li><b>Horizontale Auflösung:</b> ca. 1,3 km</li>
+                    <li><b>Vorhersagezeitraum:</b> bis zu 48 Stunden</li>
+                </ul>
+
+                <h3>Tabelle: Globale & Regionale Modelle</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Modell</th>
+                            <th>Betreiber</th>
+                            <th>Horizontale Auflösung</th>
+                            <th>Vorhersagezeitraum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ECMWF (IFS)</td>
+                            <td>ECMWF</td>
+                            <td>ca. 9 km</td>
+                            <td>bis zu 10 Tage</td>
+                        </tr>
+                        <tr>
+                            <td>GFS</td>
+                            <td>NOAA</td>
+                            <td>ca. 25 km</td>
+                            <td>bis zu 16 Tage</td>
+                        </tr>
+                        <tr>
+                            <td>AROME</td>
+                            <td>Météo-France</td>
+                            <td>ca. 1,3 km</td>
+                            <td>bis zu 48 Stunden</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="section">
+                <h2>4. Vertiefende Aspekte der numerischen Wettervorhersage</h2>
+                <p>
+                    Moderne Wettermodelle beruhen nicht nur auf hoher Rechenleistung und umfangreichen Datensätzen, sondern auch auf fortschrittlichen mathematischen Verfahren. Zu den zentralen Aspekten zählen:
+                </p>
+                <h3>4.1 Datenassimilation</h3>
+                <p>
+                    Integration von Echtzeit-Beobachtungsdaten in das Modell, um den aktuellen atmosphärischen Zustand möglichst exakt zu erfassen.
+                </p>
+                <h3>4.2 Ensemble-Vorhersagen</h3>
+                <p>
+                    Mehrfache Modellläufe mit variierenden Anfangsbedingungen, um Unsicherheiten abzuschätzen.
+                </p>
+                <h3>4.3 Parametrisierung</h3>
+                <p>
+                    Vereinfachte Darstellung kleinerer Prozesse (z. B. Wolkenbildung), die nicht direkt aufgelöst werden können.
+                </p>
+                <h3>4.4 Modellverifikation und -validierung</h3>
+                <p>
+                    Der Vergleich von Modellvorhersagen mit realen Beobachtungsdaten zur kontinuierlichen Verbesserung der Modelle.
+                </p>
+            </section>
+
+            <section class="section">
+                <h2>5. Nowcasting und kurzfristige Vorhersagen</h2>
+                <p>
+                    Nowcasting konzentriert sich auf Wettervorhersagen im sehr kurzfristigen Zeitraum (0 bis 6 Stunden). Hierbei kommen insbesondere Radardaten, Satellitenbilder und stationäre Messwerte zum Einsatz, um akute Wetterereignisse wie Gewitter oder Starkregen frühzeitig zu prognostizieren.
+                </p>
+            </section>
+
+            <section class="section">
+                <h2>6. Zukunftsaussichten und Weiterentwicklungen</h2>
+                <p>
+                    Die kontinuierliche Verbesserung von Rechenleistung, Datenassimilation und Algorithmen wird zukünftig zu noch präziseren Vorhersagen führen. Zu den wichtigsten Entwicklungen zählen:
+                </p>
+                <ul>
+                    <li>Steigende Auflösung globaler und regionaler Modelle</li>
+                    <li>Verbesserte Datenassimilation durch neue Beobachtungsquellen</li>
+                    <li>Erweiterter Einsatz von KI zur Optimierung der Vorhersagen</li>
+                    <li>Kopplung von Atmosphären-, Ozean- und Landmodellen</li>
+                    <li>Nahtlose Vorhersagen über alle Zeitskalen</li>
+                </ul>
+            </section>
+
+            <section class="section">
+                <h2>7. Wirtschaftliche und gesellschaftliche Bedeutung</h2>
+                <p>
+                    Präzise Wettervorhersagen sind essenziell für viele Bereiche – von der Landwirtschaft über den Transport bis hin zum Katastrophenschutz. Sie helfen, Risiken zu minimieren und wirtschaftliche Entscheidungen zu optimieren.
+                </p>
+            </section>
+
+            <section class="section">
+                <h2>8. Wissenschaftliche Studien und internationale Kooperation</h2>
+                <p>
+                    Internationale Forschungsprojekte und Kooperationen tragen maßgeblich zur Weiterentwicklung der Wettermodelle bei. Der Austausch von Daten und Methoden verbessert die Genauigkeit und Transparenz der Vorhersagen.
+                </p>
+            </section>
+
+            <section class="section">
+                <h2>9. Fazit</h2>
+                <p>
+                    Die moderne numerische Wettervorhersage hat bedeutende Fortschritte erzielt. Globale Modelle wie ICON und ECMWF sowie regionale Systeme wie AROME ermöglichen es, den Wetterverlauf immer besser abzubilden – ein entscheidender Faktor für den Alltag, die Wirtschaft und den Katastrophenschutz.
+                </p>
+            </section>
+
+            <section class="section">
+                <h2>10. Weiterführende Links und Ressourcen</h2>
+                <ul>
+                    <li>
+                        <a href="https://www.dwd.de" target="_blank">Deutscher Wetterdienst (DWD)</a>
+                    </li>
+                    <li>
+                        <a href="https://www.ecmwf.int" target="_blank">ECMWF – European Centre for Medium-Range Weather Forecasts</a>
+                    </li>
+                    <li>
+                        <a href="https://www.noaa.gov" target="_blank">NOAA – National Oceanic and Atmospheric Administration</a>
+                    </li>
+                    <li>
+                        <a href="https://www.meteofrance.com" target="_blank">Météo-France</a>
+                    </li>
+                    <li>
+                        <a href="https://www.weather.gov" target="_blank">National Weather Service (NWS)</a>
+                    </li>
+                </ul>
+            </section>
+        </section>
+    </main>
+
+    <Footer />
+</Layout>
+
+<style>
+    .content-section {
+        padding: 2rem 1.5rem;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .content-section h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+
+    .content-section h2 {
+        font-size: 2rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+    .content-section h3 {
+        font-size: 1.5rem;
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    .content-section h4 {
+        font-size: 1.2rem;
+        margin-top: 1.2rem;
+        margin-bottom: 0.8rem;
+    }
+    .content-section p {
+        margin-bottom: 1rem;
+        line-height: 1.8;
+    }
+    .content-section li {
+        margin-left: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    a[target="_blank"]::after {
+        content: " ↪";
+        font-size: 0.8em;
+        margin-left: 0.2em;
+        vertical-align: text-top;
+    }
+    .section {
+        margin-bottom: 2rem;
+    }
+    /* Minimal table styling to enhance readability without stark changes */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+    }
+    th, td {
+        border: 1px solid #ccc;
+        padding: 0.5rem;
+        text-align: left;
+    }
+    th {
+        background-color: #f0f0f0;
+    }
+</style>

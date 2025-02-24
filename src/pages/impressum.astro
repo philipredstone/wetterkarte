@@ -1,0 +1,94 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+const title = "Impressum | wetterkarte.org";
+const description =
+    "Kostenlose Wetterkarte Deutschland mit Echtzeit-Regenradar ✓ Stündliche Temperatur- & Windvorhersage ✓ 48h Wetterprognose ✓ Präzise & aktuell";
+---
+
+<Layout title={title} description={description}>
+    <Header currentPath=""/>
+
+    <main>
+        <section class="content-section">
+            <article>
+                <header>
+                    <h1>Impressum</h1>
+                </header>
+
+                <h2>Developer</h2>
+                <p>Philip Rothstein</p>
+                <br />
+                <h2>Owner</h2>
+                <p>
+                    WDTEC GmbH<br /> Flomborner Weg 2<br /> 55234 Freimersheim
+                </p>
+                <br />
+                <p>
+                    Commercial Register: HRB 51318<br /> Register Court: Mainz
+                </p>
+                <br />
+                <p><strong>Represented by:</strong><br /> E. Widdau</p>
+                <br />
+                <h2>Contact</h2>
+                <p>Email: contact@wdtec.de</p>
+                <br />
+                <h2>VAT ID</h2>
+                <p>
+                    VAT Identification Number according to § 27 a VAT Act:<br />
+                    DE 354000817
+                </p>
+                <br />
+                <h2>Consumer Dispute Resolution/Universal Arbitration Board</h2>
+                <p>
+                    We are not willing or obligated to participate in dispute
+                    resolution proceedings before a consumer arbitration board.
+                </p>
+                <br />
+                <p>
+                    Source: <a href="https://www.e-recht24.de"
+                        >https://www.e-recht24.de</a
+                    >
+                </p>
+            </article>
+        </section>
+    </main>
+
+    <Footer />
+</Layout>
+
+<style>
+    /* main {
+		min-height: 100vh;
+	} */
+
+    .content-section {
+        padding: 2rem 1.5rem;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .content-section h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+
+    .content-section p {
+        margin-bottom: 1rem;
+        line-height: 1.8;
+    }
+
+    .content-section li {
+        margin-left: 2rem;
+    }
+
+    a[target="_blank"]::after {
+        content: " ↪";
+        font-size: 0.8em;
+        margin-left: 0.2em;
+        vertical-align: text-top;
+    }
+</style>

@@ -1,0 +1,157 @@
+---
+import "../../styles/weather.css";
+
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import HorizontalNavigation from "../../components/HorizontalNavigation.astro";
+import Faq from "../../components/Faq.astro";
+import { getCity, getStatics } from "../../scripts/city";
+
+export async function getStaticPaths() {
+  return getStatics();
+}
+
+const city = getCity(Astro.params.city);
+
+const title = `Aktuelles Wetter in ${city.name} - Wettervorhersage`;
+const description = `Aktuelle Wettervorhersage für ${city.name}: Temperatur, Wind und weitere wichtige Wetterdaten für Ihre optimale Tagesplanung.`;
+
+const questions = [
+  {
+    question: "Welche Wetterdaten werden auf der Seite angezeigt?",
+    answer:
+      "Unsere Wetterseite liefert umfassende Informationen zu aktuellen Temperaturen, Luftfeuchtigkeit, Windgeschwindigkeiten und Niederschlagsmengen. Zusätzlich erhalten Sie stündliche Vorhersagen sowie eine 7-Tage Prognose, die Ihnen einen detaillierten Überblick über das Wettergeschehen bieten.",
+  },
+  {
+    question: "Welche Wettermodelle und Datenquellen werden genutzt?",
+    answer:
+      "Die Vorhersagen basieren auf modernen numerischen Wettermodellen wie dem DWD ICON D2 sowie ergänzenden Modellen für angrenzende Regionen. Ergänzt werden diese durch Radolan-Daten, die präzise Radaraufnahmen liefern und so ein aktuelles Bild der Niederschlagsverteilung ermöglichen.",
+  },
+  {
+    question: "Wie häufig werden die Wetterdaten aktualisiert?",
+    answer:
+      "Die Messwerte und Prognosen werden mehrmals stündlich aktualisiert, sodass Sie stets auf die neuesten Informationen zugreifen können.",
+  },
+  {
+    question: "Welche Vorhersagezeiträume werden angeboten?",
+    answer:
+      "Neben den aktuellen Wetterwerten bieten wir eine stündliche Prognose für kurzfristige Änderungen sowie eine 7-Tage Vorhersage, um auch längerfristige Trends abzubilden.",
+  },
+  {
+    question: "Wie genau sind die Wettervorhersagen?",
+    answer:
+      "Unsere Prognosen beruhen auf Echtzeitdaten und modernen Wettermodellen. Zwar liefern diese Daten eine hohe Genauigkeit, kurzfristige lokale Veränderungen können dennoch zu leichten Abweichungen führen.",
+  },
+  {
+    question: "Welche zusätzlichen Wetterinformationen werden angezeigt?",
+    answer:
+      "Neben Standarddaten wie Temperatur und Niederschlag erhalten Sie detaillierte Angaben zu Wind, Luftfeuchtigkeit sowie interaktive Wetterkarten, die weitere meteorologische Parameter visuell darstellen.",
+  },
+  {
+    question: "Ist die Seite auch mobil optimiert?",
+    answer:
+      "Ja, die Darstellung ist vollständig responsiv, sodass Sie alle Wetterinformationen problemlos auf Smartphones, Tablets und Laptops abrufen können.",
+  },
+];
+
+
+
+---
+
+<Layout title={title} description={description}>
+  <Header currentPath="/wetter/" />
+
+  <main>
+    <section class="content-section">
+      <article>
+        <div class="card">
+          <header class="card-header">
+            <h1>Wetter in {city.name}</h1>
+          </header>
+          <HorizontalNavigation city={city.key} currentPath="wetter" />
+          <div class="card-body">
+            <p>
+              Entdecken Sie die aktuelle Wettervorhersage für {city.name} und die
+              Prognose für die kommenden Tage. Unsere Daten bieten Ihnen präzise
+              Informationen zu Temperatur, Wind und weiteren wichtigen Wetterdaten
+              - ideal für Ihre tägliche Planung.
+            </p>
+            <div
+              class="weather-info"
+              id="weather-widget"
+              data-lat={city.coords[0]}
+              data-lng={city.coords[1]}
+              data-city={city.name}
+            >
+              <div class="weather-status">
+                <div id="icon" class="status-text">Temperatur wird geladen...</div>
+                <div id="temperature" class="status-text">Temperatur wird geladen...</div>
+                
+                <div class="weather-metrics">
+                  <div class="status-box">
+                    <span class="status-icon">
+                      <img src="/images/wind.svg" alt="Wind" height="48" width="48" />
+                    </span>
+                    <p class="status-label">Wind</p>
+                    <p id="wind" class="status-value">Wird geladen...</p>
+                  </div>
+                  
+                  <div class="status-box">
+                    <span class="status-icon">
+                      <img src="/images/humidity.svg" alt="Luftfeuchtigkeit" height="48" width="48" />
+                    </span>
+                    <p class="status-label">Luftfeuchtigkeit</p>
+                    <p id="humidity" class="status-value">Wird geladen...</p>
+                  </div>
+                  
+                  <div class="status-box">
+                    <span class="status-icon">
+                      <img src="/images/rain.svg" alt="Niederschlag" height="48" width="48" />
+                    </span>
+                    <p class="status-label">Niederschlag</p>
+                    <p id="rainfall" class="status-value">Wird geladen...</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="forecast-section">
+                <h2 class="forecast-title">Stündliche Vorhersage</h2>
+                <div class="forecast-container">
+                  <button class="scroll-button scroll-left" aria-label="Nach links scrollen">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                  </button>
+                  <div class="forecast-grid" id="hourly-forecast">
+                    <div class="forecast-loading">Stündliche Vorhersage wird geladen...</div>
+                  </div>
+                  <button class="scroll-button scroll-right" aria-label="Nach rechts scrollen">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="forecast-section">
+                <h2 class="forecast-title">7-Tage Vorhersage</h2>
+                <div class="daily-forecast-list" id="daily-forecast">
+                  <div class="forecast-loading">7-Tage Vorhersage wird geladen...</div>
+                </div>
+              </div>
+            </div>
+            <p class="update-info" id="update-info">
+              <time datetime="2024-02-20">Letzte Aktualisierung: Wird geladen...</time>
+            </p>
+          </div>
+        </div>
+        
+        <Faq questions={questions} />
+      </article>
+    </section>
+  </main>
+
+  <Footer />
+  <script src="../../scripts/weather.ts"></script>
+</Layout>

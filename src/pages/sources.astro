@@ -1,0 +1,149 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+const title = "Quellen | wetterkarte.org";
+const description =
+    "Kostenlose Wetterkarte Deutschland mit Echtzeit-Regenradar ✓ Stündliche Temperatur- & Windvorhersage ✓ 48h Wetterprognose ✓ Präzise & aktuell";
+---
+
+<Layout title={title} description={description}>
+    <Header currentPath=""/>
+
+    <main>
+        <section class="content-section">
+            <article>
+                <header>
+                    <h1>Quellen</h1>
+                </header>
+
+                <h2>Wetterkarten</h2>
+                <ul>
+                    <li>
+                        <a target="_blank" href="https://www.dwd.de/EN/"
+                            >Deutscher Wetterdienst (DWD)</a
+                        >
+                    </li>
+                </ul>
+
+                <h2>Wetterdaten</h2>
+                <ul>
+                    <li>
+                        <a target="_blank" href="https://www.dwd.de/EN/"
+                            >Deutscher Wetterdienst (DWD)</a
+                        >
+                    </li>
+                    <li>
+                        <a target="_blank" href="https://open-meteo.com/"
+                            >Open-Meteo</a
+                        >
+                    </li>
+                </ul>
+
+                <br />
+
+                <h2>Radar</h2>
+                <ul>
+                    <li>
+                        <a target="_blank" href="https://www.dwd.de/EN/"
+                            >Deutscher Wetterdienst (DWD)</a
+                        >
+                    </li>
+                    <li>
+                        <a target="_blank" href="https://meteofrance.com/"
+                            >Météo-France</a
+                        >
+                    </li>
+                    <li>
+                        <a target="_blank" href="https://www.imgw.pl/en/"
+                            >Instytut Meteorologii</a
+                        >
+                    </li>
+                    <li>
+                        <a target="_blank" href="https://www.smhi.se/en"
+                            >Sveriges meteorologiska och hydrologiska institut</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            target="_blank"
+                            href="https://www.protezionecivile.gov.it/en/"
+                            >Dipartimento della Protezione Civile</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            target="_blank"
+                            href="https://www.aemet.es/en/portada"
+                            >Instituto de Meteorología</a
+                        >
+                    </li>
+                    <li>
+                        <a target="_blank" href="https://www.noaa.gov/"
+                            >NOAA (National Oceanic and Atmospheric
+                            Administration)</a
+                        >
+                    </li>
+                    <li>
+                        <a target="_blank" href="https://www.cwa.gov.tw/eng/"
+                            >Central Weather Administration</a
+                        >
+                    </li>
+                    <li>
+                        <a target="_blank" href="https://www.met.no/en"
+                            >MET Norway</a
+                        >
+                    </li>
+                </ul>
+
+                <br />
+
+                <h2>Karte</h2>
+                <ul>
+                    <li>
+                        <a target="_blank" href="https://www.openstreetmap.org/"
+                            >OpenStreetMap</a>
+                    </li>
+                    <li>
+                        <a target="_blank" href="https://leafletjs.com/"
+                            >Leaflet</a>
+                    </li>
+                </ul>
+            </article>
+        </section>
+    </main>
+
+    <Footer />
+</Layout>
+
+<style>
+    .content-section {
+        padding: 2rem 1.5rem;
+        max-width: 900px;
+        margin: 0 auto;
+        height: 85vh;
+    }
+
+    .content-section h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+
+    .content-section p {
+        margin-bottom: 1rem;
+        line-height: 1.8;
+    }
+
+    .content-section li {
+        margin-left: 2rem;
+    }
+
+    a[target="_blank"]::after {
+        content: " ↪";
+        font-size: 0.8em;
+        margin-left: 0.2em;
+        vertical-align: text-top;
+    }
+</style>

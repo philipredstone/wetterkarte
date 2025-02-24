@@ -1,0 +1,140 @@
+---
+import "../../styles/uv.css";
+
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Faq from "../../components/Faq.astro";
+import { getCity, getStatics } from "../../scripts/city";
+import HorizontalNavigation from "../../components/HorizontalNavigation.astro";
+
+export async function getStaticPaths() {
+  return getStatics();
+}
+
+const city = getCity(Astro.params.city);
+
+const title = `Aktueller UV-Index in ${city.name} - Wettervorhersage`;
+const description = `UV-Index heute in ${city.name}: Aktuelle UV-Belastung und praktische Schutzempfehlungen für Ihren Aufenthalt im Freien`;
+
+const questions = [
+  {
+    question: "Welche Datenquellen werden für die UV-Index-Vorhersage genutzt?",
+    answer:
+      "Für präzise UV-Index-Vorhersagen greifen wir auf Daten des Deutschen Wetterdienstes (DWD) sowie ergänzende Satellitenmessungen zurück. Diese Kombination ermöglicht es uns, die Intensität der UV-Strahlung zuverlässig zu prognostizieren.",
+  },
+  {
+    question: "Wie häufig werden die UV-Index-Daten aktualisiert?",
+    answer:
+      "Unsere UV-Index-Daten werden in regelmäßigen Intervallen aktualisiert, sodass Sie stets die aktuellsten Informationen zur Sonneneinstrahlung in Ihrer Region erhalten.",
+  },
+  {
+    question: "Ist die Website auch mobil optimiert?",
+    answer:
+      "Ja, unsere Seite ist vollständig responsiv gestaltet. Egal ob auf Smartphone, Tablet oder Laptop - Sie haben den aktuellen UV-Index immer im Blick.",
+  },
+  {
+    question: "Wie entsteht UV-Strahlung?",
+    answer:
+      "UV-Strahlung ist ein natürlicher Bestandteil des Sonnenlichts. Sie entsteht, wenn die Sonne elektromagnetische Strahlung in Form von Ultraviolettlicht abstrahlt. Faktoren wie Tageszeit, geografische Lage, Jahreszeit und Bewölkung beeinflussen dabei die Intensität der UV-Strahlung.",
+  },
+  {
+    question: "Wie wird der UV-Index gemessen?",
+    answer:
+      "Der UV-Index wird durch spezielle Messgeräte und Satellitendaten ermittelt, die die Intensität der ultravioletten Strahlung erfassen. Der daraus resultierende numerische Wert quantifiziert das Risiko von Hautschäden durch die Sonne.",
+  },
+  {
+    question: "Welche Auswirkungen kann ein hoher UV-Index haben?",
+    answer:
+      "Ein hoher UV-Index kann zu Sonnenbrand, Hautalterung und langfristigen Gesundheitsrisiken führen. Insbesondere in den Mittagsstunden sollten Sie verstärkt auf ausreichenden Sonnenschutz achten.",
+  },
+  {
+    question:
+      "Welche Vorsichtsmaßnahmen sollte man bei hohem UV-Index treffen?",
+    answer:
+      "Bei einem hohen UV-Index empfiehlt es sich, direkte Sonneneinstrahlung zu vermeiden, einen ausreichenden Sonnenschutz (z. B. Sonnencreme mit hohem Lichtschutzfaktor) zu verwenden und schützende Kleidung zu tragen, um Hautschäden vorzubeugen.",
+  },
+];
+---
+
+<Layout title={title} description={description}>
+  <Header currentPath="/uv/" />
+
+  <main>
+    <section class="content-section">
+      <article>
+        <div class="card">
+          <div class="card-header">
+            <h1>Aktueller UV-Index in {city.name}</h1>
+          </div>
+          <HorizontalNavigation city={city.key} currentPath="uv" />
+          <div class="card-body">
+            <p>
+              Entdecken Sie den aktuellen UV-Index in {city.name} und die Prognose
+              für die kommenden Tage. Unsere Daten liefern präzise Informationen
+              über die Intensität der Sonnenstrahlung - ideal, um sich rechtzeitig
+              vor übermäßiger UV-Belastung zu schützen.
+            </p>
+
+            <div
+              class="weather-info"
+              id="weather-widget"
+              data-lat={city.coords[0]}
+              data-lng={city.coords[1]}
+              data-city={city.name}
+            >
+              <div class="weather-status">
+                <div class="status-box" id="uv-box">
+                  <span class="status-icon"><img src="/images/uv-index.svg" alt="UV-Index" height="32" width="32"></span>
+                  <p id="uv-index" class="status-text">
+                    UV-Daten werden geladen…&nbsp;
+                  </p>
+                </div>
+                <div class="status-box">
+                  <p id="uv-message" class="status-text">
+                    UV-Daten werden geladen…&nbsp;
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+
+            <p class="update-info" id="update-info">&nbsp;</p>
+
+            <div class="uv-level-explanation">
+              <h3>UV-Index Erklärung</h3>
+              <ul>
+                <li>
+                  <span class="uv-badge uv-risk-low">0-2</span>
+                  Geringes Risiko
+                </li>
+                <li>
+                  <span class="uv-badge uv-risk-moderate">3-5</span>
+                  Mäßiges Risiko
+                </li>
+                <li>
+                  <span class="uv-badge uv-risk-high">6-7</span>
+                  Hohes Risiko
+                </li>
+                <li>
+                  <span class="uv-badge uv-risk-very-high">8-10</span>
+                  Sehr hohes Risiko
+                </li>
+                <li>
+                  <span class="uv-badge uv-risk-extreme">11+</span>
+                  Extrem hohes Risiko
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <Faq questions={questions} />
+      </article>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script src="../../scripts/uv.ts"></script>
+</Layout>

@@ -1,0 +1,258 @@
+---
+import { getCollection } from "astro:content";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Layout from "../../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+const title = post.data.page_title + " | Blog";
+const description =
+  post.data.description ?? "Kostenlose Wetterkarte Deutschland mit Echtzeit-Regenradar ✓ Stündliche Temperatur- & Windvorhersage ✓ 48h Wetterprognose ✓ Präzise & aktuell";
+
+let date = new Date(post.data.date);
+let formattedDate = date.toLocaleDateString("de-DE", {
+  day: "2-digit",
+  month: "short",
+  year: "numeric",
+});
+---
+
+<Layout title={title} description={description}>
+  <Header currentPath="/blog"/>
+
+  <main>
+    <section class="content-section">
+      <article>
+        <header>
+          {
+            post.data.image && (
+              <img
+                src={post.data.image}
+                alt={post.data.title}
+                class="header-image"
+              />
+            )
+          }
+          <h1>{post.data.title}</h1>
+          <time datetime={formattedDate}> {formattedDate}</time>
+
+          {
+            post.data.tags && (
+              <div class="card-tags">
+                {post.data.tags.map((tag) => (
+                  <div>#{tag}</div>
+                ))}
+              </div>
+            )
+          }
+        </header>
+
+        <div class="blog-section">
+          <Content />
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .content-section {
+    padding: 2rem 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+    min-height: 85vh;
+  }
+
+  /* Header image styling (if applicable) */
+  .header-image {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+  }
+
+  /* Main title (Markdown’s first <h1>) */
+  .content-section h1 {
+    font-size: 2.5rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+
+  /* Date/time styling */
+  .content-section time {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #666;
+    font-size: 0.95rem;
+  }
+
+  /* Tags list (if you render them as a <ul> or something similar) */
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    margin-bottom: 1.5rem;
+    padding: 0;
+  }
+  .card-tags div {
+    margin-right: 1rem;
+    margin-bottom: 0.5rem;
+    background-color: #f4f4f4;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: #333;
+  }
+
+  /* Paragraphs */
+  .content-section p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+
+  /* Headings (h2, h3, etc.) inside the content */
+  .content-section h2 {
+    font-size: 1.8rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+  .content-section h3 {
+    font-size: 1.4rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .content-section ul {
+    list-style: disc inside;
+    margin-bottom: 2rem;
+    padding-left: 0;
+  }
+  .content-section ul li {
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+  }
+
+  .content-section table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+  }
+
+  .content-section thead {
+    background-color: #f2f2f2;
+  }
+
+  .content-section th,
+  .content-section td {
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    vertical-align: top;
+  }
+
+  .content-section th {
+    font-weight: 600;
+  }
+
+  .blog-section {
+    line-height: 1.7777778;
+    font-size: 1.125rem;
+    tab-size: 4;
+    font-family:
+      ui-sans-serif,
+      system-ui,
+      sans-serif,
+      "Apple Color Emoji",
+      "Segoe UI Emoji",
+      Segoe UI Symbol,
+      "Noto Color Emoji";
+    font-feature-settings: normal;
+    font-variation-settings: normal;
+  }
+
+  :global(ul) {
+    padding-inline-start: 1.5555556em;
+    margin-top: 1.3333333em;
+    margin-bottom: 1.3333333em;
+  }
+
+  :global(li::marker) {
+    color: #d1d5db;
+  }
+
+  :global(h3) {
+    font-size: 1.3333333em;
+    margin-top: 1.6666667em;
+    margin-bottom: 0.6666667em;
+    line-height: 1.5;
+  }
+
+  :global(h2) {
+    font-size: 1.6666667em;
+    margin-top: 1.8666667em;
+    margin-bottom: 1.0666667em;
+    line-height: 1.3333333;
+  }
+
+  :global(table) {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+
+    margin: 1.5rem 0;
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  :global(thead) {
+    background-color: #f2f2f2;
+  }
+
+  :global(th),
+  :global(td) {
+    padding: 0.75rem 1rem;
+    vertical-align: top;
+    border-bottom: 1px solid #ddd; /* horizontal lines between rows */
+    border-right: 1px solid #ddd; /* vertical lines between columns */
+  }
+
+  :global(th:last-child),
+  :global(td:last-child) {
+    border-right: none;
+  }
+
+  :global(tbody tr:last-child) th,
+  :global(tbody tr:last-child) td {
+    border-bottom: none;
+  }
+
+  :global(th) {
+    font-weight: 600;
+    text-align: left;
+  }
+
+  :global(tbody tr:nth-of-type(odd)) {
+    background-color: #fafafa;
+  }
+
+  :global(a) {
+    color: #0070f3;
+  }
+</style>

@@ -1,0 +1,334 @@
+---
+// Header.astro
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath = "/" } = Astro.props;
+
+const navItems = [
+  { path: "/", label: "Home" },
+  { path: "/radar/", label: "Radar" },
+  {
+    label: "Wetter",
+    path: "/wetter/",
+    items: [
+      { path: "/regen/", label: "Regen" },
+      { path: "/gewitter/", label: "Gewitter" },
+      { path: "/uv/", label: "UV-Index" },
+    ],
+  },
+  { path: "/blog/", label: "Blog" },
+];
+---
+
+<header class="header">
+  <nav aria-label="Main navigation">
+    <div class="nav-container">
+      <a href="/" class="brand">
+        <div class="logo" aria-hidden="true">🗺️</div>
+        <span class="brand-name">wetterkarte.org</span>
+      </a>
+
+      <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+      <label for="nav-toggle" class="nav-toggle-label">
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </label>
+
+      <ul class="nav-links">
+        {
+          navItems.map((item) => {
+            if (item.items) {
+              return (
+                <li class="dropdown">
+                  
+                <a
+                  href={item.path}
+                  aria-current={currentPath === item.path ? "page" : undefined}
+                  class={currentPath === item.path ? "active" : ""}
+                >{item.label}</a>
+                  {/* <span class="dropdown-toggle">{item.label}</span> */}
+                  <ul class="dropdown-menu">
+                    {item.items.map(({ path, label }) => (
+                      <li>
+                        <a
+                          href={path}
+                          aria-current={
+                            currentPath === path ? "page" : undefined
+                          }
+                          class={currentPath === path ? "active" : ""}
+                        >
+                          {label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              );
+            }
+            return (
+              <li>
+                <a
+                  href={item.path}
+                  aria-current={currentPath === item.path ? "page" : undefined}
+                  class={currentPath === item.path ? "active" : ""}
+                >
+                  {item.label}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .header {
+    position: relative;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+  }
+
+  nav {
+    padding: 1rem;
+  }
+
+  .nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: #333;
+  }
+
+  .logo {
+    width: 40px;
+    height: 40px;
+    background-color: #115597;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #fff;
+  }
+
+  .brand-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  /* Hamburger (mobile toggle) */
+  .nav-toggle {
+    display: none;
+  }
+
+  .nav-toggle-label {
+    display: none;
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+
+  .hamburger {
+    width: 24px;
+    height: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .hamburger span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background-color: #333;
+    transition: all 0.3s ease;
+  }
+
+  /* Main nav links container */
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    z-index: 1500;
+  }
+
+  .nav-links > li {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Standard link styling */
+  .nav-links a {
+    color: #333;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 0.5rem;
+    line-height: 1.5;
+    transition: color 0.2s ease;
+  }
+
+  .nav-links a:hover,
+  .nav-links a:focus,
+  .nav-links a.active {
+    color: #115597;
+  }
+
+  .nav-links a:hover,
+  .nav-links a:focus {
+    text-decoration: underline;
+  }
+
+  .nav-links a.active {
+    font-weight: bold;
+  }
+
+  .dropdown {
+    position: relative;
+  }
+
+  .dropdown-toggle {
+    font-size: 1rem;
+    padding: 0.5rem;
+    line-height: 1.5;
+    color: #333;
+    cursor: pointer;
+    display: inline-block;
+    transition: color 0.2s ease;
+    text-decoration: none;
+  }
+
+  .dropdown-toggle:hover,
+  .dropdown-toggle:focus {
+    color: #115597;
+    text-decoration: underline;
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    list-style: none;
+    padding: 0.5rem 0;
+    margin: 0;
+    display: none;
+    z-index: 2000;
+  }
+
+  .dropdown:hover .dropdown-menu {
+    display: block;
+  }
+
+  .dropdown-menu li a {
+    padding: 0.5rem 1rem;
+    white-space: nowrap;
+    display: block;
+    color: #333;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .dropdown-menu li a:hover,
+  .dropdown-menu li a:focus {
+    color: #115597;
+    text-decoration: underline;
+  }
+
+  .dropdown-menu li a.active {
+    color: #115597;
+    font-weight: bold;
+  }
+
+  @media (max-width: 600px) {
+    .nav-toggle-label {
+      display: block;
+    }
+
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #fff;
+      padding: 0.5rem 1rem;
+      flex-direction: column;
+      gap: 0.5rem;
+      border-bottom: 1px solid #eee;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-links > li,
+    .nav-links > li > a {
+      width: 100%;
+      text-align: center;
+    }
+
+    .nav-toggle:checked ~ .nav-links {
+      display: flex;
+    }
+
+    .nav-toggle:checked ~ .nav-toggle-label .hamburger span:nth-child(1) {
+      transform: translateY(9px) rotate(45deg);
+    }
+
+    .nav-toggle:checked ~ .nav-toggle-label .hamburger span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-toggle:checked ~ .nav-toggle-label .hamburger span:nth-child(3) {
+      transform: translateY(-9px) rotate(-45deg);
+    }
+
+    .dropdown {
+      width: 100%;
+    }
+
+    .dropdown-toggle {
+      display: none;
+    }
+
+    .dropdown-menu {
+      position: static;
+      box-shadow: none;
+      border: none;
+      padding: 0;
+      transform: none;
+      left: 0;
+      display: block;
+      width: 100%;
+    }
+
+    .dropdown-menu li {
+      margin: 0;
+      text-align: center;
+    }
+
+    .dropdown-menu li a {
+      padding: 0.5rem 0;
+      text-align: center;
+    }
+  }
+</style>

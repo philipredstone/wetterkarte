@@ -1,0 +1,83 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-primary);
+  color: var(--color-text);
+  background: var(--color-background);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Base styles for common elements */
+a {
+  color: #115597;
+  text-decoration: none;
+  transition: text-decoration var(--transition-fast);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+}
+
+img,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+
+/* FAQ-Bereich */
+h2 {
+  font-size: 1.75rem;
+  margin-top: 2rem;
+}
+
+.faq {
+  margin-top: 1rem;
+}
+
+.faq-item {
+  background: #fafafa;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  transition: background 0.3s ease;
+}
+
+a[target="_blank"]::after {
+  content: " ↪";
+  font-size: 0.8em;
+  margin-left: 0.2em;
+  vertical-align: text-top;
+}

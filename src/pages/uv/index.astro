@@ -1,0 +1,45 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import CityIndex from "../../components/CityIndex.astro";
+
+const title = "UV-Index in Deutschland - Wettervorhersage";
+const description = `Aktueller UV-Index für Deutschland. Erfahren Sie, wie stark die UV-Strahlung in Ihrer Region ist und erhalten Sie wertvolle Tipps zum Schutz vor Sonnenbrand.`;
+---
+
+<Layout title={title} description={description}>
+    <Header currentPath="/uv/"/>
+    <main>
+        <section class="content-section">
+            <article>
+                <header class="index-header">
+                    <h1>UV-Index in Deutschland</h1>
+                    <p>Wählen Sie Ihre Region:</p>
+                </header>
+                <CityIndex prefix="uv"/>
+            </article>
+        </section>
+    </main>
+    <Footer />
+</Layout>
+
+<style>
+    .content-section {
+        padding: 2rem 1.5rem;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    .index-header h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .index-header p {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        color: #555;
+    }
+
+   
+</style>

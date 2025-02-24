@@ -1,0 +1,30 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <p>&copy; {currentYear} wetterkarte.org - Alle Rechte vorbehalten</p>
+  <nav aria-label="Weitere Informationen">
+    <a href="/impressum/">Impressum</a>
+    <a href="/datenschutz/">Datenschutz</a>
+    <a href="/sources/">Quellen</a>
+  </nav>
+</footer>
+
+<style>
+  .footer {
+    padding: var(--spacing-lg);
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    text-align: center;
+  }
+
+  nav {
+    margin-top: var(--spacing-sm);
+  }
+
+  a {
+    margin: 0 var(--spacing-sm);
+    color: black;
+  }
+</style>

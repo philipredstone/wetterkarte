@@ -1,0 +1,63 @@
+---
+type Props = {
+    city: string;
+    currentPath?: string;
+};
+
+const { city, currentPath = "/" } = Astro.props;
+
+let paths: { [key: string]: string } = {
+    wetter: "Wetter",
+    regen: "Regen",
+    gewitter: "Gewitter",
+    uv: "UV-Index",
+};
+---
+
+<nav>
+    <a href=`/${currentPath}/` class="back-link">← Zur Städteliste</a>
+    <div class="horizontal-links">
+        {
+            Object.keys(paths).map((path: string) => {
+                const label = paths[path];
+                return (
+                    <a
+                        href={`/${path}/${city}/`}
+                        class={currentPath === path ? "active" : ""}
+                    >
+                        {label}
+                    </a>
+                );
+            })
+        }
+    </div>
+</nav>
+
+<style>
+    .back-link {
+        color: #000;
+        display: inline-block;
+        margin: 0 1rem 1rem;
+        text-decoration: none;
+    }
+
+    .horizontal-links {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        margin: 1rem 0;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 1rem;
+    }
+
+    .horizontal-links a {
+        text-decoration: none;
+        color: #007acc;
+        font-size: 1.1rem;
+        padding: 0.5rem 1rem;
+    }
+
+    .horizontal-links a.active {
+        font-weight: bold;
+    }
+</style>

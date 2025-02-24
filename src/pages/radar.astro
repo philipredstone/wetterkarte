@@ -1,0 +1,66 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import WeatherMap from "../components/WeatherMap.astro";
+import Footer from "../components/Footer.astro";
+
+const title =
+	"Live Regenradar für Deutschland";
+const description =
+	"Erhalten Sie präzise, aktuelle Wettervorhersagen und Niederschlagsdaten für Deutschland mit unserem Live Regenradar - direkt vom Deutschen Wetterdienst (DWD).";
+
+---
+
+<Layout title={title} description={description}>
+	<Header currentPath="/radar/"/>
+	<main>
+		<WeatherMap layerselect={false} layer="radar" zoom={6} center={[51.163375, 10.447683]} type="fullscreen" />
+
+		<section class="content-section">
+			<article>
+				<header>
+					<h1>
+						Live Regenradar für Deutschland - Präzise Wetter- und Niederschlagsvorhersagen
+					</h1>
+				</header>
+			</article>
+			<article>
+				<p>
+					Unser <strong>Live Regenradar</strong> liefert Ihnen in Echtzeit detaillierte Wetter- und Niederschlagsdaten für ganz Deutschland. Dank modernster Radar-Technologie des <strong>Deutschen Wetterdienstes (DWD)</strong> erhalten Sie aktuelle Informationen, um Wetterumschwünge und Niederschlagsverläufe präzise zu verfolgen.
+				</p>
+				<p>
+					Die interaktive Karte zeigt Ihnen den aktuellen Niederschlag, mit dem kommende Regenfälle in Ihrer Region prognostiziert werden können. Dies ermöglicht es Ihnen, Ihren Arbeitsweg, Freizeitaktivitäten und Veranstaltungen optimal zu planen und sich frühzeitig auf Wetteränderungen einzustellen.
+				</p>
+				<p>
+					Profitieren Sie von regelmäßigen Updates und einer benutzerfreundlichen Darstellung, die sowohl für Wetterinteressierte als auch für professionelle Anwender geeignet ist. Verlassen Sie sich auf zuverlässige Daten, um immer bestens informiert zu sein.
+				</p>
+			</article>
+		</section>
+
+	</main>
+
+	<Footer />
+</Layout>
+
+<style>
+	.content-section {
+		padding: 2rem 1.5rem;
+		max-width: 900px;
+		margin: 0 auto;
+	}
+
+	.content-section h1 {
+		font-size: 2rem;
+		margin-bottom: 1rem;
+		font-weight: 700;
+	}
+
+	.content-section p {
+		margin-bottom: 1rem;
+		line-height: 1.8;
+	}
+
+	.content-section li {
+		margin-left: 2rem;
+	}
+</style>

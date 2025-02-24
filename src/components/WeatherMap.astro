@@ -1,0 +1,369 @@
+---
+// WeatherMap.astro
+
+interface Props {
+  layerselect: boolean;
+  layer: string;
+  center: [number, number];
+  zoom?: number;
+  type?: "widget" | "fullscreen";
+}
+
+let { layerselect, layer, center, zoom, type } = Astro.props;
+
+if (!center) {
+  center = [52.52, 13.41];
+}
+
+if (!zoom) {
+  zoom = 8;
+}
+
+let borderRadius = type === "fullscreen" ? "0" : "8";
+---
+
+<div
+  class="map-container"
+  id="map-container"
+  data-layer={layer}
+  data-lat={center[0]}
+  data-lng={center[1]}
+  data-zoom={zoom}
+>
+  <div class="map-wrapper" style={`border-radius: ${borderRadius}px`}>
+    <div id="map" role="application" aria-label="Wetterkarte"></div>
+    <div id="map-overlay" class="map-overlay" onclick="this.remove()">
+      <span class="overlay-text">Zum Interagieren mit der Karte klicken</span>
+    </div>
+  </div>
+  {
+    layerselect && (
+      <div class="unified-control-panel">
+        <div class="control-section">
+          <div class="layer-buttons">
+            <button class="control-button active" data-layer="temp">
+              <span class="button-label">Temperatur</span>
+            </button>
+            <button class="control-button" data-layer="wind">
+              <span class="button-label">Wind</span>
+            </button>
+            <button class="control-button radar-button" data-layer="radar">
+              <span class="live-indicator" />
+              <span class="button-label">Radar</span>
+            </button>
+          </div>
+          <div class="forecast-slider">
+            <div class="time-display">
+              <span id="forecast-hour" class="time-label" />
+            </div>
+            <input
+              type="range"
+              id="forecast-slider"
+              min="0"
+              max="48"
+              value="0"
+              step="1"
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
+  <div class="legend">
+    <div class="legend-container"></div>
+    <canvas id="legend-canvas" width="50"></canvas>
+  </div>
+</div>
+
+<script src="../scripts/MapScript.ts"></script>
+
+<style>
+  .map-container {
+    height: 80vh;
+    width: 100%;
+    background: #fff;
+    position: relative;
+  }
+
+  .map-wrapper {
+    position: relative;
+    height: 100%;
+    width: 100%;
+  }
+
+  #map {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  .map-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .map-wrapper {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .map-wrapper:hover .map-overlay {
+    opacity: 1;
+  }
+
+  .overlay-text {
+    font-size: 20px;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+  }
+
+  .unified-control-panel {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    width: min(90%, 360px);
+    padding: 12px;
+  }
+
+  .control-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .layer-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+  }
+
+  .control-button {
+    flex: 1;
+    border: none;
+    background: #f5f5f5;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .control-button:hover {
+    background: #eaeaea;
+  }
+
+  .control-button.active {
+    background: #115597;
+    color: white;
+  }
+
+  .radar-button {
+    position: relative;
+  }
+
+  .live-indicator {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: red;
+    top: 6px;
+    left: 6px;
+  }
+
+  .live-indicator::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    border: 2px solid red;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: radar-pulse 1.5s infinite;
+  }
+
+  .forecast-slider {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .time-display {
+    background: #f5f5f5;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-align: center;
+  }
+
+  .time-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .forecast-slider label {
+    font-size: 13px;
+    color: #666;
+  }
+
+  input[type="range"] {
+    width: 100%;
+    margin: 15px 0;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #f5f5f5;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #115597;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: #115597;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover {
+    background: #0e4781;
+    transform: scale(1.1);
+  }
+
+  input[type="range"]::-moz-range-thumb:hover {
+    background: #0e4781;
+    transform: scale(1.1);
+  }
+
+  input[type="range"]:focus {
+    outline: none;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 6px;
+    background: #f5f5f5;
+    border-radius: 3px;
+  }
+
+  input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 6px;
+    background: #f5f5f5;
+    border-radius: 3px;
+  }
+
+  .legend {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: white;
+    padding: 8px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+  }
+
+  @keyframes radar-pulse {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.7;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.8);
+      opacity: 0.3;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(2.5);
+      opacity: 0;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .unified-control-panel {
+      padding: 8px;
+      width: 95%;
+    }
+
+    .control-button {
+      padding: 6px 8px;
+      font-size: 12px;
+      min-height: 32px;
+    }
+
+    .live-indicator {
+      width: 6px;
+      height: 6px;
+      top: 4px;
+      left: 4px;
+    }
+  }
+
+  :global(.leaflet-control-zoom) {
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  :global(.leaflet-control-zoom-in),
+  :global(.leaflet-control-zoom-out) {
+    background: white !important;
+    border: none !important;
+    color: black !important;
+    width: 30px !important;
+    height: 30px !important;
+    line-height: 30px !important;
+    font-size: 16px !important;
+  }
+
+  :global(.leaflet-control-zoom-in:hover),
+  :global(.leaflet-control-zoom-out:hover) {
+    background: #f0f0f0 !important;
+    color: black !important;
+  }
+
+  :global(.leaflet-control-attribution) {
+    font-size: 11px !important;
+  }
+</style>

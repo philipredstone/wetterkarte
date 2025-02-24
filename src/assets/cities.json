@@ -1,0 +1,1053 @@
+{
+    "aachen": {
+      "name": "Aachen",
+      "coords": [
+        50.77635,
+        6.08386
+      ]
+    },
+    "aalen": {
+      "name": "Aalen",
+      "coords": [
+        48.83756,
+        10.09296
+      ]
+    },
+    "arnsberg": {
+      "name": "Arnsberg",
+      "coords": [
+        51.40024,
+        8.06059
+      ]
+    },
+    "aschaffenburg": {
+      "name": "Aschaffenburg",
+      "coords": [
+        49.97405,
+        9.14936
+      ]
+    },
+    "augsburg": {
+      "name": "Augsburg",
+      "coords": [
+        48.36903,
+        10.89795
+      ]
+    },
+    "bad-godesberg": {
+      "name": "Bad Godesberg",
+      "coords": [
+        50.68507,
+        7.15632
+      ]
+    },
+    "bamberg": {
+      "name": "Bamberg",
+      "coords": [
+        49.8916,
+        10.88685
+      ]
+    },
+    "bayreuth": {
+      "name": "Bayreuth",
+      "coords": [
+        49.94272,
+        11.57631
+      ]
+    },
+    "bergedorf": {
+      "name": "Bergedorf",
+      "coords": [
+        53.4858,
+        10.2267
+      ]
+    },
+    "bergisch-gladbach": {
+      "name": "Bergisch Gladbach",
+      "coords": [
+        50.99293,
+        7.12774
+      ]
+    },
+    "berlin": {
+      "name": "Berlin",
+      "coords": [
+        52.51089,
+        13.39894
+      ]
+    },
+    "bielefeld": {
+      "name": "Bielefeld",
+      "coords": [
+        52.0191,
+        8.53101
+      ]
+    },
+    "bocholt": {
+      "name": "Bocholt",
+      "coords": [
+        51.83827,
+        6.61487
+      ]
+    },
+    "bochum": {
+      "name": "Bochum",
+      "coords": [
+        51.48181,
+        7.21966
+      ]
+    },
+    "bogenhausen": {
+      "name": "Bogenhausen",
+      "coords": [
+        48.14522,
+        11.61498
+      ]
+    },
+    "bonn": {
+      "name": "Bonn",
+      "coords": [
+        50.73526,
+        7.10246
+      ]
+    },
+    "bottrop": {
+      "name": "Bottrop",
+      "coords": [
+        51.52158,
+        6.9292
+      ]
+    },
+    "brandenburg-an-der-havel": {
+      "name": "Brandenburg an der Havel",
+      "coords": [
+        52.41083,
+        12.54979
+      ]
+    },
+    "braunschweig": {
+      "name": "Braunschweig",
+      "coords": [
+        52.26466,
+        10.52361
+      ]
+    },
+    "bremen": {
+      "name": "Bremen",
+      "coords": [
+        53.07582,
+        8.80716
+      ]
+    },
+    "bremerhaven": {
+      "name": "Bremerhaven",
+      "coords": [
+        53.55054,
+        8.58519
+      ]
+    },
+    "castrop-rauxel": {
+      "name": "Castrop-Rauxel",
+      "coords": [
+        51.56462,
+        7.31062
+      ]
+    },
+    "celle": {
+      "name": "Celle",
+      "coords": [
+        52.62406,
+        10.08105
+      ]
+    },
+    "chemnitz": {
+      "name": "Chemnitz",
+      "coords": [
+        50.83235,
+        12.91891
+      ]
+    },
+    "cottbus---chóśebuz": {
+      "name": "Cottbus - Chóśebuz",
+      "coords": [
+        51.75674,
+        14.33573
+      ]
+    },
+    "darmstadt": {
+      "name": "Darmstadt",
+      "coords": [
+        49.87278,
+        8.65118
+      ]
+    },
+    "delmenhorst": {
+      "name": "Delmenhorst",
+      "coords": [
+        53.0481,
+        8.62861
+      ]
+    },
+    "dessau": {
+      "name": "Dessau",
+      "coords": [
+        51.831,
+        12.24307
+      ]
+    },
+    "detmold": {
+      "name": "Detmold",
+      "coords": [
+        51.93628,
+        8.87915
+      ]
+    },
+    "dinslaken": {
+      "name": "Dinslaken",
+      "coords": [
+        51.56236,
+        6.73451
+      ]
+    },
+    "dorsten": {
+      "name": "Dorsten",
+      "coords": [
+        51.66041,
+        6.96474
+      ]
+    },
+    "dortmund": {
+      "name": "Dortmund",
+      "coords": [
+        51.51423,
+        7.46528
+      ]
+    },
+    "dresden": {
+      "name": "Dresden",
+      "coords": [
+        51.04933,
+        13.73814
+      ]
+    },
+    "dueren": {
+      "name": "Düren",
+      "coords": [
+        50.80317,
+        6.48208
+      ]
+    },
+    "duesseldorf": {
+      "name": "Düsseldorf",
+      "coords": [
+        51.2254,
+        6.77631
+      ]
+    },
+    "duisburg": {
+      "name": "Duisburg",
+      "coords": [
+        51.435,
+        6.75956
+      ]
+    },
+    "eimsbuettel": {
+      "name": "Eimsbüttel",
+      "coords": [
+        53.57248,
+        9.9501
+      ]
+    },
+    "erfurt": {
+      "name": "Erfurt",
+      "coords": [
+        50.9778,
+        11.02874
+      ]
+    },
+    "erlangen": {
+      "name": "Erlangen",
+      "coords": [
+        49.59286,
+        11.0056
+      ]
+    },
+    "essen": {
+      "name": "Essen",
+      "coords": [
+        51.45822,
+        7.01582
+      ]
+    },
+    "esslingen-am-neckar": {
+      "name": "Esslingen am Neckar",
+      "coords": [
+        48.74276,
+        9.30717
+      ]
+    },
+    "flensburg": {
+      "name": "Flensburg",
+      "coords": [
+        54.7833,
+        9.43333
+      ]
+    },
+    "frankfurt-am-main": {
+      "name": "Frankfurt am Main",
+      "coords": [
+        50.11064,
+        8.68209
+      ]
+    },
+    "freiburg-im-breisgau": {
+      "name": "Freiburg im Breisgau",
+      "coords": [
+        47.99609,
+        7.8494
+      ]
+    },
+    "friedrichshain": {
+      "name": "Friedrichshain",
+      "coords": [
+        52.51222,
+        13.45029
+      ]
+    },
+    "fuerth": {
+      "name": "Fürth",
+      "coords": [
+        49.47725,
+        10.98936
+      ]
+    },
+    "gelsenkirchen": {
+      "name": "Gelsenkirchen",
+      "coords": [
+        51.51103,
+        7.09601
+      ]
+    },
+    "gera": {
+      "name": "Gera",
+      "coords": [
+        50.87655,
+        12.08327
+      ]
+    },
+    "gladbeck": {
+      "name": "Gladbeck",
+      "coords": [
+        51.57187,
+        6.98773
+      ]
+    },
+    "goettingen": {
+      "name": "Göttingen",
+      "coords": [
+        51.53283,
+        9.93518
+      ]
+    },
+    "grevenbroich": {
+      "name": "Grevenbroich",
+      "coords": [
+        51.09058,
+        6.58354
+      ]
+    },
+    "guetersloh": {
+      "name": "Gütersloh",
+      "coords": [
+        51.9064,
+        8.37821
+      ]
+    },
+    "hagen": {
+      "name": "Hagen",
+      "coords": [
+        51.35829,
+        7.4733
+      ]
+    },
+    "halle-(saale)": {
+      "name": "Halle (Saale)",
+      "coords": [
+        51.48244,
+        11.9713
+      ]
+    },
+    "hamburg": {
+      "name": "Hamburg",
+      "coords": [
+        53.55034,
+        10.00065
+      ]
+    },
+    "hamm": {
+      "name": "Hamm",
+      "coords": [
+        51.68128,
+        7.81912
+      ]
+    },
+    "hanau": {
+      "name": "Hanau",
+      "coords": [
+        50.13288,
+        8.91698
+      ]
+    },
+    "hannover": {
+      "name": "Hannover",
+      "coords": [
+        52.37448,
+        9.73855
+      ]
+    },
+    "heidelberg": {
+      "name": "Heidelberg",
+      "coords": [
+        49.40936,
+        8.69472
+      ]
+    },
+    "heilbronn": {
+      "name": "Heilbronn",
+      "coords": [
+        49.14229,
+        9.21866
+      ]
+    },
+    "herford": {
+      "name": "Herford",
+      "coords": [
+        52.11522,
+        8.67111
+      ]
+    },
+    "herne": {
+      "name": "Herne",
+      "coords": [
+        51.53804,
+        7.21999
+      ]
+    },
+    "hildesheim": {
+      "name": "Hildesheim",
+      "coords": [
+        52.15272,
+        9.95181
+      ]
+    },
+    "ingolstadt": {
+      "name": "Ingolstadt",
+      "coords": [
+        48.76302,
+        11.42504
+      ]
+    },
+    "iserlohn": {
+      "name": "Iserlohn",
+      "coords": [
+        51.37468,
+        7.69997
+      ]
+    },
+    "jena": {
+      "name": "Jena",
+      "coords": [
+        50.92817,
+        11.58794
+      ]
+    },
+    "kaiserslautern": {
+      "name": "Kaiserslautern",
+      "coords": [
+        49.44322,
+        7.769
+      ]
+    },
+    "karlsruhe": {
+      "name": "Karlsruhe",
+      "coords": [
+        49.00687,
+        8.40342
+      ]
+    },
+    "kassel": {
+      "name": "Kassel",
+      "coords": [
+        51.31578,
+        9.49785
+      ]
+    },
+    "kerpen": {
+      "name": "Kerpen",
+      "coords": [
+        50.86963,
+        6.69473
+      ]
+    },
+    "kiel": {
+      "name": "Kiel",
+      "coords": [
+        54.32271,
+        10.13556
+      ]
+    },
+    "koblenz": {
+      "name": "Koblenz",
+      "coords": [
+        50.35333,
+        7.5944
+      ]
+    },
+    "koeln": {
+      "name": "Köln",
+      "coords": [
+        50.93836,
+        6.95997
+      ]
+    },
+    "konstanz": {
+      "name": "Konstanz",
+      "coords": [
+        47.65922,
+        9.17507
+      ]
+    },
+    "krefeld": {
+      "name": "Krefeld",
+      "coords": [
+        51.33312,
+        6.56233
+      ]
+    },
+    "kreuzberg": {
+      "name": "Kreuzberg",
+      "coords": [
+        52.49764,
+        13.41191
+      ]
+    },
+    "landshut": {
+      "name": "Landshut",
+      "coords": [
+        48.53622,
+        12.15166
+      ]
+    },
+    "leipzig": {
+      "name": "Leipzig",
+      "coords": [
+        51.34063,
+        12.37473
+      ]
+    },
+    "leverkusen": {
+      "name": "Leverkusen",
+      "coords": [
+        51.03247,
+        6.98812
+      ]
+    },
+    "lippstadt": {
+      "name": "Lippstadt",
+      "coords": [
+        51.67471,
+        8.34719
+      ]
+    },
+    "ludwigsburg": {
+      "name": "Ludwigsburg",
+      "coords": [
+        48.89539,
+        9.18951
+      ]
+    },
+    "ludwigshafen-am-rhein": {
+      "name": "Ludwigshafen am Rhein",
+      "coords": [
+        49.47041,
+        8.43816
+      ]
+    },
+    "luebeck": {
+      "name": "Lübeck",
+      "coords": [
+        53.86644,
+        10.68474
+      ]
+    },
+    "luedenscheid": {
+      "name": "Lüdenscheid",
+      "coords": [
+        51.21814,
+        7.6397
+      ]
+    },
+    "lueneburg": {
+      "name": "Lüneburg",
+      "coords": [
+        53.24871,
+        10.40786
+      ]
+    },
+    "luenen": {
+      "name": "Lünen",
+      "coords": [
+        51.61425,
+        7.52281
+      ]
+    },
+    "magdeburg": {
+      "name": "Magdeburg",
+      "coords": [
+        52.13159,
+        11.63996
+      ]
+    },
+    "mainz": {
+      "name": "Mainz",
+      "coords": [
+        49.99952,
+        8.27363
+      ]
+    },
+    "mannheim": {
+      "name": "Mannheim",
+      "coords": [
+        49.48929,
+        8.46731
+      ]
+    },
+    "marburg": {
+      "name": "Marburg",
+      "coords": [
+        50.80901,
+        8.77047
+      ]
+    },
+    "marl": {
+      "name": "Marl",
+      "coords": [
+        51.64858,
+        7.08291
+      ]
+    },
+    "mettnau": {
+      "name": "Mettnau",
+      "coords": [
+        47.73398,
+        8.98455
+      ]
+    },
+    "milbertshofen": {
+      "name": "Milbertshofen",
+      "coords": [
+        48.18238,
+        11.57504
+      ]
+    },
+    "minden": {
+      "name": "Minden",
+      "coords": [
+        52.2881,
+        8.91689
+      ]
+    },
+    "moenchengladbach": {
+      "name": "Mönchengladbach",
+      "coords": [
+        51.19471,
+        6.43538
+      ]
+    },
+    "moers": {
+      "name": "Moers",
+      "coords": [
+        51.45128,
+        6.62843
+      ]
+    },
+    "muelheim-an-der-ruhr": {
+      "name": "Mülheim an der Ruhr",
+      "coords": [
+        51.42729,
+        6.88292
+      ]
+    },
+    "muenchen": {
+      "name": "München",
+      "coords": [
+        48.13711,
+        11.57538
+      ]
+    },
+    "muenster": {
+      "name": "Münster",
+      "coords": [
+        51.96251,
+        7.62519
+      ]
+    },
+    "neubrandenburg": {
+      "name": "Neubrandenburg",
+      "coords": [
+        53.55745,
+        13.26028
+      ]
+    },
+    "neukoelln": {
+      "name": "Neukölln",
+      "coords": [
+        52.48115,
+        13.43535
+      ]
+    },
+    "neumuenster": {
+      "name": "Neumünster",
+      "coords": [
+        54.07574,
+        9.98154
+      ]
+    },
+    "neuss": {
+      "name": "Neuss",
+      "coords": [
+        51.19818,
+        6.69165
+      ]
+    },
+    "neuwied": {
+      "name": "Neuwied",
+      "coords": [
+        50.43024,
+        7.4663
+      ]
+    },
+    "norderstedt": {
+      "name": "Norderstedt",
+      "coords": [
+        53.70899,
+        9.98919
+      ]
+    },
+    "nuernberg": {
+      "name": "Nürnberg",
+      "coords": [
+        49.45387,
+        11.0773
+      ]
+    },
+    "oberhausen": {
+      "name": "Oberhausen",
+      "coords": [
+        51.46961,
+        6.85144
+      ]
+    },
+    "offenbach-am-main": {
+      "name": "Offenbach am Main",
+      "coords": [
+        50.1055,
+        8.76107
+      ]
+    },
+    "oldenburg": {
+      "name": "Oldenburg",
+      "coords": [
+        53.13898,
+        8.2146
+      ]
+    },
+    "osnabrueck": {
+      "name": "Osnabrück",
+      "coords": [
+        52.27196,
+        8.04763
+      ]
+    },
+    "paderborn": {
+      "name": "Paderborn",
+      "coords": [
+        51.7177,
+        8.75265
+      ]
+    },
+    "pforzheim": {
+      "name": "Pforzheim",
+      "coords": [
+        48.89088,
+        8.70295
+      ]
+    },
+    "plauen": {
+      "name": "Plauen",
+      "coords": [
+        50.49506,
+        12.13465
+      ]
+    },
+    "potsdam": {
+      "name": "Potsdam",
+      "coords": [
+        52.40093,
+        13.05914
+      ]
+    },
+    "prenzlauer-berg": {
+      "name": "Prenzlauer Berg",
+      "coords": [
+        52.53985,
+        13.42857
+      ]
+    },
+    "rahlstedt": {
+      "name": "Rahlstedt",
+      "coords": [
+        53.60388,
+        10.15815
+      ]
+    },
+    "ratingen": {
+      "name": "Ratingen",
+      "coords": [
+        51.29733,
+        6.84935
+      ]
+    },
+    "recklinghausen": {
+      "name": "Recklinghausen",
+      "coords": [
+        51.61438,
+        7.19785
+      ]
+    },
+    "regensburg": {
+      "name": "Regensburg",
+      "coords": [
+        49.01953,
+        12.09749
+      ]
+    },
+    "reinickendorf": {
+      "name": "Reinickendorf",
+      "coords": [
+        52.57119,
+        13.3456
+      ]
+    },
+    "remscheid": {
+      "name": "Remscheid",
+      "coords": [
+        51.17987,
+        7.19435
+      ]
+    },
+    "reutlingen": {
+      "name": "Reutlingen",
+      "coords": [
+        48.49195,
+        9.21141
+      ]
+    },
+    "rheine": {
+      "name": "Rheine",
+      "coords": [
+        52.27977,
+        7.43736
+      ]
+    },
+    "rostock": {
+      "name": "Rostock",
+      "coords": [
+        54.08867,
+        12.14002
+      ]
+    },
+    "saarbruecken": {
+      "name": "Saarbrücken",
+      "coords": [
+        49.23436,
+        6.99638
+      ]
+    },
+    "salzgitter": {
+      "name": "Salzgitter",
+      "coords": [
+        52.15037,
+        10.35931
+      ]
+    },
+    "schachen": {
+      "name": "Schachen",
+      "coords": [
+        47.72453,
+        9.95695
+      ]
+    },
+    "schwerin": {
+      "name": "Schwerin",
+      "coords": [
+        53.62883,
+        11.4148
+      ]
+    },
+    "siegen": {
+      "name": "Siegen",
+      "coords": [
+        50.87512,
+        8.02561
+      ]
+    },
+    "solingen": {
+      "name": "Solingen",
+      "coords": [
+        51.17216,
+        7.08459
+      ]
+    },
+    "sterkrade": {
+      "name": "Sterkrade",
+      "coords": [
+        51.51639,
+        6.84668
+      ]
+    },
+    "stuttgart": {
+      "name": "Stuttgart",
+      "coords": [
+        48.77845,
+        9.18001
+      ]
+    },
+    "trier": {
+      "name": "Trier",
+      "coords": [
+        49.75962,
+        6.64419
+      ]
+    },
+    "troisdorf": {
+      "name": "Troisdorf",
+      "coords": [
+        50.81531,
+        7.15933
+      ]
+    },
+    "tuebingen": {
+      "name": "Tübingen",
+      "coords": [
+        48.52033,
+        9.0536
+      ]
+    },
+    "ulm": {
+      "name": "Ulm",
+      "coords": [
+        48.3985,
+        9.99125
+      ]
+    },
+    "velbert": {
+      "name": "Velbert",
+      "coords": [
+        51.34067,
+        7.04399
+      ]
+    },
+    "viersen": {
+      "name": "Viersen",
+      "coords": [
+        51.25621,
+        6.39055
+      ]
+    },
+    "villingen-schwenningen": {
+      "name": "Villingen-Schwenningen",
+      "coords": [
+        48.06315,
+        8.49296
+      ]
+    },
+    "wandsbek": {
+      "name": "Wandsbek",
+      "coords": [
+        53.576,
+        10.07553
+      ]
+    },
+    "wattenscheid": {
+      "name": "Wattenscheid",
+      "coords": [
+        51.48171,
+        7.13566
+      ]
+    },
+    "weimar": {
+      "name": "Weimar",
+      "coords": [
+        50.97933,
+        11.32979
+      ]
+    },
+    "wiesbaden": {
+      "name": "Wiesbaden",
+      "coords": [
+        50.08204,
+        8.24166
+      ]
+    },
+    "wilhelmshaven": {
+      "name": "Wilhelmshaven",
+      "coords": [
+        53.52788,
+        8.1063
+      ]
+    },
+    "witten": {
+      "name": "Witten",
+      "coords": [
+        51.43702,
+        7.33512
+      ]
+    },
+    "wolfsburg": {
+      "name": "Wolfsburg",
+      "coords": [
+        52.42056,
+        10.78617
+      ]
+    },
+    "worms": {
+      "name": "Worms",
+      "coords": [
+        49.63026,
+        8.36209
+      ]
+    },
+    "wuerzburg": {
+      "name": "Würzburg",
+      "coords": [
+        49.79337,
+        9.93098
+      ]
+    },
+    "wuppertal": {
+      "name": "Wuppertal",
+      "coords": [
+        51.26402,
+        7.17804
+      ]
+    },
+    "zwickau": {
+      "name": "Zwickau",
+      "coords": [
+        50.7185,
+        12.49393
+      ]
+    }
+  }
+  

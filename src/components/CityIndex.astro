@@ -1,0 +1,132 @@
+---
+import cities from "../assets/cities.json";
+
+
+
+interface Props {
+  prefix?: string;
+}
+
+const { prefix = "" } = Astro.props;
+
+
+let links: { name: string; link: string }[] = [];
+for (const [key, value] of Object.entries(cities)) {
+    links.push({
+        name: value.name,
+        link: `/${prefix}/${key}/`,
+    });
+}
+
+---
+
+<div class="search-container">
+    <input 
+        id="search-input" 
+        type="text" 
+        placeholder="Tippen zum Filtern..."
+    />
+    <button id="clear-btn" aria-label="Clear search">&times;</button>
+</div>
+
+<div class="link-list" id="link-list">
+    {
+        links.map((link) => (
+            <a href={link.link} class="link-item" data-name={link.name.toLowerCase()}>
+                {link.name}
+            </a>
+        ))
+    }
+</div>
+
+
+<style>
+    .search-container {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+
+    #search-input {
+        width: 100%;
+        padding: 0.5rem 2.5rem 0.5rem 0.5rem; 
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    #clear-btn {
+        position: absolute;
+        right: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        color: #888;
+        cursor: pointer;
+        display: none;
+    }
+
+    #clear-btn:hover {
+        color: #555;
+    }
+
+    .link-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .link-item {
+        flex: 0 0 calc(50% - 1rem);
+        text-decoration: none;
+        color: #007acc;
+        font-size: 1.2rem;
+        padding: 0.5rem;
+        border-bottom: 2px solid transparent;
+        transition: 
+            border-bottom 0.2s ease-in-out,
+            color 0.2s ease-in-out;
+    }
+
+    .link-item:hover {
+        color: #005fa3;
+        border-bottom: 2px solid #005fa3;
+    }
+
+    @media (max-width: 600px) {
+        .link-item {
+            flex: 0 0 100%;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const searchInput = document.getElementById("search-input") as HTMLInputElement;
+        const clearBtn = document.getElementById("clear-btn") as HTMLButtonElement;
+        const linkList = document.getElementById("link-list")!;
+        const linkItems = linkList.querySelectorAll(".link-item");
+
+        function filterLinks() {
+            const query = searchInput.value.toLowerCase().trim();
+            linkItems.forEach((item) => {
+                const name = item.getAttribute("data-name") || "";
+                if (name.includes(query)) {
+                    (item as HTMLElement).style.display = "flex";
+                } else {
+                    (item as HTMLElement).style.display = "none";
+                }
+            });
+            clearBtn.style.display = query.length > 0 ? "block" : "none";
+        }
+
+        searchInput.addEventListener("input", filterLinks);
+
+        clearBtn.addEventListener("click", () => {
+            searchInput.value = "";
+            filterLinks();
+            searchInput.focus();
+        });
+    });
+</script>

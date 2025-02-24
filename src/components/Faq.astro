@@ -1,0 +1,40 @@
+---
+interface Question {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  questions: Question[];
+}
+
+const { questions } = Astro.props;
+
+const stripHtml = (html: string): string =>
+  html.replace(/<\/?[^>]+(>|$)/g, '');
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": questions.map((q) => ({
+    "@type": "Question",
+    "name": stripHtml(q.question),
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": stripHtml(q.answer)
+    },
+  })),
+};
+---
+<h2>Häufig gestellte Fragen (FAQ)</h2>
+<br />
+<section class="faq">
+  {questions.map((question) => (
+    <div class="faq-item">
+      <h3 set:html={question.question}></h3>
+      <p set:html={question.answer}></p>
+    </div>
+  ))}
+</section>
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
