@@ -76,6 +76,7 @@ export const initMap = () => {
   const zoomS = mapContainer.getAttribute('data-zoom')!;
   let zoom = parseInt(zoomS);
 
+  let marker = mapContainer.getAttribute('data-marker') === 'true';
   //check if mobile
   const isMobile = window.matchMedia('(max-width: 767px)').matches;
 
@@ -104,6 +105,18 @@ export const initMap = () => {
     attribution: '© OpenStreetMap contributors',
     maxNativeZoom: 10,
   }).addTo(map);
+
+  if (marker) {
+    let divIcon = L.divIcon({
+      html: '<div class="location-dot"></div>',
+    });
+
+
+
+    let marker = new L.marker(map.getCenter(),{ icon: divIcon })
+      .addTo(map);
+
+  }
 
   // Get initial layer type
   currentLayerType = mapContainer.getAttribute('data-layer') as keyof typeof LAYERS;

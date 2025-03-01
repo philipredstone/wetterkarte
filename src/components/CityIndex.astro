@@ -1,59 +1,64 @@
 ---
 import cities from "../assets/cities.json";
-
-
-
 interface Props {
   prefix?: string;
 }
-
 const { prefix = "" } = Astro.props;
-
-
-let links: { name: string; link: string }[] = [];
+let links: { name: string; link: string, rank: number, isTopCity: boolean }[] = [];
 for (const [key, value] of Object.entries(cities)) {
     links.push({
         name: value.name,
         link: `/${prefix}/${key}/`,
+        rank: value.rank,
+        isTopCity: false
     });
 }
-
+links.sort((a, b) => b.rank - a.rank);
+const topCityCount = 100;
+links.forEach((link, index) => {
+    link.isTopCity = index < topCityCount;
+});
 ---
-
-<div class="search-container">
-    <input 
-        id="search-input" 
-        type="text" 
-        placeholder="Tippen zum Filtern..."
-    />
-    <button id="clear-btn" aria-label="Clear search">&times;</button>
+<div class="page-container">
+    <div class="search-container">
+        <input
+            id="search-input"
+            type="text"
+            placeholder="Tippen zum Suchen..."
+        />
+        <button id="clear-btn" aria-label="Clear search">&times;</button>
+    </div>
+    <div class="link-list" id="link-list">
+        {
+            links.map((link) => (
+                <a
+                    href={link.link}
+                    class={`link-item ${!link.isTopCity ? "hidden-by-rank" : ""}`}
+                >
+                    {link.name}
+                </a>
+            ))
+        }
+    </div>
+    <p class="search-hint">Benutzen Sie die Suchfunktion, um nach mehr Orten zu suchen.</p>
 </div>
-
-<div class="link-list" id="link-list">
-    {
-        links.map((link) => (
-            <a href={link.link} class="link-item" data-name={link.name.toLowerCase()}>
-                {link.name}
-            </a>
-        ))
-    }
-</div>
-
-
 <style>
+    .page-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 70vh;
+    }
     .search-container {
         position: relative;
         margin-bottom: 1.5rem;
     }
-
     #search-input {
         width: 100%;
-        padding: 0.5rem 2.5rem 0.5rem 0.5rem; 
+        padding: 0.5rem 2.5rem 0.5rem 0.5rem;
         font-size: 1rem;
         border: 1px solid #ccc;
         border-radius: 4px;
     }
-
     #clear-btn {
         position: absolute;
         right: 0.5rem;
@@ -66,17 +71,16 @@ for (const [key, value] of Object.entries(cities)) {
         cursor: pointer;
         display: none;
     }
-
     #clear-btn:hover {
         color: #555;
     }
-
     .link-list {
         display: flex;
         flex-wrap: wrap;
         gap: 1rem;
+        flex: 1;
+        align-content: flex-start;
     }
-
     .link-item {
         flex: 0 0 calc(50% - 1rem);
         text-decoration: none;
@@ -84,14 +88,26 @@ for (const [key, value] of Object.entries(cities)) {
         font-size: 1.2rem;
         padding: 0.5rem;
         border-bottom: 2px solid transparent;
-        transition: 
+        transition:
             border-bottom 0.2s ease-in-out,
             color 0.2s ease-in-out;
+        height: 3rem;
+        display: flex;
+        align-items: center;
     }
-
     .link-item:hover {
         color: #005fa3;
         border-bottom: 2px solid #005fa3;
+    }
+    .hidden-by-rank {
+        display: none;
+    }
+
+    .search-hint {
+        margin-top: 3rem;
+        color: #888;
+        text-align: center;
+        width: 100%;
     }
 
     @media (max-width: 600px) {
@@ -100,29 +116,32 @@ for (const [key, value] of Object.entries(cities)) {
         }
     }
 </style>
-
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const searchInput = document.getElementById("search-input") as HTMLInputElement;
         const clearBtn = document.getElementById("clear-btn") as HTMLButtonElement;
         const linkList = document.getElementById("link-list")!;
         const linkItems = linkList.querySelectorAll(".link-item");
-
+       
         function filterLinks() {
             const query = searchInput.value.toLowerCase().trim();
+           
             linkItems.forEach((item) => {
-                const name = item.getAttribute("data-name") || "";
-                if (name.includes(query)) {
-                    (item as HTMLElement).style.display = "flex";
+                const isHiddenByRank = item.classList.contains("hidden-by-rank");
+               
+                if (query.length === 0) {
+                    // If no search query, show only top 100
+                    (item as HTMLElement).style.display = isHiddenByRank ? "none" : "flex";
                 } else {
-                    (item as HTMLElement).style.display = "none";
+                    // If searching, show all matching items regardless of rank
+                    (item as HTMLElement).style.display = item.innerHTML.toLowerCase().includes(query) ? "flex" : "none";
                 }
             });
+           
             clearBtn.style.display = query.length > 0 ? "block" : "none";
         }
-
+       
         searchInput.addEventListener("input", filterLinks);
-
         clearBtn.addEventListener("click", () => {
             searchInput.value = "";
             filterLinks();

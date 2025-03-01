@@ -1,0 +1,45 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import CityIndex from "../../components/CityIndex.astro";
+
+const title = "Windgeschwindigkeit in Deutschland - Aktuelle Windvorhersage";
+const description = "Aktuelle Windvorhersagen für Städte in ganz Deutschland. Erfahren Sie, wie stark der Wind in Ihrer Region ist, und bleiben Sie stets informiert.";
+---
+
+<Layout title={title} description={description}>
+  <Header currentPath="/wind/"/>
+  <main>
+      <section class="content-section">
+          <article>
+              <header class="index-header">
+                  <h1>Aktuelle Windgeschwindigkeit in Deutschland</h1>
+                  <p>Wählen Sie Ihre Region:</p>
+              </header>
+              <CityIndex prefix="wind"/>
+          </article>
+      </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .content-section {
+      padding: 2rem 1.5rem;
+      max-width: 900px;
+      margin: 0 auto;
+  }
+  .index-header h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+  }
+
+  .index-header p {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      color: #555;
+  }
+
+ 
+</style>

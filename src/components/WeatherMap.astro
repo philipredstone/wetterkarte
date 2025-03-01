@@ -7,9 +7,10 @@ interface Props {
   center: [number, number];
   zoom?: number;
   type?: "widget" | "fullscreen";
+  marker?: boolean;
 }
 
-let { layerselect, layer, center, zoom, type } = Astro.props;
+let { layerselect, layer, center, zoom, type, marker = false } = Astro.props;
 
 if (!center) {
   center = [52.52, 13.41];
@@ -29,6 +30,7 @@ let borderRadius = type === "fullscreen" ? "0" : "8";
   data-lat={center[0]}
   data-lng={center[1]}
   data-zoom={zoom}
+  data-marker={marker}
 >
   <div class="map-wrapper" style={`border-radius: ${borderRadius}px`}>
     <div id="map" role="application" aria-label="Wetterkarte"></div>
@@ -371,5 +373,10 @@ let borderRadius = type === "fullscreen" ? "0" : "8";
 
   :global(.leaflet-control-attribution) {
     font-size: 11px !important;
+  }
+
+  :global(.leaflet-div-icon) {
+    background: unset !important;
+    border: unset !important;
   }
 </style>

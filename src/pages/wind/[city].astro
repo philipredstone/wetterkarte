@@ -1,0 +1,123 @@
+---
+import "../../styles/wind.css";
+
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Faq from "../../components/Faq.astro";
+import WeatherMap from "../../components/WeatherMap.astro";
+import { getCity, getStatics } from "../../scripts/city";
+import HorizontalNavigation from "../../components/HorizontalNavigation.astro";
+
+export async function getStaticPaths() {
+  return getStatics();
+}
+
+const city = getCity(Astro.params.city);
+
+const title = `Windgeschwindigkeit in ${city.name} - Wettervorhersage`;
+const description = `Aktuelle Windvorhersage für ${city.name}. Erfahren Sie, wie stark der Wind in Ihrer Region ist, und bleiben Sie stets informiert.`;
+
+const questions = [
+  {
+    question: "Welche Datenquellen werden für die Windvorhersage genutzt?",
+    answer:
+      "Unsere Windvorhersage basiert auf den zuverlässigen Daten des <a href='https://www.dwd.de/DE/forschung/wettervorhersage/num_modellierung/01_num_vorhersagemodelle/regionalmodell_icon_d2.html' target='_blank'><strong>DWD ICON D2</strong></a>-Modells sowie des <a href='https://dwd-geoportal.de/products/G_D5M/' target='_blank'>DWD ICON EU</a>-Modells. Die Winddaten werden in Echtzeit aktualisiert, um präzise Informationen über aktuelle und zukünftige Windverhältnisse zu liefern.",
+  },
+  {
+    question: "Wie wird die Windgeschwindigkeit gemessen?",
+    answer:
+      "Die Windgeschwindigkeit wird in Meter pro Sekunde (m/s) angegeben. Diese Messung beschreibt, wie schnell sich die Luft horizontal bewegt. Windgeschwindigkeiten zwischen 0-5 m/s gelten als leicht, 5-10 m/s als mäßig, 10-15 m/s als stark, und über 15 m/s als stürmisch.",
+  },
+  {
+    question: "Wie genau ist die Windprognose?",
+    answer:
+      "Unsere Prognose basiert auf modernen Wettermodellen und Echtzeitdaten. Die Genauigkeit der Windvorhersage ist in der Regel für die nächsten 24-48 Stunden sehr hoch. Für längerfristige Vorhersagen können lokale Faktoren und unerwartete Wetterveränderungen zu Abweichungen führen.",
+  },
+  {
+    question: "Was bedeuten die Windpfeile auf der Karte?",
+    answer:
+      "Die animierten Windpfeile auf der Karte zeigen sowohl die Richtung als auch die Stärke des Windes an. Die Länge und Geschwindigkeit der Pfeile entspricht der Windintensität, während ihre Richtung anzeigt, wohin der Wind weht.",
+  },
+  {
+    question: "Wie werden Böen in der Vorhersage berücksichtigt?",
+    answer:
+      "Neben der durchschnittlichen Windgeschwindigkeit berücksichtigen wir auch Böen, die kurzzeitige Erhöhungen der Windgeschwindigkeit darstellen. Diese sind besonders wichtig für Warnungen vor stürmischen Bedingungen und werden in unseren Vorhersagen separat ausgewiesen.",
+  },
+  {
+    question: "Kann ich die Windvorhersage für Aktivitäten wie Segeln oder Kiten nutzen?",
+    answer:
+      "Ja, unsere detaillierten Windvorhersagen sind ideal für Wassersportaktivitäten, die von Windbedingungen abhängen. Beachten Sie jedoch, dass für professionelle Entscheidungen und Sicherheitsbelange zusätzliche, spezifische Wetterinformationen eingeholt werden sollten.",
+  },
+];
+---
+
+<Layout title={title} description={description}>
+  <Header currentPath="/wind/"/>
+
+  <main>
+    <section class="content-section">
+      <article>
+        <div class="card">
+          <div class="card-header">
+            <h1>Windgeschwindigkeit in {city.name}</h1>
+          </div>
+          <HorizontalNavigation city={city.key} currentPath="wind" />
+          <div class="card-body">
+            <p>
+              Entdecken Sie unsere detaillierte Windvorhersage für {
+                city.name
+              }. Erfahren Sie, wie stark der Wind in Ihrer Region heute oder in den nächsten
+              sieben Tagen sein wird. Dank hochaktueller Wetterdaten, interaktiver Karten und
+              Windanimationen sind Sie bestens vorbereitet, um schnell und
+              sicher auf wechselnde Windbedingungen zu reagieren.
+            </p>
+
+            <div
+              class="weather-info"
+              id="weather-widget"
+              data-lat={city.coords[0]}
+              data-lng={city.coords[1]}
+              data-city={city.name}
+            >
+              <div class="weather-status">
+                <div class="status-box">
+                  <span class="status-icon"><img src="/images/wind.svg" alt="Wind" height="48" width="48"></span>
+                  <p id="wind-speed" class="status-text">
+                    Wind-Daten werden geladen…&nbsp;
+                  </p>
+                </div>
+                <div class="status-box">
+                  <span class="status-icon"><img src="/images/windsock.svg" alt="Windböen" height="48" width="48"></span>
+                  <p id="wind-gusts" class="status-text">
+                    Wind-Daten werden geladen…&nbsp;
+                  </p>
+                </div>
+                
+              </div>
+              <div id="chart"></div>
+            </div>
+
+            <p class="update-info" id="update-info">&nbsp;</p>
+          </div>
+        </div>
+
+        <h2>Aktuelle Windkarte</h2>
+        <br />
+          <WeatherMap
+            layerselect={false}
+            layer="wind"
+            type="widget"
+            center={[city.coords[0], city.coords[1]]}
+            marker={true}
+          />
+
+        <Faq questions={questions} />
+      </article>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script src="../../scripts/wind.ts"></script>
+</Layout>

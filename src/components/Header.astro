@@ -8,13 +8,14 @@ const { currentPath = "/" } = Astro.props;
 
 const navItems = [
   { path: "/", label: "Home" },
-  { path: "/radar/", label: "Radar" },
+  { path: "/radar/", label: "Regenradar" },
   {
     label: "Wetter",
     path: "/wetter/",
     items: [
       { path: "/regen/", label: "Regen" },
       { path: "/gewitter/", label: "Gewitter" },
+      { path: "/wind/", label: "Wind" },
       { path: "/uv/", label: "UV-Index" },
     ],
   },
