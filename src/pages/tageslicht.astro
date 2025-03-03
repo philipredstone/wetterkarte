@@ -1,0 +1,101 @@
+---
+import "../styles/regen.css";
+
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Faq from "../components/Faq.astro";
+import WeatherMap from "../components/WeatherMap.astro";
+// import { getCity, getStatics } from "../scripts/city";
+import HorizontalNavigation from "../components/HorizontalNavigation.astro";
+
+// export async function getStaticPaths() {
+//   return getStatics();
+// }
+
+// const city = getCity(Astro.params.city);
+
+const title = `Tageslicht in Deutschland - Wettervorhersage`;
+const description = `Aktuelle Tageslichtübersicht für Deutschland. Erfahren Sie, ob in Ihrer Region Tageslicht auftritt, und bleiben Sie stets informiert.`;
+
+const questions = [
+  {
+    question:
+      "Welche Datenquellen werden für Niederschlagsvorhersagen genutzt?",
+    answer:
+      "Für präzise Regen- und Niederschlagsvorhersagen in Deutschland setzen wir auf das <a href='https://www.dwd.de/DE/forschung/wettervorhersage/num_modellierung/01_num_vorhersagemodelle/regionalmodell_icon_d2.html' target='_blank'><strong>DWD ICON D2 Modell</strong></a>. Ergänzt wird dies durch das <a href='https://dwd-geoportal.de/products/G_D5M/' target='_blank'>DWD ICON EU-Modell</a> für umliegende Länder. Unterstützt wird die Prognose zusätzlich durch Radolan-Daten, die aktuelle Radaraufnahmen liefern und präzise Niederschlagsmuster erfassen.",
+  },
+  {
+    question: "Wie häufig werden die Niederschlagsdaten aktualisiert?",
+    answer:
+      "Unsere Niederschlagsdaten werden mehrmals stündlich aktualisiert, sodass Sie stets die aktuellsten Informationen über Regenfälle und andere Formen des Niederschlags erhalten.",
+  },
+  {
+    question: "Wie funktionieren die interaktiven Regenkarten?",
+    answer:
+      "Mit unseren interaktiven Regenkarten können Sie den Verlauf und die Intensität von Regen visuell erfassen. Passen Sie den Zeitraum flexibel an, um sowohl aktuelle Regenfälle als auch Prognosen für die nächsten 48 Stunden detailliert zu betrachten.",
+  },
+  {
+    question: "Ist die Website auch mobil optimiert?",
+    answer:
+      "Ja, unsere Seite ist vollständig responsiv gestaltet und bietet auf Smartphones, Tablets sowie Laptops stets einen optimalen Überblick über aktuelle und prognostizierte Regenfälle.",
+  },
+  {
+    question: "Was bedeuten die Farben auf der Regenkarte?",
+    answer:
+      "Die Farben auf der Regenkarte repräsentieren verschiedene Intensitäten von Niederschlag. Beispielsweise stehen verschiedene Blautöne für leichte bis starke Regenfälle, während weitere Farbabstufungen andere Formen des Niederschlags, wie Schnee oder Hagel, visualisieren. Die Legende auf der Karte erklärt im Detail, welche Farbe für welchen Niederschlagsgrad steht.",
+  },
+  {
+    question: "Was ist eine Regenkarte?",
+    answer:
+      "Eine Regenkarte ist eine spezialisierte visuelle Darstellung, die den aktuellen und prognostizierten Niederschlag in einer Region zeigt. Sie hilft dabei, das Regenereignis auf einen Blick zu erfassen und regionale Unterschiede in der Niederschlagsintensität sichtbar zu machen.",
+  },
+  {
+    question: "Wie liest man eine Regenkarte?",
+    answer:
+      "Um eine Regenkarte zu lesen, sollten Sie zunächst die Legende und die Farbcodierung beachten. Die Karte zeigt Ihnen, wo es aktuell regnet, wie stark der Regen ist und wie sich das Niederschlagsmuster in den kommenden Stunden entwickeln könnte. Mithilfe der verschiedenen Symbole und Farben können Sie schnell erkennen, welche Gebiete von intensivem oder leichtem Regen betroffen sind.",
+  },
+  {
+    question: "Wie entsteht Regen?",
+    answer:
+      "Regen entsteht durch den Wasserkreislauf: Wasser verdunstet aus Ozeanen, Seen und Flüssen, kondensiert in der Atmosphäre zu Wolken und fällt schließlich als Niederschlag zur Erde. Temperatur, Luftdruck und Feuchtigkeit spielen dabei eine wesentliche Rolle.",
+  },
+  {
+    question: "Wie wird die Regenmenge gemessen?",
+    answer:
+      "Die Regenmenge wird mithilfe von Regenmessern (Niederschlagsmessern) erfasst, die den gefallenen Niederschlag in Millimetern aufzeichnen. Ergänzend kommen Radarsysteme zum Einsatz, die großflächige Regenmuster und -intensitäten in Echtzeit überwachen.",
+  },
+  {
+    question: "Welche Wetterphänomene können bei Starkregen auftreten?",
+    answer:
+      "Bei Starkregen können verschiedene Phänomene wie <a href='/gewitter/'>Gewitter</a>, Hagel und plötzliche Überschwemmungen auftreten. Insbesondere lokale Sturzregene können zu kurzfristigen, intensiven Regenfällen führen, die das Risiko von Überflutungen erhöhen.",
+  },
+  {
+    question: "Welche Vorsichtsmaßnahmen sollte man bei starkem Regen treffen?",
+    answer:
+      "Bei starkem Regen ist es wichtig, Wetterwarnungen zu beachten. Vermeiden Sie unnötige Fahrten, meiden Sie überflutete Straßen und suchen Sie bei drohendem Unwetter Schutz in einem sicheren Gebäude. Informieren Sie sich regelmäßig über aktuelle Wetterberichte.",
+  },
+];
+---
+
+<Layout title={title} description={description}>
+  <Header currentPath="/regen/" />
+
+  <main>
+    <section class="content-section">
+      <article>
+        <div class="card">
+          <div class="card-header">
+            <h1>Tageslicht in Deutschland</h1>
+          </div>
+          
+
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script src="../scripts/tageslicht.ts"></script>
+</Layout>

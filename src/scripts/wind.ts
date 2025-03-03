@@ -1,5 +1,3 @@
-
-import { TimeBarChart } from "./BarChart";
 import { TimeLineChart } from "./LineChart";
 
 interface WindData {
@@ -103,7 +101,7 @@ async function fetchWindData(): Promise<void> {
 
     const updateInfoElement = document.getElementById("update-info") as HTMLElement;
     const formattedTime = currentTime.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
-    updateInfoElement.innerHTML = `Datenstand: <time datetime="${currentTime.toISOString()}">${formattedTime}</time>`;
+    updateInfoElement.innerHTML = `Letzte Aktualisierung: <time datetime="${currentTime.toISOString()}">${formattedTime}</time> Uhr`;
   } catch (error) {
     console.error("Fehler beim Laden der UV-Daten:", error);
     widget.innerHTML = `<p>Wind-Daten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.</p>`;

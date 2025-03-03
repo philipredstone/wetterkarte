@@ -1,3 +1,5 @@
+// The key change is in the render method - adding time range padding to prevent bars from being too close to the edges
+
 interface TimeBarData {
   date: Date;
   value: number;
@@ -13,6 +15,8 @@ interface TimeBarChartOptions {
   yTickCount?: number;
   valueLabel?: string;
   valueUnit?: string;
+  showCurrentTimeLine?: boolean;
+  showTimeInTooltip?: boolean;
 }
 
 export class TimeBarChart {
@@ -51,6 +55,8 @@ export class TimeBarChart {
       yTickCount: options?.yTickCount ?? 5,
       valueLabel: options?.valueLabel ?? "",
       valueUnit: options?.valueUnit ?? "",
+      showCurrentTimeLine: options?.showCurrentTimeLine ?? true,
+      showTimeInTooltip: options?.showTimeInTooltip ?? true,
     };
 
     this.svg = this.createSVG();
@@ -117,6 +123,11 @@ export class TimeBarChart {
     const maxTime = maxDate.getTime();
     const timeRange = Math.max(1, maxTime - minTime);
 
+    const timePaddingRatio = 0.05;
+    const paddedMinTime = minTime - (timeRange * timePaddingRatio);
+    const paddedMaxTime = maxTime + (timeRange * timePaddingRatio);
+    const paddedTimeRange = paddedMaxTime - paddedMinTime;
+
     const maxValue = Math.max(...this.data.map((d) => d.value), 0);
 
     const svgNS = "http://www.w3.org/2000/svg";
@@ -140,7 +151,8 @@ export class TimeBarChart {
 
     // Draw bars with adjusted positions for same-timestamp bars
     timeGroups.forEach((group, timestamp) => {
-      const xRatio = (timestamp - minTime) / timeRange;
+      // Use padded time range for positioning
+      const xRatio = (timestamp - paddedMinTime) / paddedTimeRange;
       const baseX = xRatio * chartWidth;
 
       // Calculate offset for bars in the same timestamp group
@@ -201,8 +213,8 @@ export class TimeBarChart {
       });
     });
 
-    // Draw axes
-    this.drawTimeAxis(g, chartWidth, chartHeight, minTime, maxTime);
+    // Draw axes - also update time axis to use padded time range
+    this.drawTimeAxis(g, chartWidth, chartHeight, paddedMinTime, paddedMaxTime);
     this.drawYAxis(g, chartWidth, chartHeight, maxValue);
     this.drawAxisLabels(g, chartWidth, chartHeight);
 
@@ -211,11 +223,18 @@ export class TimeBarChart {
   }
 
   private formatDateTime(date: Date): string {
-    const day = date.getDate();
-    const monthNames = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    return `${day}. ${monthNames[date.getMonth()]}, ${hours}:${minutes}`;
+    if (this.options.showTimeInTooltip) {
+      const day = date.getDate();
+      const monthNames = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+      const hours = date.getHours().toString().padStart(2, "0");
+      const minutes = date.getMinutes().toString().padStart(2, "0");
+      return `${day}. ${monthNames[date.getMonth()]}, ${hours}:${minutes}`;
+    } else {
+      // Show only the date without time
+      const day = date.getDate();
+      const monthNames = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+      return `${day}. ${monthNames[date.getMonth()]}`;
+    }
   }
 
   private drawTimeAxis(
@@ -348,6 +367,11 @@ export class TimeBarChart {
     minTime: number,
     maxTime: number
   ): void {
+    // Skip if the current time line is disabled
+    if (!this.options.showCurrentTimeLine) {
+      return;
+    }
+    
     const now = Date.now();
     // Only draw the line if the current time falls within the chart's time range.
     if (now < minTime || now > maxTime) {

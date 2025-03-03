@@ -1,0 +1,138 @@
+---
+import "../../styles/airquality.css";
+
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Faq from "../../components/Faq.astro";
+import { getCity, getStatics } from "../../scripts/city";
+import HorizontalNavigation from "../../components/HorizontalNavigation.astro";
+
+export async function getStaticPaths() {
+  return getStatics();
+}
+
+const city = getCity(Astro.params.city);
+
+const title = `Aktuelle Luftqualität in ${city.name} - Wettervorhersage`;
+const description = `Luftqualitätsindex heute in ${city.name}: Aktuelle Luftqualität und praktische Empfehlungen für Ihren Aufenthalt im Freien`;
+
+const questions = [
+  {
+    question: "Welche Datenquellen werden für die Luftqualitätsvorhersage genutzt?",
+    answer:
+      "Für präzise Luftqualitätsvorhersagen greifen wir auf Daten des Europäischen Copernicus-Programms (CAMS) sowie lokale Messungen zurück. Diese Kombination ermöglicht es uns, die Luftqualität zuverlässig zu prognostizieren.",
+  },
+  {
+    question: "Wie häufig werden die Luftqualitätsdaten aktualisiert?",
+    answer:
+      "Unsere Luftqualitätsdaten werden stündlich aktualisiert, sodass Sie stets die aktuellsten Informationen zur Luftqualität in Ihrer Region erhalten.",
+  },
+  {
+    question: "Was ist der Europäische Luftqualitätsindex (EAQI)?",
+    answer:
+      "Der Europäische Luftqualitätsindex (EAQI) ist ein standardisiertes Maß zur Bewertung der Luftqualität. Er berücksichtigt verschiedene Schadstoffe wie Feinstaub (PM2.5, PM10), Stickstoffdioxid (NO₂), Ozon (O₃) und Schwefeldioxid (SO₂) und ordnet die Luftqualität auf einer Skala von 1 bis über 100 ein.",
+  },
+  {
+    question: "Wie wird der Luftqualitätsindex gemessen?",
+    answer:
+      "Der Luftqualitätsindex wird durch ein Netzwerk von Messstationen gemessen, die verschiedene Luftschadstoffe erfassen. Der höchste Einzelwert eines Schadstoffs bestimmt den Index. Die Daten werden dann über Computermodelle für Gebiete ohne direkte Messstationen interpoliert.",
+  },
+  {
+    question: "Welche Auswirkungen kann eine schlechte Luftqualität haben?",
+    answer:
+      "Eine schlechte Luftqualität kann zu Atemwegsproblemen, Reizungen der Augen und des Rachens sowie zu langfristigen Gesundheitsrisiken führen. Besonders gefährdet sind ältere Menschen, Kinder und Personen mit Vorerkrankungen wie Asthma oder COPD.",
+  },
+  {
+    question:
+      "Welche Vorsichtsmaßnahmen sollte man bei schlechter Luftqualität treffen?",
+    answer:
+      "Bei schlechter Luftqualität empfiehlt es sich, anstrengende Aktivitäten im Freien zu reduzieren, Fenster geschlossen zu halten und bei sehr schlechter Luftqualität ggf. eine Atemschutzmaske zu tragen. Empfindliche Personen sollten besonders vorsichtig sein und sich vorwiegend in Innenräumen aufhalten.",
+  },
+];
+---
+
+<Layout title={title} description={description}>
+  <Header currentPath="/airquality/" />
+
+  <main>
+    <section class="content-section">
+      <article>
+        <div class="card">
+          <div class="card-header">
+            <h1>Aktuelle Luftqualität in {city.name}</h1>
+          </div>
+          <HorizontalNavigation city={city.key} currentPath="airquality" />
+          <div class="card-body">
+            <p>
+              Entdecken Sie die aktuelle Luftqualität in {city.name} und die Prognose
+              für die kommenden Tage. Unsere Daten liefern präzise Informationen
+              über Schadstoffe in der Luft - ideal, um Outdoor-Aktivitäten entsprechend zu planen
+              und Ihre Gesundheit zu schützen.
+            </p>
+
+            <div
+              class="weather-info"
+              id="weather-widget"
+              data-lat={city.coords[0]}
+              data-lng={city.coords[1]}
+              data-city={city.name}
+            >
+              <div class="weather-status">
+                <div class="status-box" id="aqi-box">
+                  <span class="status-icon"><img src="/images/aqi.svg" alt="Luftqualitätsindex" height="32" width="32"></span>
+                  <p id="aqi-index" class="status-text">
+                    Luftqualitätsdaten werden geladen…&nbsp;
+                  </p>
+                </div>
+                <div class="status-box">
+                  <p id="aqi-message" class="status-text">
+                    Luftqualitätsdaten werden geladen…&nbsp;
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <p class="update-info" id="update-info">&nbsp;</p>
+
+            <div class="aqi-level-explanation">
+              <h3>Europäischer Luftqualitätsindex (EAQI)</h3>
+              <ul>
+                <li>
+                  <span class="aqi-badge aqi-very-good">0-20</span>
+                  Sehr gut
+                </li>
+                <li>
+                  <span class="aqi-badge aqi-good">21-40</span>
+                  Gut
+                </li>
+                <li>
+                  <span class="aqi-badge aqi-moderate">41-60</span>
+                  Mäßig
+                </li>
+                <li>
+                  <span class="aqi-badge aqi-poor">61-80</span>
+                  Schlecht
+                </li>
+                <li>
+                  <span class="aqi-badge aqi-very-poor">81-100</span>
+                  Sehr schlecht
+                </li>
+                <li>
+                  <span class="aqi-badge aqi-extremely-poor">100+</span>
+                  Extrem schlecht
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <Faq questions={questions} />
+      </article>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script src="../../scripts/airquality.ts"></script>
+</Layout>

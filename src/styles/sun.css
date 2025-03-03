@@ -1,0 +1,218 @@
+.content-section {
+    padding: 2rem 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.card-header {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.card-header h1 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+}
+
+.weather-info {
+    background: #f7f9fc;
+    border: 1px solid #e1e8f0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.weather-status {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.status-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #eef7ff;
+    border: 1px solid #dce9f9;
+    border-radius: 8px;
+    padding: 1rem;
+    max-width: 500px;
+    width: 100%;
+    justify-content: center;
+}
+
+.status-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(37, 99, 235, 0.1);
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+  }
+
+.status-text {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.update-info {
+    color: #707070;
+    text-align: right;
+}
+
+.back-link {
+    color: #000;
+}
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* Sun Extra Info Section */
+.sun-extra-info {
+    margin-top: 2rem;
+    background-color: #fafbfc;
+    border: 1px solid #e9eef5;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+.sun-extra-info h3 {
+    margin-top: 0;
+    font-size: 1.25rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 1.25rem;
+}
+.sun-extra-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+}
+.sun-extra-item {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.sun-extra-item h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    color: #555;
+}
+.sun-extra-item p {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Seasonal Highlights Section */
+.seasonal-highlights {
+    margin-top: 2rem;
+    background-color: #fff8f5;
+    border: 1px solid #ffe0d1;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+.seasonal-highlights h3 {
+    margin-top: 0;
+    font-size: 1.25rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 1.25rem;
+}
+.seasonal-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+}
+.seasonal-item {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+.seasonal-item h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    color: #555;
+}
+.seasonal-item p {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Chart container */
+.chart-container {
+    margin-top: 2rem;
+    background-color: #fafbfc;
+    border: 1px solid #e9eef5;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+.chart-container h3 {
+    margin-top: 0;
+    font-size: 1.25rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 1.25rem;
+}
+
+@media (max-width: 768px) {
+    .content-section {
+        padding: 1rem 0.75rem;
+    }
+    
+    .card-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .weather-info {
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .status-box {
+        padding: 1rem;
+    }
+    
+    .status-text {
+        font-size: 1.1rem;
+    }
+    
+    .sun-extra-grid,
+    .seasonal-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .sun-extra-info,
+    .seasonal-highlights,
+    .chart-container {
+        padding: 1rem;
+    }
+}

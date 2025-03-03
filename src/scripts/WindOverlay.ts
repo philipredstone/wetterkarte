@@ -319,8 +319,6 @@ export class WindOverlay extends L.Layer {
       3000
     );
 
-    console.log("Particle Count:", particleCount);
-
     this.particles = [];
     for (let i = 0; i < particleCount; i++) {
       this.particles.push(this.randomParticle());

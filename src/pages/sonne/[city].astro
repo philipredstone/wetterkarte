@@ -1,0 +1,181 @@
+---
+import "../../styles/sun.css";
+
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Faq from "../../components/Faq.astro";
+import { getCity, getStatics } from "../../scripts/city";
+import HorizontalNavigation from "../../components/HorizontalNavigation.astro";
+
+export async function getStaticPaths() {
+  return getStatics();
+}
+
+const city = getCity(Astro.params.city);
+
+const title = `Sonnenverlauf in ${city.name} - Tageslicht-Informationen`;
+const description = `Aktuelle Sonnenzeiten für ${city.name}: Erfahren Sie die genauen Uhrzeiten für Sonnenaufgang und Sonnenuntergang sowie Tageslichtdauer für heute und die kommenden Tage`;
+
+const questions = [
+  {
+    question: "Wie werden die Sonnenauf- und Untergangszeiten berechnet?",
+    answer:
+      "Die Berechnung basiert auf astronomischen Formeln, die die genaue Position der Sonne relativ zur Erdoberfläche an einem bestimmten Ort zu einer bestimmten Zeit bestimmen. Faktoren wie geografische Breite, Länge und Datum fließen in diese Berechnungen ein.",
+  },
+  {
+    question: "Warum variieren die Tageslängen im Jahresverlauf?",
+    answer:
+      "Die Variation der Tageslängen wird durch die Neigung der Erdachse verursacht. Im Sommer ist die jeweilige Hemisphäre der Sonne zugeneigt, was zu längeren Tagen führt. Im Winter ist sie von der Sonne abgeneigt, was kürzere Tage zur Folge hat. An den Polen kann dies zu Phänomenen wie der Mitternachtssonne oder der Polarnacht führen.",
+  },
+  {
+    question: "Was ist die bürgerliche Dämmerung?",
+    answer:
+      "Die bürgerliche Dämmerung beschreibt die Zeit, wenn die Sonne zwischen 0 und 6 Grad unter dem Horizont steht. In dieser Phase ist es noch hell genug für viele Aktivitäten im Freien ohne künstliches Licht. Sie dauert etwa 20-30 Minuten vor Sonnenaufgang und nach Sonnenuntergang.",
+  },
+  {
+    question: "Was bedeutet der Begriff 'Sonnenhöchststand'?",
+    answer:
+      "Der Sonnenhöchststand (oder Sonnenzenit) bezeichnet den Zeitpunkt, an dem die Sonne ihren höchsten Punkt am Himmel erreicht. Dies ist normalerweise um die Mittagszeit, variiert jedoch je nach Standort und Jahreszeit. Der Sonnenhöchststand markiert auch den Zeitpunkt, an dem Schatten am kürzesten sind.",
+  },
+  {
+    question: "Wie beeinflussen Jahreszeiten die Sonnenzeiten?",
+    answer:
+      "Die Jahreszeiten haben einen erheblichen Einfluss auf Sonnenauf- und -untergangszeiten sowie auf die Tageslänge. Im Sommer sind die Tage länger und die Sonne geht früher auf und später unter. Im Winter sind die Tage kürzer, die Sonne geht später auf und früher unter. An den Tag-und-Nacht-Gleichen (Äquinoktien) im Frühling und Herbst sind Tag und Nacht etwa gleich lang.",
+  },
+  {
+    question: "Was sind Sonnenwenden und Tagundnachtgleichen?",
+    answer:
+      "Sonnenwenden (Solstitien) markieren die längsten und kürzesten Tage des Jahres. Die Sommersonnenwende (ca. 21. Juni auf der Nordhalbkugel) ist der längste Tag, die Wintersonnenwende (ca. 21. Dezember) der kürzeste. Tagundnachtgleichen (Äquinoktien) finden im Frühling (ca. 20. März) und Herbst (ca. 22. September) statt, wenn Tag und Nacht etwa gleich lang sind.",
+  },
+  {
+    question: "Wie genau sind die angezeigten Sonnenzeiten?",
+    answer:
+      "Unsere Sonnenzeiten werden mit hoher Präzision anhand astronomischer Berechnungen ermittelt. Lokale Faktoren wie Berge oder hohe Gebäude können jedoch den tatsächlichen Zeitpunkt beeinflussen, zu dem die Sonne am Horizont sichtbar wird oder verschwindet.",
+  },
+];
+---
+
+<Layout title={title} description={description}>
+  <Header currentPath="/sonne/" />
+
+  <main>
+    <section class="content-section">
+      <article>
+        <div class="card">
+          <div class="card-header">
+            <h1>Sonnenverlauf in {city.name}</h1>
+          </div>
+          <HorizontalNavigation city={city.key} currentPath="sonne" />
+          <div class="card-body">
+            <p>
+              Entdecken Sie die präzisen Zeiten für Sonnenaufgang und
+              Sonnenuntergang in {city.name} sowie umfassende Informationen zur Tageslichtdauer
+              und den Dämmerungsphasen. Ideal für Fotografen, Outdoor-Aktivitäten
+              oder um den perfekten Moment für Sonnenauf- oder Untergang zu planen.
+            </p>
+
+            <div
+              class="weather-info"
+              id="sun-widget"
+              data-lat={city.coords[0]}
+              data-lng={city.coords[1]}
+              data-city={city.name}
+            >
+            <h3>Sonnendaten für heute</h3>
+              <div class="sun-extra-info">
+                <div class="sun-extra-grid">
+                  <div class="sun-extra-item">
+                    <img
+                      src="/images/sunrise.svg"
+                      alt="Sonnenaufgang"
+                      height="64"
+                      width="64"
+                    />
+                    <h4>Sonnenaufgang</h4>
+                    <p id="sunrise-time">Daten werden geladen…</p>
+                  </div>
+                  <div class="sun-extra-item">
+                    <img
+                      src="/images/sunset.svg"
+                      alt="Sonnenuntergang"
+                      height="64"
+                      width="64"
+                    />
+                    <h4>Sonnenuntergang</h4>
+                    <p id="sunset-time">Daten werden geladen…</p>
+                  </div>
+                  <div class="sun-extra-item">
+                    <h4>Tageslichtdauer</h4>
+                    <p id="day-length">Daten werden geladen…</p>
+                  </div>
+                  <div class="sun-extra-item">
+                    <h4>Tagesänderung</h4>
+                    <p id="day-change">Daten werden geladen…</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p class="update-info" id="update-info">&nbsp;</p>
+
+            <div class="sun-extra-info">
+              <h3>Zusätzliche Sonnendaten für heute</h3>
+              <div class="sun-extra-grid">
+                <div class="sun-extra-item">
+                  <h4>Bürgerliche Dämmerung (Morgen)</h4>
+                  <p id="civil-dawn">Daten werden geladen…</p>
+                </div>
+                <div class="sun-extra-item">
+                  <h4>Bürgerliche Dämmerung (Abend)</h4>
+                  <p id="civil-dusk">Daten werden geladen…</p>
+                </div>
+                <div class="sun-extra-item">
+                  <h4>Sonnenhöchststand</h4>
+                  <p id="solar-noon">Daten werden geladen…</p>
+                </div>
+                <div class="sun-extra-item">
+                  <h4>Nächste Sonnenwende</h4>
+                  <p id="next-solstice">Daten werden geladen…</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="seasonal-highlights">
+              <h3>Jahreszeit-Highlights</h3>
+              <div class="seasonal-grid">
+                <div class="seasonal-item">
+                  <h4>Frühlings-Tagundnachtgleiche</h4>
+                  <p id="spring-equinox">Daten werden geladen…</p>
+                </div>
+                <div class="seasonal-item">
+                  <h4>Sommersonnenwende</h4>
+                  <p id="summer-solstice">Daten werden geladen…</p>
+                </div>
+                <div class="seasonal-item">
+                  <h4>Herbst-Tagundnachtgleiche</h4>
+                  <p id="fall-equinox">Daten werden geladen…</p>
+                </div>
+                <div class="seasonal-item">
+                  <h4>Wintersonnenwende</h4>
+                  <p id="winter-solstice">Daten werden geladen…</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="chart-container">
+              <h3>Tageslänge über das Jahr</h3>
+              <div id="chart"></div>
+            </div>
+          </div>
+        </div>
+
+        <Faq questions={questions} />
+      </article>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script src="../../scripts/sun.ts"></script>
+</Layout>

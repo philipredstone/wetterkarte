@@ -220,7 +220,7 @@ interface WeatherData {
       const updateInfoElement = document.getElementById("update-info") as HTMLElement;
       const currentTime = new Date(weatherData.current.time);
       const formattedTime = formatHour(currentTime);
-      updateInfoElement.innerHTML = `Datenstand: ${formattedTime}`;
+      updateInfoElement.innerHTML = `Letzte Aktualisierung: ${formattedTime} Uhr`;
   
     } catch (error) {
       console.error("Fehler beim Laden der Wetterdaten:", error);

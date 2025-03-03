@@ -1,0 +1,46 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import CityIndex from "../../components/CityIndex.astro";
+
+const title = `Sonnenverlauf in Deutschland - Tageslicht-Informationen`;
+const description = `Aktuelle Sonnenzeiten für Deutschland: Erfahren Sie die genauen Uhrzeiten für Sonnenaufgang und Sonnenuntergang sowie Tageslichtdauer für heute und die kommenden Tage`;
+
+---
+
+<Layout title={title} description={description}>
+    <Header currentPath="/sonne/"/>
+    <main>
+        <section class="content-section">
+            <article>
+                <header class="index-header">
+                    <h1>Sonnenverlauf in Deutschland</h1>
+                    <p>Wählen Sie Ihre Region:</p>
+                </header>
+                <CityIndex prefix="sonne"/>
+            </article>
+        </section>
+    </main>
+    <Footer />
+</Layout>
+
+<style>
+    .content-section {
+        padding: 2rem 1.5rem;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    .index-header h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .index-header p {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        color: #555;
+    }
+
+   
+</style>

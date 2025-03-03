@@ -1,0 +1,640 @@
+---
+import "../../styles/pollen.css";
+
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Faq from "../../components/Faq.astro";
+import { getCity, getStatics } from "../../scripts/city";
+import HorizontalNavigation from "../../components/HorizontalNavigation.astro";
+
+export async function getStaticPaths() {
+  return getStatics();
+}
+
+const city = getCity(Astro.params.city);
+
+const title = `Pollenflug in ${city.name} - Aktuelle Pollenbelastung`;
+const description = `Aktueller Pollenflug in ${city.name}: Erfahren Sie die tägliche Pollenbelastung und Prognosen für Erle, Birke, Gräser, Beifuß, Olive und Ambrosia in Ihrer Region`;
+
+// Static seasonal pollen info for Germany
+const pollenCalendar = {
+  alder: { peakMonths: [1, 2, 3], peakText: "Februar bis März", levelMarch: "Mittel bis Hoch" },
+  birch: { peakMonths: [3, 4], peakText: "April", levelMarch: "Beginnend" },
+  grass: { peakMonths: [4, 5, 6, 7], peakText: "Mai bis Juli", levelMarch: "Keine bis Sehr gering" },
+  mugwort: { peakMonths: [6, 7, 8], peakText: "Juli bis August", levelMarch: "Keine" },
+  olive: { peakMonths: [4, 5], peakText: "Mai", levelMarch: "Keine" },
+  ragweed: { peakMonths: [7, 8, 9], peakText: "August bis September", levelMarch: "Keine" }
+};
+
+// Static seasonal allergen information
+const seasonalAllergens = {
+  spring: ['Birke', 'Hasel', 'Erle', 'Esche'],
+  summer: ['Gräser', 'Roggen', 'Wegerich'],
+  fall: ['Ambrosia', 'Beifuß', 'Brennnessel'],
+  winter: ['Schimmelpilze', 'Hausstaubmilben']
+};
+
+const questions = [
+  {
+    question: "Wie werden die Pollenflugvorhersagen erstellt?",
+    answer:
+      "Die Pollenflugvorhersagen basieren auf Messungen der Pollenstationen, meteorologischen Daten und Blühzeitprognosen. Unsere Daten stammen vom CAMS (Copernicus Atmosphere Monitoring Service) Europa-Modell, die stündlich aktualisierte Pollendaten liefert.",
+  },
+  {
+    question: "Was bedeuten die Pollenkonzentrationswerte in Pollen/m³?",
+    answer:
+      "Die Pollenkonzentration wird in Pollen pro Kubikmeter Luft gemessen. Werte unter 10 Pollen/m³ gelten als sehr gering, 10-30 als gering, 30-50 als mittel, 50-100 als hoch und über 100 als sehr hoch. Diese Werte können jedoch je nach individueller Empfindlichkeit unterschiedliche Symptome auslösen.",
+  },
+  {
+    question: "Welche Pollenarten werden in der Vorhersage berücksichtigt?",
+    answer:
+      "Unsere Vorhersage enthält Daten für sechs wichtige Pollenarten: Erle (Alder), Birke (Birch), Gräser (Grass), Beifuß (Mugwort), Olive (Olive) und Ambrosia/Traubenkraut (Ragweed). Diese gehören zu den häufigsten Auslösern von Pollenallergien in Europa.",
+  },
+  {
+    question: "Wann ist die Pollenkonzentration am höchsten?",
+    answer:
+      "Die Pollenkonzentration ist oft am Vormittag am höchsten, besonders an warmen, trockenen und windigen Tagen. In städtischen Gebieten kann die Konzentration abends ansteigen, da sich die Pollen mit der abkühlenden Luft absenken. Nach Regenfällen ist die Belastung vorübergehend geringer.",
+  },
+  {
+    question: "Wie beeinflussen Wetterbedingungen den Pollenflug?",
+    answer:
+      "Das Wetter hat einen erheblichen Einfluss auf den Pollenflug. Warme, trockene und windige Tage fördern die Pollenverbreitung, während Regen die Pollen aus der Luft wäscht und die Belastung reduziert. Gewitter können Pollen zerbrechen und kleinere, allergenere Partikel freisetzen, was zu sogenannten Gewitterasthma führen kann.",
+  },
+  {
+    question: "Was sind die Hauptallergene in den verschiedenen Jahreszeiten?",
+    answer:
+      "Im Frühling (Februar bis Mai) dominieren Baumpollen wie Hasel, Erle, Birke und Esche. Im Sommer (Mai bis August) sind es hauptsächlich Gräser- und Getreidepollen. Der Spätsommer und Herbst (August bis Oktober) bringen Kräuterpollen wie Beifuß, Ambrosia und Brennnessel. Einige Allergene wie Schimmelpilzsporen können ganzjährig vorkommen.",
+  },
+  {
+    question: "Wie genau sind die angezeigten Pollenflugdaten?",
+    answer:
+      "Unsere Pollenflugdaten werden durch das CAMS Europa-Modell bereitgestellt und haben eine hohe Genauigkeit. Dennoch können lokale Faktoren wie Mikroklima, Vegetation und städtische Umgebung zu Abweichungen führen. Die Daten werden stündlich aktualisiert und bieten eine zuverlässige Orientierung für Allergiker.",
+  },
+];
+---
+
+<Layout title={title} description={description}>
+  <Header currentPath="/pollen/" />
+
+  <main>
+    <section class="content-section">
+      <article>
+        <div class="card">
+          <div class="card-header">
+            <h1>Pollenflug in {city.name}</h1>
+          </div>
+          <HorizontalNavigation city={city.key} currentPath="pollen" />
+          <div class="card-body">
+            <p>
+              Verfolgen Sie die aktuelle Pollenbelastung in {city.name} sowie umfassende Informationen
+              zu verschiedenen Allergiepflanzen und deren Blühzeiten. Unsere Daten werden vom Copernicus 
+              Atmosphere Monitoring Service (CAMS) bereitgestellt und stündlich aktualisiert, um Allergikern 
+              präzise Informationen für ihre Tagesplanung zu bieten.
+            </p>
+
+            <div
+              class="weather-info"
+              id="pollen-widget"
+              data-lat={city.coords[0]}
+              data-lng={city.coords[1]}
+              data-city={city.name}
+            >
+              <h3>Aktuelle Pollenbelastung in {city.name}</h3>
+              <div class="pollen-extra-info">
+                <div class="pollen-extra-grid">
+                  <div class="pollen-extra-item">
+                    <!-- <img
+                      src="/images/alder.svg"
+                      alt="Erlenpollen"
+                      height="64"
+                      width="64"
+                    /> -->
+                    <h3>Erle (Alder)</h3>
+                    <p id="alder-pollen-level">{pollenCalendar.alder.levelMarch}</p>
+                    <p class="pollen-season">Hauptsaison: {pollenCalendar.alder.peakText}</p>
+                  </div>
+                  <div class="pollen-extra-item">
+                    <!-- <img
+                      src="/images/birch.svg"
+                      alt="Birkenpollen"
+                      height="64"
+                      width="64"
+                    /> -->
+                    <h3>Birke (Birch)</h3>
+                    <p id="birch-pollen-level">{pollenCalendar.birch.levelMarch}</p>
+                    <p class="pollen-season">Hauptsaison: {pollenCalendar.birch.peakText}</p>
+                  </div>
+                  <div class="pollen-extra-item">
+                    <!-- <img
+                      src="/images/grass.svg"
+                      alt="Gräserpollen"
+                      height="64"
+                      width="64"
+                    /> -->
+                    <h3>Gräser (Grass)</h3>
+                    <p id="grass-pollen-level">{pollenCalendar.grass.levelMarch}</p>
+                    <p class="pollen-season">Hauptsaison: {pollenCalendar.grass.peakText}</p>
+                  </div>
+                  <div class="pollen-extra-item">
+                    <!-- <img
+                      src="/images/mugwort.svg"
+                      alt="Beifußpollen"
+                      height="64"
+                      width="64"
+                    /> -->
+                    <h3>Beifuß (Mugwort)</h3>
+                    <p id="mugwort-pollen-level">{pollenCalendar.mugwort.levelMarch}</p>
+                    <p class="pollen-season">Hauptsaison: {pollenCalendar.mugwort.peakText}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p class="update-info" id="update-info">Daten werden geladen. Statische Informationen zeigen typische Werte für diese Jahreszeit.</p>
+
+            <div class="pollen-extra-info">
+              <h3>Weniger verbreitete Pollenarten</h3>
+              <div class="pollen-extra-grid">
+                <div class="pollen-extra-item">
+                  <!-- <img
+                    src="/images/olive.svg"
+                    alt="Olivenpollen"
+                    height="64"
+                    width="64"
+                  /> -->
+                  <h3>Olive (Olive)</h3>
+                  <p id="olive-pollen-level">{pollenCalendar.olive.levelMarch}</p>
+                  <p class="pollen-season">Hauptsaison: {pollenCalendar.olive.peakText}</p>
+                </div>
+                <div class="pollen-extra-item">
+                  <!-- <img
+                    src="/images/ragweed.svg"
+                    alt="Ambrosiapollen"
+                    height="64"
+                    width="64"
+                  /> -->
+                  <h3>Ambrosia (Ragweed)</h3>
+                  <p id="ragweed-pollen-level">{pollenCalendar.ragweed.levelMarch}</p>
+                  <p class="pollen-season">Hauptsaison: {pollenCalendar.ragweed.peakText}</p>
+                </div>
+                <div class="pollen-extra-item">
+                  <h3>3-Tages-Tendenz</h3>
+                  <p id="pollen-trend">Wird berechnet...</p>
+                </div>
+                <div class="pollen-extra-item">
+                  <h3>Nächster Belastungsgipfel</h3>
+                  <p id="next-peak">Birkenpollen im April</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="seasonal-highlights">
+              <h3>Saisonale Hauptallergene</h3>
+              <div class="seasonal-grid">
+                <div class="seasonal-item">
+                  <h4>Frühling (Mrz-Mai)</h4>
+                  <p id="spring-allergens">{seasonalAllergens.spring.join(', ')}</p>
+                </div>
+                <div class="seasonal-item">
+                  <h4>Sommer (Jun-Aug)</h4>
+                  <p id="summer-allergens">{seasonalAllergens.summer.join(', ')}</p>
+                </div>
+                <div class="seasonal-item">
+                  <h4>Herbst (Sep-Nov)</h4>
+                  <p id="fall-allergens">{seasonalAllergens.fall.join(', ')}</p>
+                </div>
+                <div class="seasonal-item">
+                  <h4>Winter (Dez-Feb)</h4>
+                  <p id="winter-allergens">{seasonalAllergens.winter.join(', ')}</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="info-box">
+              <h3>Pollenkalender für {city.name}</h3>
+              <p>Der Pollenflug variiert im Jahresverlauf. Hier finden Sie einen umfassenden Überblick über die typischen Pollenflugzeiten in {city.name}:</p>
+             
+              <table class="pollen-calendar">
+                <thead>
+                  <tr>
+                    <th>Pollenart</th>
+                    <th>Jan</th>
+                    <th>Feb</th>
+                    <th>Mär</th>
+                    <th>Apr</th>
+                    <th>Mai</th>
+                    <th>Jun</th>
+                    <th>Jul</th>
+                    <th>Aug</th>
+                    <th>Sep</th>
+                    <th>Okt</th>
+                    <th>Nov</th>
+                    <th>Dez</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Hasel</td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Erle</td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Pappel</td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Weide</td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Ulme</td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Esche</td>
+                    <td></td>
+                    <td></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Birke</td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Hainbuche</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Eiche</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Platane</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Buche</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Kiefer</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Gräser</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Roggen</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Brennnessel</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Spitzwegerich</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Beifuß</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Ambrosia</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Traubenkraut</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="legend">
+                <span class="legend-item"><span class="legend-color high"></span> Hohe Belastung</span>
+                <span class="legend-item"><span class="legend-color low"></span> Geringe Belastung</span>
+                <span class="legend-item"><span class="legend-color none"></span> Keine/sehr geringe Belastung</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <Faq questions={questions} />
+      </article>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script src="../../scripts/pollen.ts"></script>
+</Layout>
+
+<style>
+  .current-month {
+    text-align: center;
+    margin-bottom: 1rem;
+    font-style: italic;
+    color: #555;
+  }
+  
+  .pollen-season {
+    font-size: 0.85rem;
+    color: #666;
+    font-style: italic;
+    margin-top: 0.3rem;
+  }
+  
+  .info-box {
+    margin-top: 2rem;
+    background-color: #f8fbff;
+    border: 1px solid #dce6f3;
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+  
+  .pollen-calendar {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  
+  .pollen-calendar th, .pollen-calendar td {
+    text-align: center;
+    padding: 0.5rem 0.3rem;
+    border: 1px solid #ddd;
+  }
+  
+  .pollen-calendar th {
+    background-color: #f5f5f5;
+  }
+  
+  .pollen-calendar td:first-child {
+    text-align: left;
+    padding-left: 0.5rem;
+    font-weight: 500;
+  }
+  
+  .pollen-calendar .high {
+    background-color: #ffebeb;
+  }
+  
+  .pollen-calendar .low {
+    background-color: #fff7e6;
+  }
+  
+  .legend {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.85rem;
+  }
+  
+  .legend-color {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid #ddd;
+  }
+  
+  .legend-color.high {
+    background-color: #ffebeb;
+  }
+  
+  .legend-color.low {
+    background-color: #fff7e6;
+  }
+  
+  .legend-color.none {
+    background-color: #fff;
+  }
+  
+  @media (max-width: 768px) {
+    .pollen-calendar {
+      font-size: 0.75rem;
+    }
+    
+    .pollen-calendar th, .pollen-calendar td {
+      padding: 0.3rem 0.2rem;
+    }
+  }
+</style>

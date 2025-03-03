@@ -96,7 +96,7 @@ async function fetchWeather(): Promise<void> {
     sevenDayMessageElement.innerHTML = sevenDayMessage;
 
     const updateInfoElement = document.getElementById("update-info") as HTMLElement;
-    updateInfoElement.innerHTML = `Datenstand: <time datetime="${currentTime.toISOString()}">${formattedTime}</time>`;
+    updateInfoElement.innerHTML = `Letzte Aktualisierung: <time datetime="${currentTime.toISOString()}">${formattedTime}</time> Uhr`;
 
   } catch (error) {
     console.error("Fehler beim Laden der Wetterdaten:", error);
