@@ -310,6 +310,73 @@
     color: #555;
 }
 
+/* Erklärung der UV-Skala */
+.pollen-belastungsstufen {
+    margin-top: 2rem;
+    background-color: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: left;
+    max-width: 600px;
+    margin: 2rem auto 0;
+}
+
+.pollen-belastungsstufen h3 {
+    margin-top: 0;
+    font-size: 1.25rem;
+    color: #333;
+    text-align: center;
+}
+
+.pollen-belastungsstufen ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.pollen-belastungsstufen li {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.pollen-badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    margin-right: 0.5rem;
+    color: #333;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.pollen-badge.zero {
+    background-color: #e8f5e9; /* Light green - safe/no pollen */
+}
+.pollen-badge.zero-one {
+    background-color: #c8e6c9; /* Slightly deeper green */
+}
+.pollen-badge.one {
+    background-color: #fff9c4; /* Light yellow - low pollen */
+}
+.pollen-badge.one-two {
+    background-color: #ffecb3; /* Amber/gold - moderate */
+}
+.pollen-badge.two {
+    background-color: #ffcc80; /* Light orange - moderate to high */
+}
+.pollen-badge.two-three {
+    background-color: #ffab91; /* Orange-red - high */
+}
+.pollen-badge.three {
+    background-color: #ef9a9a; /* Red - very high pollen */
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .content-section {

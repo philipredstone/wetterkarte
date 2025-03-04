@@ -1,6 +1,8 @@
 ---
 import "../../styles/pollen.css";
 
+import pollenfluggebiete from "../../assets/pollenfluggebiete.json";
+
 import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
@@ -8,23 +10,47 @@ import Faq from "../../components/Faq.astro";
 import { getCity, getStatics } from "../../scripts/city";
 import HorizontalNavigation from "../../components/HorizontalNavigation.astro";
 
+import { findPolygonFeaturesAtPoint } from "../../scripts/polygon";
+
 export async function getStaticPaths() {
   return getStatics();
 }
 
 const city = getCity(Astro.params.city);
 
+let pollenRegion = findPolygonFeaturesAtPoint(pollenfluggebiete,{
+  lat: city.coords[0],
+  lng: city.coords[1]
+})[0].properties["GF"]
+
 const title = `Pollenflug in ${city.name} - Aktuelle Pollenbelastung`;
 const description = `Aktueller Pollenflug in ${city.name}: Erfahren Sie die tägliche Pollenbelastung und Prognosen für Erle, Birke, Gräser, Beifuß, Olive und Ambrosia in Ihrer Region`;
 
-// Static seasonal pollen info for Germany
 const pollenCalendar = {
-  alder: { peakMonths: [1, 2, 3], peakText: "Februar bis März", levelMarch: "Mittel bis Hoch" },
-  birch: { peakMonths: [3, 4], peakText: "April", levelMarch: "Beginnend" },
-  grass: { peakMonths: [4, 5, 6, 7], peakText: "Mai bis Juli", levelMarch: "Keine bis Sehr gering" },
-  mugwort: { peakMonths: [6, 7, 8], peakText: "Juli bis August", levelMarch: "Keine" },
-  olive: { peakMonths: [4, 5], peakText: "Mai", levelMarch: "Keine" },
-  ragweed: { peakMonths: [7, 8, 9], peakText: "August bis September", levelMarch: "Keine" }
+  alder: {
+    peakText: "Februar - April",
+  },
+  ash: {
+    peakText: "März - Mai",
+  },
+  birch: {
+    peakText: "April - Mai",
+  },
+  grasses: {
+    peakText: "Mai - August",
+  },
+  hazel: {
+    peakText: "Januar - April",
+  },
+  mugwort: {
+    peakText: "Juli - September",
+  },
+  ragweed: {
+    peakText: "August - Oktober",
+  },
+  rye: {
+    peakText: "Mai - Juli",
+  }
 };
 
 // Static seasonal allergen information
@@ -99,6 +125,7 @@ const questions = [
               data-lat={city.coords[0]}
               data-lng={city.coords[1]}
               data-city={city.name}
+              data-pollen-region={pollenRegion}
             >
               <h3>Aktuelle Pollenbelastung in {city.name}</h3>
               <div class="pollen-extra-info">
@@ -111,8 +138,19 @@ const questions = [
                       width="64"
                     />
                     <h3>Erle (Alder)</h3>
-                    <p id="alder-pollen-level">{pollenCalendar.alder.levelMarch}</p>
+                    <p id="alder-pollen-level">-</p>
                     <p class="pollen-season">Hauptsaison: {pollenCalendar.alder.peakText}</p>
+                  </div>
+                  <div class="pollen-extra-item">
+                    <img
+                      src="/images/pollen-tree.svg"
+                      alt="Eschenpollen"
+                      height="64"
+                      width="64"
+                    />
+                    <h3>Esche (Ash)</h3>
+                    <p id="ash-pollen-level">-</p>
+                    <p class="pollen-season">Hauptsaison: {pollenCalendar.ash.peakText}</p>
                   </div>
                   <div class="pollen-extra-item">
                     <img
@@ -122,7 +160,7 @@ const questions = [
                       width="64"
                     />
                     <h3>Birke (Birch)</h3>
-                    <p id="birch-pollen-level">{pollenCalendar.birch.levelMarch}</p>
+                    <p id="birch-pollen-level">-</p>
                     <p class="pollen-season">Hauptsaison: {pollenCalendar.birch.peakText}</p>
                   </div>
                   <div class="pollen-extra-item">
@@ -132,9 +170,20 @@ const questions = [
                       height="64"
                       width="64"
                     />
-                    <h3>Gräser (Grass)</h3>
-                    <p id="grass-pollen-level">{pollenCalendar.grass.levelMarch}</p>
-                    <p class="pollen-season">Hauptsaison: {pollenCalendar.grass.peakText}</p>
+                    <h3>Gräser (Grasses)</h3>
+                    <p id="grasses-pollen-level">-</p>
+                    <p class="pollen-season">Hauptsaison: {pollenCalendar.grasses.peakText}</p>
+                  </div>
+                  <div class="pollen-extra-item">
+                    <img
+                      src="/images/pollen-tree.svg"
+                      alt="Haselpollen"
+                      height="64"
+                      width="64"
+                    />
+                    <h3>Hasel (Hazel)</h3>
+                    <p id="hazel-pollen-level">-</p>
+                    <p class="pollen-season">Hauptsaison: {pollenCalendar.hazel.peakText}</p>
                   </div>
                   <div class="pollen-extra-item">
                     <img
@@ -144,8 +193,30 @@ const questions = [
                       width="64"
                     />
                     <h3>Beifuß (Mugwort)</h3>
-                    <p id="mugwort-pollen-level">{pollenCalendar.mugwort.levelMarch}</p>
+                    <p id="mugwort-pollen-level">-</p>
                     <p class="pollen-season">Hauptsaison: {pollenCalendar.mugwort.peakText}</p>
+                  </div>
+                  <div class="pollen-extra-item">
+                    <img
+                      src="/images/pollen-flower.svg"
+                      alt="Ambrosiapollen"
+                      height="64"
+                      width="64"
+                    />
+                    <h3>Ambrosia (Ragweed)</h3>
+                    <p id="ragweed-pollen-level">-</p>
+                    <p class="pollen-season">Hauptsaison: {pollenCalendar.ragweed.peakText}</p>
+                  </div>
+                  <div class="pollen-extra-item">
+                    <img
+                      src="/images/pollen-grass.svg"
+                      alt="Roggenpollen"
+                      height="64"
+                      width="64"
+                    />
+                    <h3>Roggen (Rye)</h3>
+                    <p id="rye-pollen-level">-</p>
+                    <p class="pollen-season">Hauptsaison: {pollenCalendar.rye.peakText}</p>
                   </div>
                 </div>
               </div>
@@ -153,41 +224,40 @@ const questions = [
 
             <p class="update-info" id="update-info">Daten werden geladen. Statische Informationen zeigen typische Werte für diese Jahreszeit.</p>
 
-            <div class="pollen-extra-info">
-              <h3>Weniger verbreitete Pollenarten</h3>
-              <div class="pollen-extra-grid">
-                <div class="pollen-extra-item">
-                  <img
-                    src="/images/pollen-olive.svg"
-                    alt="Olivenpollen"
-                    height="64"
-                    width="64"
-                  />
-                  <h3>Olive (Olive)</h3>
-                  <p id="olive-pollen-level">{pollenCalendar.olive.levelMarch}</p>
-                  <p class="pollen-season">Hauptsaison: {pollenCalendar.olive.peakText}</p>
-                </div>
-                <div class="pollen-extra-item">
-                  <img
-                    src="/images/pollen-grass.svg"
-                    alt="Ambrosiapollen"
-                    height="64"
-                    width="64"
-                  />
-                  <h3>Ambrosia (Ragweed)</h3>
-                  <p id="ragweed-pollen-level">{pollenCalendar.ragweed.levelMarch}</p>
-                  <p class="pollen-season">Hauptsaison: {pollenCalendar.ragweed.peakText}</p>
-                </div>
-                <div class="pollen-extra-item">
-                  <h3>3-Tages-Tendenz</h3>
-                  <p id="pollen-trend">Wird berechnet...</p>
-                </div>
-                <div class="pollen-extra-item">
-                  <h3>Nächster Belastungsgipfel</h3>
-                  <p id="next-peak">Birkenpollen im April</p>
-                </div>
-              </div>
+            <div class="pollen-belastungsstufen">
+              <h3>Pollen Belastungsstufen</h3>
+              <ul>
+                <li>
+                  <span class="pollen-badge zero">0</span>
+                  Keine Belastung
+                </li>
+                <li>
+                  <span class="pollen-badge zero-one">0-1</span>
+                  Keine bis Geringe Belastung
+                </li>
+                <li>
+                  <span class="pollen-badge one">1</span>
+                  Geringe Belastung
+                </li>
+                <li>
+                  <span class="pollen-badge one-two">1-2</span>
+                  Geringe bis Mittlere Belastung
+                </li>
+                <li>
+                  <span class="pollen-badge two">2</span>
+                  Mittlere Belastung
+                </li>
+                <li>
+                  <span class="pollen-badge two-three">2-3</span>
+                  Mittlere bis Hohe Belastung
+                </li>
+                <li>
+                  <span class="pollen-badge three">3</span>
+                  Hohe Belastung
+                </li>
+              </ul>
             </div>
+
 
             <div class="seasonal-highlights">
               <h3>Saisonale Hauptallergene</h3>
