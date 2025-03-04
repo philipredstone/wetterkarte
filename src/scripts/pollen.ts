@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!pollenWidget) return;
     const pollenRegion = pollenWidget.getAttribute('data-pollen-region') || '';
-    const updateInfoEl = document.getElementById('update-info');
+    const updateInfoEl = document.getElementById('update-info') as HTMLElement;
 
     if (pollenRegion == "") {
         updateInfoEl.textContent = `Letzte Aktualisierung: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} Uhr`;

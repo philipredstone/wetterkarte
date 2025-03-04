@@ -18,10 +18,10 @@ export async function getStaticPaths() {
 
 const city = getCity(Astro.params.city);
 
-let pollenRegion = findPolygonFeaturesAtPoint(pollenfluggebiete,{
+let pollenRegion = findPolygonFeaturesAtPoint(pollenfluggebiete, {
   lat: city.coords[0],
-  lng: city.coords[1]
-})
+  lng: city.coords[1],
+});
 
 let nodata = false;
 let pollenRegionID = "";
@@ -29,9 +29,8 @@ let pollenRegionID = "";
 if (pollenRegion.length == 0) {
   nodata = true;
 } else {
-  pollenRegionID = pollenRegion[0].properties["GF"]
+  pollenRegionID = pollenRegion[0].properties["GF"];
 }
-
 
 const title = `Pollenflug in ${city.name} - Aktuelle Pollenbelastung`;
 const description = `Aktueller Pollenflug in ${city.name}: Erfahren Sie die tägliche Pollenbelastung und Prognosen für Erle, Birke, Gräser, Beifuß, Olive und Ambrosia in Ihrer Region`;
@@ -60,32 +59,27 @@ const pollenCalendar = {
   },
   rye: {
     peakText: "Mai - Juli",
-  }
+  },
 };
 
 // Static seasonal allergen information
 const seasonalAllergens = {
-  spring: ['Birke', 'Hasel', 'Erle', 'Esche'],
-  summer: ['Gräser', 'Roggen', 'Wegerich'],
-  fall: ['Ambrosia', 'Beifuß', 'Brennnessel'],
-  winter: ['Schimmelpilze', 'Hausstaubmilben']
+  spring: ["Birke", "Hasel", "Erle", "Esche"],
+  summer: ["Gräser", "Roggen", "Wegerich"],
+  fall: ["Ambrosia", "Beifuß", "Brennnessel"],
+  winter: ["Schimmelpilze", "Hausstaubmilben"],
 };
 
 const questions = [
   {
     question: "Wie werden die Pollenflugvorhersagen erstellt?",
     answer:
-      "Die Pollenflugvorhersagen basieren auf Messungen der Pollenstationen, meteorologischen Daten und Blühzeitprognosen. Unsere Daten stammen vom CAMS (Copernicus Atmosphere Monitoring Service) Europa-Modell, die stündlich aktualisierte Pollendaten liefert.",
-  },
-  {
-    question: "Was bedeuten die Pollenkonzentrationswerte in Pollen/m³?",
-    answer:
-      "Die Pollenkonzentration wird in Pollen pro Kubikmeter Luft gemessen. Werte unter 10 Pollen/m³ gelten als sehr gering, 10-30 als gering, 30-50 als mittel, 50-100 als hoch und über 100 als sehr hoch. Diese Werte können jedoch je nach individueller Empfindlichkeit unterschiedliche Symptome auslösen.",
+      "Die Pollenflugvorhersagen basieren auf Messungen der Pollenstationen, meteorologischen Daten und Blühzeitprognosen. Unsere Daten stammen vom DWD (Deutscher Wetterdienst), welcher täglich aktualisierte Pollendaten liefert.",
   },
   {
     question: "Welche Pollenarten werden in der Vorhersage berücksichtigt?",
     answer:
-      "Unsere Vorhersage enthält Daten für sechs wichtige Pollenarten: Erle (Alder), Birke (Birch), Gräser (Grass), Beifuß (Mugwort), Olive (Olive) und Ambrosia/Traubenkraut (Ragweed). Diese gehören zu den häufigsten Auslösern von Pollenallergien in Europa.",
+      "Unsere Vorhersage enthält Daten für acht wichtige Pollenarten: Erle, Esche, Birke, Gräser, Hasel, Beifuß, Ambrosia und Roggen.",
   },
   {
     question: "Wann ist die Pollenkonzentration am höchsten?",
@@ -105,7 +99,7 @@ const questions = [
   {
     question: "Wie genau sind die angezeigten Pollenflugdaten?",
     answer:
-      "Unsere Pollenflugdaten werden durch das CAMS Europa-Modell bereitgestellt und haben eine hohe Genauigkeit. Dennoch können lokale Faktoren wie Mikroklima, Vegetation und städtische Umgebung zu Abweichungen führen. Die Daten werden stündlich aktualisiert und bieten eine zuverlässige Orientierung für Allergiker.",
+      "Unsere Pollenflugdaten werden durch den DWD bereitgestellt und haben eine hohe Genauigkeit. Dennoch können lokale Faktoren wie Mikroklima, Vegetation und städtische Umgebung zu Abweichungen führen. Die Daten werden täglich aktualisiert und bieten eine zuverlässige Orientierung für Allergiker.",
   },
 ];
 ---
@@ -123,10 +117,11 @@ const questions = [
           <HorizontalNavigation city={city.key} currentPath="pollen" />
           <div class="card-body">
             <p>
-              Verfolgen Sie die aktuelle Pollenbelastung in {city.name} sowie umfassende Informationen
-              zu verschiedenen Allergiepflanzen und deren Blühzeiten. Unsere Daten werden vom Copernicus 
-              Atmosphere Monitoring Service (CAMS) bereitgestellt und stündlich aktualisiert, um Allergikern 
-              präzise Informationen für ihre Tagesplanung zu bieten.
+              Verfolgen Sie die aktuelle Pollenbelastung in {city.name} sowie umfassende
+              Informationen zu verschiedenen Allergiepflanzen und deren Blühzeiten.
+              Unsere Daten werden vom Deutschen Wetterdient (DWD) bereitgestellt
+              und stündlich aktualisiert, um Allergikern präzise Informationen für
+              ihre Tagesplanung zu bieten.
             </p>
 
             <div
@@ -135,113 +130,135 @@ const questions = [
               data-pollen-region={pollenRegionID}
             >
               <h3>Aktuelle Pollenbelastung in {city.name}</h3>
-              {nodata ? 
-              <div class="pollen-extra-info">
-                  <div class="pollen-extra-item">
-                    <img
-                      src="/images/code-red.svg"
-                      alt="Warnung"
-                      height="64"
-                      width="64"
-                    />
-                    <h3>Pollenfluggebiete für diese Region noch nicht verfügbar</h3>
-                    <p style="color:#707070;">Bitte wählen Sie eine andere nahe gelegene Region aus.</p>
+              {
+                nodata ? (
+                  <div class="pollen-extra-info">
+                    <div class="pollen-extra-item">
+                      <img
+                        src="/images/code-red.svg"
+                        alt="Warnung"
+                        height="64"
+                        width="64"
+                      />
+                      <h3>
+                        Pollenfluggebiete für diese Region noch nicht verfügbar
+                      </h3>
+                      <p style="color:#707070;">
+                        Bitte wählen Sie eine andere nahe gelegene Region aus.
+                      </p>
+                    </div>
                   </div>
-                </div>
-              
-              :
-              <div class="pollen-extra-info">
-                <div class="pollen-extra-grid">
-                  <div class="pollen-extra-item">
-                    <img
-                      src="/images/pollen-tree.svg"
-                      alt="Erlenpollen"
-                      height="64"
-                      width="64"
-                    />
-                    <h3>Erle (Alder)</h3>
-                    <p id="alder-pollen-level">-</p>
-                    <p class="pollen-season">Hauptsaison: {pollenCalendar.alder.peakText}</p>
+                ) : (
+                  <div class="pollen-extra-info">
+                    <div class="pollen-extra-grid">
+                      <div class="pollen-extra-item">
+                        <img
+                          src="/images/pollen-tree.svg"
+                          alt="Erlenpollen"
+                          height="64"
+                          width="64"
+                        />
+                        <h3>Erle (Alder)</h3>
+                        <p id="alder-pollen-level">-</p>
+                        <p class="pollen-season">
+                          Hauptsaison: {pollenCalendar.alder.peakText}
+                        </p>
+                      </div>
+                      <div class="pollen-extra-item">
+                        <img
+                          src="/images/pollen-tree.svg"
+                          alt="Eschenpollen"
+                          height="64"
+                          width="64"
+                        />
+                        <h3>Esche (Ash)</h3>
+                        <p id="ash-pollen-level">-</p>
+                        <p class="pollen-season">
+                          Hauptsaison: {pollenCalendar.ash.peakText}
+                        </p>
+                      </div>
+                      <div class="pollen-extra-item">
+                        <img
+                          src="/images/pollen-birch.svg"
+                          alt="Birkenpollen"
+                          height="64"
+                          width="64"
+                        />
+                        <h3>Birke (Birch)</h3>
+                        <p id="birch-pollen-level">-</p>
+                        <p class="pollen-season">
+                          Hauptsaison: {pollenCalendar.birch.peakText}
+                        </p>
+                      </div>
+                      <div class="pollen-extra-item">
+                        <img
+                          src="/images/pollen-grass.svg"
+                          alt="Gräserpollen"
+                          height="64"
+                          width="64"
+                        />
+                        <h3>Gräser (Grasses)</h3>
+                        <p id="grasses-pollen-level">-</p>
+                        <p class="pollen-season">
+                          Hauptsaison: {pollenCalendar.grasses.peakText}
+                        </p>
+                      </div>
+                      <div class="pollen-extra-item">
+                        <img
+                          src="/images/pollen-tree.svg"
+                          alt="Haselpollen"
+                          height="64"
+                          width="64"
+                        />
+                        <h3>Hasel (Hazel)</h3>
+                        <p id="hazel-pollen-level">-</p>
+                        <p class="pollen-season">
+                          Hauptsaison: {pollenCalendar.hazel.peakText}
+                        </p>
+                      </div>
+                      <div class="pollen-extra-item">
+                        <img
+                          src="/images/pollen-flower.svg"
+                          alt="Beifußpollen"
+                          height="64"
+                          width="64"
+                        />
+                        <h3>Beifuß (Mugwort)</h3>
+                        <p id="mugwort-pollen-level">-</p>
+                        <p class="pollen-season">
+                          Hauptsaison: {pollenCalendar.mugwort.peakText}
+                        </p>
+                      </div>
+                      <div class="pollen-extra-item">
+                        <img
+                          src="/images/pollen-flower.svg"
+                          alt="Ambrosiapollen"
+                          height="64"
+                          width="64"
+                        />
+                        <h3>Ambrosia (Ragweed)</h3>
+                        <p id="ragweed-pollen-level">-</p>
+                        <p class="pollen-season">
+                          Hauptsaison: {pollenCalendar.ragweed.peakText}
+                        </p>
+                      </div>
+                      <div class="pollen-extra-item">
+                        <img
+                          src="/images/pollen-grass.svg"
+                          alt="Roggenpollen"
+                          height="64"
+                          width="64"
+                        />
+                        <h3>Roggen (Rye)</h3>
+                        <p id="rye-pollen-level">-</p>
+                        <p class="pollen-season">
+                          Hauptsaison: {pollenCalendar.rye.peakText}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div class="pollen-extra-item">
-                    <img
-                      src="/images/pollen-tree.svg"
-                      alt="Eschenpollen"
-                      height="64"
-                      width="64"
-                    />
-                    <h3>Esche (Ash)</h3>
-                    <p id="ash-pollen-level">-</p>
-                    <p class="pollen-season">Hauptsaison: {pollenCalendar.ash.peakText}</p>
-                  </div>
-                  <div class="pollen-extra-item">
-                    <img
-                      src="/images/pollen-birch.svg"
-                      alt="Birkenpollen"
-                      height="64"
-                      width="64"
-                    />
-                    <h3>Birke (Birch)</h3>
-                    <p id="birch-pollen-level">-</p>
-                    <p class="pollen-season">Hauptsaison: {pollenCalendar.birch.peakText}</p>
-                  </div>
-                  <div class="pollen-extra-item">
-                    <img
-                      src="/images/pollen-grass.svg"
-                      alt="Gräserpollen"
-                      height="64"
-                      width="64"
-                    />
-                    <h3>Gräser (Grasses)</h3>
-                    <p id="grasses-pollen-level">-</p>
-                    <p class="pollen-season">Hauptsaison: {pollenCalendar.grasses.peakText}</p>
-                  </div>
-                  <div class="pollen-extra-item">
-                    <img
-                      src="/images/pollen-tree.svg"
-                      alt="Haselpollen"
-                      height="64"
-                      width="64"
-                    />
-                    <h3>Hasel (Hazel)</h3>
-                    <p id="hazel-pollen-level">-</p>
-                    <p class="pollen-season">Hauptsaison: {pollenCalendar.hazel.peakText}</p>
-                  </div>
-                  <div class="pollen-extra-item">
-                    <img
-                      src="/images/pollen-flower.svg"
-                      alt="Beifußpollen"
-                      height="64"
-                      width="64"
-                    />
-                    <h3>Beifuß (Mugwort)</h3>
-                    <p id="mugwort-pollen-level">-</p>
-                    <p class="pollen-season">Hauptsaison: {pollenCalendar.mugwort.peakText}</p>
-                  </div>
-                  <div class="pollen-extra-item">
-                    <img
-                      src="/images/pollen-flower.svg"
-                      alt="Ambrosiapollen"
-                      height="64"
-                      width="64"
-                    />
-                    <h3>Ambrosia (Ragweed)</h3>
-                    <p id="ragweed-pollen-level">-</p>
-                    <p class="pollen-season">Hauptsaison: {pollenCalendar.ragweed.peakText}</p>
-                  </div>
-                  <div class="pollen-extra-item">
-                    <img
-                      src="/images/pollen-grass.svg"
-                      alt="Roggenpollen"
-                      height="64"
-                      width="64"
-                    />
-                    <h3>Roggen (Rye)</h3>
-                    <p id="rye-pollen-level">-</p>
-                    <p class="pollen-season">Hauptsaison: {pollenCalendar.rye.peakText}</p>
-                  </div>
-                </div>
-              </div> }
+                )
+              }
             </div>
 
             <p class="update-info" id="update-info">Daten werden geladen.</p>
@@ -280,33 +297,41 @@ const questions = [
               </ul>
             </div>
 
-
             <div class="seasonal-highlights">
               <h3>Saisonale Hauptallergene</h3>
               <div class="seasonal-grid">
                 <div class="seasonal-item">
                   <h4>Frühling (Mrz-Mai)</h4>
-                  <p id="spring-allergens">{seasonalAllergens.spring.join(', ')}</p>
+                  <p id="spring-allergens">
+                    {seasonalAllergens.spring.join(", ")}
+                  </p>
                 </div>
                 <div class="seasonal-item">
                   <h4>Sommer (Jun-Aug)</h4>
-                  <p id="summer-allergens">{seasonalAllergens.summer.join(', ')}</p>
+                  <p id="summer-allergens">
+                    {seasonalAllergens.summer.join(", ")}
+                  </p>
                 </div>
                 <div class="seasonal-item">
                   <h4>Herbst (Sep-Nov)</h4>
-                  <p id="fall-allergens">{seasonalAllergens.fall.join(', ')}</p>
+                  <p id="fall-allergens">{seasonalAllergens.fall.join(", ")}</p>
                 </div>
                 <div class="seasonal-item">
                   <h4>Winter (Dez-Feb)</h4>
-                  <p id="winter-allergens">{seasonalAllergens.winter.join(', ')}</p>
+                  <p id="winter-allergens">
+                    {seasonalAllergens.winter.join(", ")}
+                  </p>
                 </div>
               </div>
             </div>
-            
+
             <div class="info-box">
-              <h3>Pollenkalender für {city.name}</h3>
-              <p>Der Pollenflug variiert im Jahresverlauf. Hier finden Sie einen umfassenden Überblick über die typischen Pollenflugzeiten in {city.name}:</p>
-             
+              <h3>Pollenkalender</h3>
+              <p>
+                Der Pollenflug variiert im Jahresverlauf. Hier finden Sie einen
+                umfassenden Überblick über die typischen Pollenflugzeiten:
+              </p>
+            
               <table class="pollen-calendar">
                 <thead>
                   <tr>
@@ -327,27 +352,12 @@ const questions = [
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Hasel</td>
-                    <td class="low"></td>
-                    <td class="high"></td>
-                    <td class="high"></td>
-                    <td class="low"></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                  <tr>
                     <td>Erle</td>
                     <td class="low"></td>
                     <td class="high"></td>
                     <td class="high"></td>
                     <td class="low"></td>
-                    <td></td>
+                    <td class="low"></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -357,12 +367,27 @@ const questions = [
                     <td></td>
                   </tr>
                   <tr>
-                    <td>Pappel</td>
+                    <td>Hasel</td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Ulme</td>
                     <td></td>
                     <td class="low"></td>
                     <td class="high"></td>
+                    <td class="high"></td>
                     <td class="low"></td>
-                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -377,7 +402,7 @@ const questions = [
                     <td class="low"></td>
                     <td class="high"></td>
                     <td class="high"></td>
-                    <td></td>
+                    <td class="high"></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -387,13 +412,13 @@ const questions = [
                     <td></td>
                   </tr>
                   <tr>
-                    <td>Ulme</td>
+                    <td>Pappel</td>
                     <td></td>
+                    <td class="low"></td>
                     <td class="low"></td>
                     <td class="high"></td>
                     <td class="low"></td>
-                    <td></td>
-                    <td></td>
+                    <td class="low"></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -402,14 +427,29 @@ const questions = [
                     <td></td>
                   </tr>
                   <tr>
-                    <td>Esche</td>
+                    <td>Ahorn</td>
                     <td></td>
-                    <td></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
                     <td class="high"></td>
                     <td class="high"></td>
                     <td class="low"></td>
+                    <td class="low"></td>
                     <td></td>
                     <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Eibe</td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -419,26 +459,11 @@ const questions = [
                   <tr>
                     <td>Birke</td>
                     <td></td>
-                    <td></td>
+                    <td class="low"></td>
                     <td class="low"></td>
                     <td class="high"></td>
+                    <td class="high"></td>
                     <td class="low"></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>Hainbuche</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td class="high"></td>
-                    <td class="high"></td>
-                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -449,8 +474,68 @@ const questions = [
                   <tr>
                     <td>Eiche</td>
                     <td></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
                     <td></td>
                     <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Esche</td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Hainbuche</td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Raps</td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Flieder</td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
                     <td class="high"></td>
                     <td class="high"></td>
                     <td class="low"></td>
@@ -465,23 +550,8 @@ const questions = [
                     <td>Platane</td>
                     <td></td>
                     <td></td>
-                    <td></td>
                     <td class="low"></td>
                     <td class="high"></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>Buche</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td class="low"></td>
                     <td class="high"></td>
                     <td class="low"></td>
                     <td></td>
@@ -492,7 +562,97 @@ const questions = [
                     <td></td>
                   </tr>
                   <tr>
-                    <td>Kiefer</td>
+                    <td>Rotbuche</td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Spitzwegerich</td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Ampfer</td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Löwenzahn</td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Fichte</td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Walnuss</td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Hopfen</td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -501,6 +661,51 @@ const questions = [
                     <td class="low"></td>
                     <td></td>
                     <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Akazie</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Rosskastanie</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Weizen</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -515,8 +720,53 @@ const questions = [
                     <td class="high"></td>
                     <td class="high"></td>
                     <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
                     <td class="low"></td>
                     <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Kiefer</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Holunder</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Hafer</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -526,13 +776,103 @@ const questions = [
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
                     <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Tanne</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Gerste</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
                     <td class="high"></td>
                     <td class="high"></td>
                     <td class="low"></td>
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Linde</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Gänsefuss</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Beifuss</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Goldrute</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
                     <td></td>
                     <td></td>
                   </tr>
@@ -546,38 +886,38 @@ const questions = [
                     <td class="high"></td>
                     <td class="high"></td>
                     <td class="high"></td>
+                    <td class="high"></td>
+                    <td class="high"></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td>Mais</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="low"></td>
+                    <td class="low"></td>
+                    <td class="high"></td>
+                    <td class="low"></td>
                     <td class="low"></td>
                     <td></td>
                     <td></td>
                     <td></td>
                   </tr>
                   <tr>
-                    <td>Spitzwegerich</td>
+                    <td>Nessel</td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
                     <td class="low"></td>
-                    <td class="high"></td>
+                    <td class="low"></td>
                     <td class="high"></td>
                     <td class="high"></td>
                     <td class="low"></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>Beifuß</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td class="high"></td>
-                    <td class="high"></td>
                     <td class="low"></td>
-                    <td></td>
                     <td></td>
                     <td></td>
                   </tr>
@@ -589,7 +929,7 @@ const questions = [
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
+                    <td class="low"></td>
                     <td class="high"></td>
                     <td class="high"></td>
                     <td class="low"></td>
@@ -639,14 +979,14 @@ const questions = [
     font-style: italic;
     color: #555;
   }
-  
+
   .pollen-season {
     font-size: 0.85rem;
     color: #666;
     font-style: italic;
     margin-top: 0.3rem;
   }
-  
+
   .info-box {
     margin-top: 2rem;
     background-color: #f8fbff;
@@ -654,38 +994,39 @@ const questions = [
     border-radius: 8px;
     padding: 1.5rem;
   }
-  
+
   .pollen-calendar {
     width: 100%;
     border-collapse: collapse;
     margin: 1rem 0;
     font-size: 0.9rem;
   }
-  
-  .pollen-calendar th, .pollen-calendar td {
+
+  .pollen-calendar th,
+  .pollen-calendar td {
     text-align: center;
     padding: 0.5rem 0.3rem;
     border: 1px solid #ddd;
   }
-  
+
   .pollen-calendar th {
     background-color: #f5f5f5;
   }
-  
+
   .pollen-calendar td:first-child {
     text-align: left;
     padding-left: 0.5rem;
     font-weight: 500;
   }
-  
+
   .pollen-calendar .high {
     background-color: #ffebeb;
   }
-  
+
   .pollen-calendar .low {
     background-color: #fff7e6;
   }
-  
+
   .legend {
     display: flex;
     gap: 1rem;
@@ -693,40 +1034,41 @@ const questions = [
     justify-content: center;
     flex-wrap: wrap;
   }
-  
+
   .legend-item {
     display: flex;
     align-items: center;
     gap: 0.3rem;
     font-size: 0.85rem;
   }
-  
+
   .legend-color {
     display: inline-block;
     width: 1rem;
     height: 1rem;
     border: 1px solid #ddd;
   }
-  
+
   .legend-color.high {
     background-color: #ffebeb;
   }
-  
+
   .legend-color.low {
     background-color: #fff7e6;
   }
-  
+
   .legend-color.none {
     background-color: #fff;
   }
-  
+
   @media (max-width: 768px) {
     .pollen-calendar {
       font-size: 0.75rem;
     }
-    
-    .pollen-calendar th, .pollen-calendar td {
-      padding: 0.3rem 0.2rem;
+
+    .pollen-calendar th,
+    .pollen-calendar td {
+      padding: 0.1rem 0.0.5rem;
     }
   }
 </style>
