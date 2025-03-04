@@ -32,9 +32,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!pollenWidget) return;
     const pollenRegion = pollenWidget.getAttribute('data-pollen-region') || '';
-
-
     const updateInfoEl = document.getElementById('update-info');
+
+    if (pollenRegion == "") {
+        updateInfoEl.textContent = `Letzte Aktualisierung: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} Uhr`;
+        return;
+    }
+
+
 
     let fetched = await fetch(`https://cdn.wetterkarte.org/pollen/${pollenRegion}.json`)
     let pollenJson = (await fetched.json()) as APIPollenData

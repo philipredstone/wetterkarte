@@ -21,7 +21,17 @@ const city = getCity(Astro.params.city);
 let pollenRegion = findPolygonFeaturesAtPoint(pollenfluggebiete,{
   lat: city.coords[0],
   lng: city.coords[1]
-})[0].properties["GF"]
+})
+
+let nodata = false;
+let pollenRegionID = "";
+
+if (pollenRegion.length == 0) {
+  nodata = true;
+} else {
+  pollenRegionID = pollenRegion[0].properties["GF"]
+}
+
 
 const title = `Pollenflug in ${city.name} - Aktuelle Pollenbelastung`;
 const description = `Aktueller Pollenflug in ${city.name}: Erfahren Sie die tägliche Pollenbelastung und Prognosen für Erle, Birke, Gräser, Beifuß, Olive und Ambrosia in Ihrer Region`;
@@ -122,12 +132,24 @@ const questions = [
             <div
               class="weather-info"
               id="pollen-widget"
-              data-lat={city.coords[0]}
-              data-lng={city.coords[1]}
-              data-city={city.name}
-              data-pollen-region={pollenRegion}
+              data-pollen-region={pollenRegionID}
             >
               <h3>Aktuelle Pollenbelastung in {city.name}</h3>
+              {nodata ? 
+              <div class="pollen-extra-info">
+                  <div class="pollen-extra-item">
+                    <img
+                      src="/images/code-red.svg"
+                      alt="Warnung"
+                      height="64"
+                      width="64"
+                    />
+                    <h3>Pollenfluggebiete für diese Region noch nicht verfügbar</h3>
+                    <p style="color:#707070;">Bitte wählen Sie eine andere nahe gelegene Region aus.</p>
+                  </div>
+                </div>
+              
+              :
               <div class="pollen-extra-info">
                 <div class="pollen-extra-grid">
                   <div class="pollen-extra-item">
@@ -219,10 +241,10 @@ const questions = [
                     <p class="pollen-season">Hauptsaison: {pollenCalendar.rye.peakText}</p>
                   </div>
                 </div>
-              </div>
+              </div> }
             </div>
 
-            <p class="update-info" id="update-info">Daten werden geladen. Statische Informationen zeigen typische Werte für diese Jahreszeit.</p>
+            <p class="update-info" id="update-info">Daten werden geladen.</p>
 
             <div class="pollen-belastungsstufen">
               <h3>Pollen Belastungsstufen</h3>
