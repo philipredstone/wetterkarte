@@ -1,0 +1,62 @@
+---
+import "../styles/warnungen.css";
+
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+const title = "Live Regenradar für Deutschland";
+const description =
+	"Erhalten Sie präzise, aktuelle Wettervorhersagen und Niederschlagsdaten für Deutschland mit unserem Live Regenradar - direkt vom Deutschen Wetterdienst (DWD).";
+---
+
+<Layout title={title} description={description}>
+	<Header currentPath="/warnungen/" />
+	<main>
+		<section class="content-section">
+			<div id="map"></div>
+			<br />
+
+			<article>
+				<header>
+					<h1>Aktuelle Wetterwarnungen</h1>
+				</header>
+			</article>
+			<article id="warnings"></article>
+			<article>
+				<p class="update-info" id="update-info">&nbsp;</p>
+			</article>
+		</section>
+	</main>
+	<script src="../scripts/warnungen.ts"></script>
+
+	<Footer />
+</Layout>
+
+<style>
+	#map {
+		height: 80vh;
+		border-radius: 9px;
+	}
+
+	.content-section {
+		padding: 2rem 1.5rem;
+		max-width: 900px;
+		margin: 0 auto;
+	}
+
+	.content-section h1 {
+		font-size: 2rem;
+		margin-bottom: 1rem;
+		font-weight: 700;
+	}
+
+	.content-section p {
+		margin-bottom: 1rem;
+		line-height: 1.8;
+	}
+
+	.content-section li {
+		margin-left: 2rem;
+	}
+</style>

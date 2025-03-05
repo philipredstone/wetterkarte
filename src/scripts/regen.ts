@@ -67,7 +67,7 @@ async function fetchWeather(): Promise<void> {
         if (container) {
             const chart = new TimeBarChart(container, graphData, {
                 width: 800,
-                height: 500,
+                height: 450,
                 valueLabel: "Niederschlag",
                 valueUnit: "mm"
             });
