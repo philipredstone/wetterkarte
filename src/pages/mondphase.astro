@@ -1,0 +1,137 @@
+---
+import "../styles/mondphase.css";
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Faq from "../components/Faq.astro";
+const title = "Mondphasenkalender für Deutschland - wetterkarte.org";
+const description =
+  "Mondphasenkalender für Deutschland. Erhalten Sie präzise, aktuelle Informationen zu den Mondphasen und ihren Auswirkungen auf die Welt.";
+
+  const questions = [
+  {
+    question: "Welche Datenquellen werden für die Mondphasenberechnung genutzt?",
+    answer:
+      "Unsere Mondphasenberechnungen basieren auf präzisen astronomischen Algorithmen aus dem Standardwerk <strong>Astronomical Algorithms</strong> von Jean Meeus. Diese Algorithmen berücksichtigen die exakte Position der Erde und des Mondes, um akkurate Mondphasen zu berechnen, ohne auf externe Datenquellen angewiesen zu sein.",
+  },
+  {
+    question: "Wie werden die verschiedenen Mondphasen definiert?",
+    answer:
+      "Der Mondzyklus wird in acht Hauptphasen unterteilt: Neumond (0%), zunehmender Sichelmond (0-25%), erstes Viertel (50% zunehmend), zunehmender Mond (50-99%), Vollmond (100%), abnehmender Mond (99-50%), letztes Viertel (50% abnehmend) und abnehmender Sichelmond (25-1%). Diese Phasen beschreiben, wie viel der Mondoberfläche von der Erde aus sichtbar beleuchtet erscheint.",
+  },
+  {
+    question: "Wie genau ist der Mondphasenkalender?",
+    answer:
+      "Unser Mondphasenkalender ist äußerst präzise und basiert auf astronomischen Berechnungen. Die exakten Zeitpunkte der Hauptmondphasen (Neumond, erstes Viertel, Vollmond, letztes Viertel) werden mit einer Genauigkeit von wenigen Minuten berechnet. Da astronomische Ereignisse wie Mondphasen langfristig vorhersagbar sind, bleibt die Genauigkeit auch für zukünftige Monate sehr hoch.",
+  },
+  {
+    question: "Was bedeutet das Alter des Mondes?",
+    answer:
+      "Das Alter des Mondes bezieht sich auf die Anzahl der Tage seit dem letzten Neumond. Ein kompletter Mondzyklus (auch synodischer Monat genannt) dauert durchschnittlich 29,53 Tage. Das Mondalter ist besonders wichtig für die Planung von Aktivitäten, die vom Mondlicht beeinflusst werden können, wie z.B. Nachtfotografie oder astronomische Beobachtungen.",
+  },
+  {
+    question: "Können Mondphasen Kopfschmerzen oder Schlafprobleme beeinflussen?",
+    answer:
+      "Viele Menschen berichten von verstärkten Kopfschmerzen oder Schlafstörungen während bestimmter Mondphasen, besonders bei Vollmond. Die Volksüberzeugung, dass der Vollmond den Schlaf stören kann, ist weit verbreitet und findet sich in vielen Kulturen wieder. Wissenschaftliche Studien zeigen gemischte Ergebnisse: Einige Untersuchungen haben einen leichten Zusammenhang zwischen Vollmond und verringerter Schlafqualität oder längerer Einschlafzeit festgestellt, während andere keine signifikante Korrelation nachweisen konnten. Mögliche Erklärungen könnten die stärkere Helligkeit in Vollmondnächten oder subtile Einflüsse auf unseren circadianen Rhythmus sein. Bei regelmäßigen Schlafproblemen oder Kopfschmerzen sollten jedoch immer auch andere Faktoren berücksichtigt und gegebenenfalls ärztlicher Rat eingeholt werden.",
+  },
+  {
+    question: "Wie beeinflusst der Mond die Gezeiten?",
+    answer:
+      "Der Mond ist der Hauptfaktor für die Entstehung der Gezeiten auf der Erde. Durch seine Gravitationskraft zieht er die Wassermassen an. Bei Vollmond und Neumond stehen Sonne und Mond in einer Linie, was zu besonders starken Gezeiten (Springtiden) führt. Bei Halbmond (erstes und letztes Viertel) stehen sie im rechten Winkel zueinander, was zu schwächeren Gezeiten (Nipptiden) führt.",
+  },
+  {
+    question: "Kann ich die Mondphasen für Gartenarbeit oder andere Aktivitäten nutzen?",
+    answer:
+      "Ja, viele Menschen richten ihre Gartenarbeit nach den Mondphasen aus. Nach traditioneller Überlieferung sind bestimmte Mondphasen günstiger für verschiedene Gartenarbeiten: Der zunehmende Mond soll ideal für das Pflanzen von Früchten und Gemüse sein, die oberirdisch wachsen, während der abnehmende Mond besser für Wurzelgemüse und Bodenbearbeitung geeignet sein soll. Der Mondkalender wird auch für andere Aktivitäten wie Haareschneiden, Holzfällen oder das Brauen von Bier genutzt.",
+  },
+];
+---
+
+<Layout title={title} description={description}>
+  <Header currentPath="/mondphase/" />
+  <main>
+    <section class="content-section">
+      <div class="card">
+        <div class="card-header">
+          <h1>Mondphasen für Deutschland</h1>
+        </div>
+        <div class="card-body">
+          <p>
+            Entdecken Sie den aktuellen Mond in Deutschland und die Prognose für
+            die kommenden Tage. Unsere Daten liefern präzise Informationen über
+            die Mondphasen - ideal für Gartenarbeit, Freizeitaktivitäten oder
+            astronomische Beobachtungen.
+          </p>
+          <div class="weather-info" id="weather-widget">
+            <div class="weather-status">
+              <h1>Aktuelle Mondphase</h1>
+              <div class="status-box">
+                <span class="status-icon"
+                  ><img
+                    src="/images/not-available.svg"
+                    alt="Mondphase"
+                    height="96"
+                    width="96"
+                    id="moon-icon"
+                  /></span
+                >
+                <p id="moon-phase" class="status-text">
+                  Moondphase wird berechnet…&nbsp;
+                </p>
+              </div>
+            </div>
+            <div class="moon-extra-info">
+              <div class="moon-extra-grid">
+                <div class="moon-extra-item">
+                  <img
+                    src="/images/dust-night.svg"
+                    alt="Mondbeleuchtung"
+                    height="64"
+                    width="64"
+                  />
+                  <h4>Mondbeleuchtung</h4>
+                  <p id="moon-illumination">Daten werden geladen…</p>
+                </div>
+                <div class="moon-extra-item">
+                  <img
+                    src="/images/moon-new.svg"
+                    alt="Neumond"
+                    height="64"
+                    width="64"
+                  />
+                  <h4>Tage seit letztem Neumond</h4>
+                  <p id="days-since-new-moon">Daten werden geladen…</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="update-info" id="update-info">&nbsp;</p>
+        </div>
+      </div>
+
+      <!-- Moon Phase Calendar Section -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Mondphasenkalender</h2>
+        </div>
+        <div class="card-body">
+          <p>
+            Unser Mondphasenkalender zeigt Ihnen die Mondphasen für die nächsten
+            drei Monate an. Wichtige Mondphasen (Neumond, Erstes Viertel,
+            Vollmond, Letztes Viertel) sind hervorgehoben.
+          </p>
+
+          <div class="calendar-info" id="moon-calendar">
+            <div class="calendar-loading">
+              <p>Kalender wird geladen...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <Faq questions={questions} />
+    </section>
+  </main>
+  <script src="../scripts/mondphase.ts"></script>
+  <Footer />
+</Layout>

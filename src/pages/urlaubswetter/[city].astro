@@ -1,0 +1,107 @@
+---
+import "../../styles/regen.css";
+
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import zielData from "../../assets/urlaubsziele.json";
+import WeatherWidget from "../../components/WeatherWidget.astro";
+import Faq from "../../components/Faq.astro";
+
+interface Link {
+    slug: string;
+    name: string;
+    coords: number[];
+}
+
+interface Ziele {
+    [key: string]: Link[];
+}
+
+export async function getStaticPaths() {
+    const ziele = zielData as Ziele;
+
+    let cities: { slug: string; coords: number[]; name: string }[] = [];
+    for (const continent in ziele) {
+        cities = cities.concat(
+            ziele[continent].map((link) => {
+                return {
+                    slug: link.slug,
+                    coords: link.coords,
+                    name: link.name,
+                };
+            }),
+        );
+    }
+    return cities.map((city) => ({
+        params: { city: city.slug },
+        props: { coordinates: city.coords, name: city.name },
+    }));
+}
+
+const { coordinates, name } = Astro.props;
+
+const title = `Urlaubswetter ${name} - Aktuelle Wettervorhersage & Prognose`;
+const description = `Finden Sie das aktuelle Urlaubswetter für ${name}. Präzise Wettervorhersagen, Temperaturen, Regenradar und Wettertrends für Ihren Urlaub.`;
+
+const questions = [
+    {
+        question: "Welche Wetterinformationen finde ich hier für meinen Urlaubsort?",
+        answer: "Sie finden umfassende Wetterinformationen wie aktuelle Temperatur, Niederschlag, Windgeschwindigkeit, Luftfeuchtigkeit sowie detaillierte stündliche und tägliche Wettervorhersagen speziell für Ihren Urlaubsort.",
+    },
+    {
+        question: "Welche Datenquellen nutzt die Urlaubswetterseite?",
+        answer: "Wir nutzen zuverlässige Wettermodelle wie das ICON D2-Modell des DWD und präzise Radardaten von Radolan, ergänzt durch weitere internationale Wetterdaten, um Ihnen eine bestmögliche Prognose zu bieten.",
+    },
+    {
+        question: "Wie oft aktualisieren sich die Wetterdaten für meinen Urlaubsort?",
+        answer: "Unsere Wetterdaten werden mehrmals pro Stunde aktualisiert, sodass Sie stets die aktuellsten Wetterinformationen erhalten und Ihre Urlaubsplanung zuverlässig gestalten können.",
+    },
+    {
+        question: "Gibt es auch Langzeitprognosen für das Urlaubswetter?",
+        answer: "Ja, neben kurzfristigen Vorhersagen bieten wir Ihnen auch eine 16-Tage-Prognose, damit Sie Ihre Reiseplanung frühzeitig und optimal abstimmen können.",
+    },
+    {
+        question: "Wie zuverlässig sind die Wettervorhersagen für meinen Urlaub?",
+        answer: "Unsere Wettervorhersagen basieren auf modernen Modellen und Echtzeitdaten. Dennoch können lokale Gegebenheiten kurzfristig zu leichten Abweichungen führen. Wir empfehlen, die Prognosen regelmäßig zu überprüfen.",
+    },
+    {
+        question: "Welche zusätzlichen Urlaubswetter-Funktionen gibt es?",
+        answer: "Zusätzlich zu den Basisdaten wie Temperatur und Regen erhalten Sie detaillierte Windvorhersagen, Luftfeuchtigkeit sowie interaktive Karten, die Ihnen visuelle Einblicke in das aktuelle und zukünftige Wettergeschehen geben.",
+    },
+    {
+        question: "Ist das Urlaubswetter auch auf Mobilgeräten verfügbar?",
+        answer: "Ja, unsere Wetterseite ist vollständig mobiloptimiert, sodass Sie die Wettervorhersagen problemlos auf Smartphone, Tablet oder Laptop abrufen können – jederzeit und überall.",
+    },
+];
+---
+
+<Layout title={title} description={description}>
+    <Header currentPath="/urlaubswetter/" />
+
+    <main>
+        <section class="content-section">
+            <article>
+                <div class="card">
+                    <header class="card-header">
+                        <h1>Aktuelles Urlaubswetter für {name}</h1>
+                    </header>
+                    <div class="card-body">
+                        <p>
+                            Planen Sie Ihren Urlaub optimal mit unserer präzisen Wettervorhersage für {name}. Entdecken Sie aktuelle Temperaturen, detaillierte Prognosen zu Regen, Wind und weiteren Wetterinformationen, die Ihre Urlaubsplanung erleichtern.
+                        </p>
+
+                        <WeatherWidget
+                            lat={coordinates[0]}
+                            lng={coordinates[1]}
+                            cityName={name}
+                            forecastDays={16}
+                        />
+                    </div>
+                </div>
+
+                <Faq questions={questions} />
+            </article>
+        </section>
+    </main>
+</Layout>

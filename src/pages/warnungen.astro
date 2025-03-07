@@ -14,13 +14,13 @@ const description =
 	<Header currentPath="/warnungen/" />
 	<main>
 		<section class="content-section">
-			<div id="map"></div>
-			<br />
 
 			<article>
 				<header>
 					<h1>Aktuelle Wetterwarnungen</h1>
+					<p>Klicken Sie auf eine Warnung, um mehr Informationen zu erhalten.</p>
 				</header>
+				<div id="map"></div>
 			</article>
 			<article id="warnings"></article>
 			<article>
@@ -37,6 +37,7 @@ const description =
 	#map {
 		height: 80vh;
 		border-radius: 9px;
+		margin-bottom: 3rem;
 	}
 
 	.content-section {

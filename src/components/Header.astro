@@ -11,14 +11,16 @@ const navItems = [
   { path: "/radar/", label: "Regenradar" },
   {
     label: "Wetter",
-    path: "/wetter/",
     items: [
+      { path: "/wetter/", label: "Wetter" },
+      { path: "/urlaubswetter/", label: "Urlaubswetter" },
       { path: "/regen/", label: "Regen" },
       { path: "/gewitter/", label: "Gewitter" },
       { path: "/wind/", label: "Wind" },
       { path: "/uv/", label: "UV-Index" },
       { path: "/airquality/", label: "Luftqualität" },
       { path: "/sonne/", label: "Sonnenverlauf" },
+      { path: "/mondphase/", label: "Mondphasen" },
       { path: "/pollen/", label: "Pollen" },
     ],
   },
@@ -36,7 +38,12 @@ const navItems = [
     </a>
 
     <!-- Mobile Menu Toggle Checkbox Hack -->
-    <input type="checkbox" id="menuToggleCheckbox" class="menu-toggle-checkbox" hidden>
+    <input
+      type="checkbox"
+      id="menuToggleCheckbox"
+      class="menu-toggle-checkbox"
+      hidden
+    />
     <label for="menuToggleCheckbox" class="menu-toggle" aria-label="Menu">
       <span class="menu-icon"></span>
     </label>
@@ -197,7 +204,7 @@ const navItems = [
     color: #115597 !important;
     font-weight: 700;
   }
-  
+
   .arrow {
     margin-left: 0.25rem;
     transition: transform 0.2s;

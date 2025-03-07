@@ -1,0 +1,620 @@
+{
+    "Europa": [
+      {
+        "slug": "palma-de-mallorca",
+        "name": "Palma de Mallorca",
+        "country": "Spanien",
+        "coords": [39.57, 2.65]
+      },
+      {
+        "slug": "barcelona",
+        "name": "Barcelona",
+        "country": "Spanien",
+        "coords": [41.39, 2.16]
+      },
+      {
+        "slug": "rom",
+        "name": "Rom",
+        "country": "Italien",
+        "coords": [41.89, 12.48]
+      },
+      {
+        "slug": "kreta-heraklion",
+        "name": "Kreta (Heraklion)",
+        "country": "Griechenland",
+        "coords": [35.34, 25.14]
+      },
+      {
+        "slug": "wien",
+        "name": "Wien",
+        "country": "Österreich",
+        "coords": [48.21, 16.37]
+      },
+      {
+        "slug": "paris",
+        "name": "Paris",
+        "country": "Frankreich",
+        "coords": [48.85, 2.35]
+      },
+      {
+        "slug": "london",
+        "name": "London",
+        "country": "Großbritannien",
+        "coords": [51.51, -0.13]
+      },
+      {
+        "slug": "venedig",
+        "name": "Venedig",
+        "country": "Italien",
+        "coords": [45.44, 12.32]
+      },
+      {
+        "slug": "stockholm",
+        "name": "Stockholm",
+        "country": "Schweden",
+        "coords": [59.33, 18.07]
+      },
+      {
+        "slug": "prag",
+        "name": "Prag",
+        "country": "Tschechien",
+        "coords": [50.08, 14.44]
+      },
+      {
+        "slug": "zuerich",
+        "name": "Zürich",
+        "country": "Schweiz",
+        "coords": [47.38, 8.54]
+      },
+      {
+        "slug": "lissabon",
+        "name": "Lissabon",
+        "country": "Portugal",
+        "coords": [38.72, -9.13]
+      },
+      {
+        "slug": "florenz",
+        "name": "Florenz",
+        "country": "Italien",
+        "coords": [43.77, 11.26]
+      },
+      {
+        "slug": "amsterdam",
+        "name": "Amsterdam",
+        "country": "Niederlande",
+        "coords": [52.37, 4.89]
+      },
+      {
+        "slug": "athen",
+        "name": "Athen",
+        "country": "Griechenland",
+        "coords": [37.98, 23.73]
+      },
+      {
+        "slug": "madrid",
+        "name": "Madrid",
+        "country": "Spanien",
+        "coords": [40.42, -3.70]
+      },
+      {
+        "slug": "rhodos-stadt",
+        "name": "Rhodos (Stadt)",
+        "country": "Griechenland",
+        "coords": [36.43, 28.22]
+      },
+      {
+        "slug": "dublin",
+        "name": "Dublin",
+        "country": "Irland",
+        "coords": [53.35, -6.26]
+      },
+      {
+        "slug": "malta-valletta",
+        "name": "Malta (Valletta)",
+        "country": "Malta",
+        "coords": [35.90, 14.51]
+      },
+      {
+        "slug": "moskau",
+        "name": "Moskau",
+        "country": "Russland",
+        "coords": [55.75, 37.62]
+      },
+      {
+        "slug": "kopenhagen",
+        "name": "Kopenhagen",
+        "country": "Dänemark",
+        "coords": [55.68, 12.57]
+      },
+      {
+        "slug": "helsinki",
+        "name": "Helsinki",
+        "country": "Finnland",
+        "coords": [60.17, 24.94]
+      },
+      {
+        "slug": "oslo",
+        "name": "Oslo",
+        "country": "Norwegen",
+        "coords": [59.91, 10.75]
+      },
+      {
+        "slug": "nizza",
+        "name": "Nizza",
+        "country": "Frankreich",
+        "coords": [43.70, 7.27]
+      },
+      {
+        "slug": "bruegge",
+        "name": "Brügge",
+        "country": "Belgien",
+        "coords": [51.21, 3.22]
+      },
+      {
+        "slug": "budapest",
+        "name": "Budapest",
+        "country": "Ungarn",
+        "coords": [47.50, 19.04]
+      },
+      {
+        "slug": "corfu-stadt",
+        "name": "Korfu (Stadt)",
+        "country": "Griechenland",
+        "coords": [39.62, 19.92]
+      },
+      {
+        "slug": "mykonos-stadt",
+        "name": "Mykonos (Stadt)",
+        "country": "Griechenland",
+        "coords": [37.45, 25.33]
+      },
+      {
+        "slug": "santorini-thira",
+        "name": "Santorini (Thira)",
+        "country": "Griechenland",
+        "coords": [36.42, 25.43]
+      },
+      {
+        "slug": "siena",
+        "name": "Siena",
+        "country": "Italien",
+        "coords": [43.32, 11.33]
+      },
+      {
+        "slug": "amalfi",
+        "name": "Amalfi",
+        "country": "Italien",
+        "coords": [40.63, 14.60]
+      },
+      {
+        "slug": "neapel",
+        "name": "Neapel",
+        "country": "Italien",
+        "coords": [40.84, 14.25]
+      },
+      {
+        "slug": "valletta",
+        "name": "Valletta",
+        "country": "Malta",
+        "coords": [35.90, 14.51]
+      },
+      {
+        "slug": "split",
+        "name": "Split",
+        "country": "Kroatien",
+        "coords": [43.51, 16.44]
+      },
+      {
+        "slug": "dubrovnik",
+        "name": "Dubrovnik",
+        "country": "Kroatien",
+        "coords": [42.65, 18.09]
+      },
+      {
+        "slug": "zadar",
+        "name": "Zadar",
+        "country": "Kroatien",
+        "coords": [44.12, 15.23]
+      },
+      {
+        "slug": "rovinj",
+        "name": "Rovinj",
+        "country": "Kroatien",
+        "coords": [45.08, 13.64]
+      },
+      {
+        "slug": "valencia",
+        "name": "Valencia",
+        "country": "Spanien",
+        "coords": [39.47, -0.38]
+      },
+      {
+        "slug": "sevilla",
+        "name": "Sevilla",
+        "country": "Spanien",
+        "coords": [37.39, -5.99]
+      },
+      {
+        "slug": "malaga",
+        "name": "Málaga",
+        "country": "Spanien",
+        "coords": [36.72, -4.42]
+      },
+      {
+        "slug": "salzburg",
+        "name": "Salzburg",
+        "country": "Österreich",
+        "coords": [47.81, 13.04]
+      },
+      {
+        "slug": "innsbruck",
+        "name": "Innsbruck",
+        "country": "Österreich",
+        "coords": [47.27, 11.39]
+      },
+      {
+        "slug": "marseille",
+        "name": "Marseille",
+        "country": "Frankreich",
+        "coords": [43.30, 5.37]
+      },
+      {
+        "slug": "lyon",
+        "name": "Lyon",
+        "country": "Frankreich",
+        "coords": [45.76, 4.83]
+      },
+      {
+        "slug": "berlin",
+        "name": "Berlin",
+        "country": "Deutschland",
+        "coords": [52.52, 13.40]
+      },
+      {
+        "slug": "muenchen",
+        "name": "München",
+        "country": "Deutschland",
+        "coords": [48.14, 11.58]
+      },
+      {
+        "slug": "hamburg",
+        "name": "Hamburg",
+        "country": "Deutschland",
+        "coords": [53.55, 9.99]
+      },
+      {
+        "slug": "koeln",
+        "name": "Köln",
+        "country": "Deutschland",
+        "coords": [50.94, 6.96]
+      },
+      {
+        "slug": "lanzarote-arrecife",
+        "name": "Lanzarote (Arrecife)",
+        "country": "Spanien",
+        "coords": [28.96, -13.55]
+      },
+      {
+        "slug": "gran-canaria-las-palmas",
+        "name": "Gran Canaria (Las Palmas)",
+        "country": "Spanien",
+        "coords": [28.12, -15.43]
+      },
+      {
+        "slug": "teneriffa-santa-cruz",
+        "name": "Teneriffa (Santa Cruz)",
+        "country": "Spanien",
+        "coords": [28.47, -16.25]
+      },
+      {
+        "slug": "fuerteventura-puerto-rosario",
+        "name": "Fuerteventura (Puerto del Rosario)",
+        "country": "Spanien",
+        "coords": [28.50, -13.86]
+      }
+    ],
+    "Asien": [
+      {
+        "slug": "antalya",
+        "name": "Antalya",
+        "country": "Türkei",
+        "coords": [36.90, 30.69]
+      },
+      {
+        "slug": "istanbul",
+        "name": "Istanbul",
+        "country": "Türkei",
+        "coords": [41.01, 28.98]
+      },
+      {
+        "slug": "bangkok",
+        "name": "Bangkok",
+        "country": "Thailand",
+        "coords": [13.75, 100.50]
+      },
+      {
+        "slug": "dubai",
+        "name": "Dubai",
+        "country": "Vereinigte Arabische Emirate",
+        "coords": [25.20, 55.27]
+      },
+      {
+        "slug": "phuket",
+        "name": "Phuket",
+        "country": "Thailand",
+        "coords": [7.88, 98.39]
+      },
+      {
+        "slug": "bali-denpasar",
+        "name": "Bali (Denpasar)",
+        "country": "Indonesien",
+        "coords": [-8.65, 115.22]
+      },
+      {
+        "slug": "hongkong",
+        "name": "Hongkong",
+        "country": "China",
+        "coords": [22.28, 114.16]
+      },
+      {
+        "slug": "singapur",
+        "name": "Singapur",
+        "country": "Singapur",
+        "coords": [1.35, 103.82]
+      },
+      {
+        "slug": "tokio",
+        "name": "Tokio",
+        "country": "Japan",
+        "coords": [35.68, 139.77]
+      },
+      {
+        "slug": "seoul",
+        "name": "Seoul",
+        "country": "Südkorea",
+        "coords": [37.57, 126.98]
+      },
+      {
+        "slug": "alanya",
+        "name": "Alanya",
+        "country": "Türkei",
+        "coords": [36.54, 32.00]
+      },
+      {
+        "slug": "bodrum",
+        "name": "Bodrum",
+        "country": "Türkei",
+        "coords": [37.03, 27.43]
+      },
+      {
+        "slug": "side",
+        "name": "Side",
+        "country": "Türkei",
+        "coords": [36.76, 31.39]
+      },
+      {
+        "slug": "ho-chi-minh-stadt",
+        "name": "Ho-Chi-Minh-Stadt",
+        "country": "Vietnam",
+        "coords": [10.82, 106.63]
+      },
+      {
+        "slug": "hanoi",
+        "name": "Hanoi",
+        "country": "Vietnam",
+        "coords": [21.03, 105.85]
+      },
+      {
+        "slug": "kyoto",
+        "name": "Kyoto",
+        "country": "Japan",
+        "coords": [35.01, 135.77]
+      },
+      {
+        "slug": "kuala-lumpur",
+        "name": "Kuala Lumpur",
+        "country": "Malaysia",
+        "coords": [3.14, 101.69]
+      },
+      {
+        "slug": "koh-samui",
+        "name": "Koh Samui",
+        "country": "Thailand",
+        "coords": [9.52, 100.03]
+      },
+      {
+        "slug": "malediven-male",
+        "name": "Malediven (Malé)",
+        "country": "Malediven",
+        "coords": [4.18, 73.51]
+      },
+      {
+        "slug": "abu-dhabi",
+        "name": "Abu Dhabi",
+        "country": "Vereinigte Arabische Emirate",
+        "coords": [24.47, 54.37]
+      },
+      {
+        "slug": "tel-aviv",
+        "name": "Tel Aviv",
+        "country": "Israel",
+        "coords": [32.09, 34.78]
+      },
+      {
+        "slug": "jerusalem",
+        "name": "Jerusalem",
+        "country": "Israel",
+        "coords": [31.77, 35.21]
+      },
+      {
+        "slug": "aqaba",
+        "name": "Aqaba",
+        "country": "Jordanien",
+        "coords": [29.53, 35.01]
+      },
+      {
+        "slug": "nanjing",
+        "name": "Nanjing",
+        "country": "China",
+        "coords": [32.06, 118.78]
+      },
+      {
+        "slug": "schanghai",
+        "name": "Shanghai",
+        "country": "China",
+        "coords": [31.23, 121.47]
+      },
+      {
+        "slug": "peking",
+        "name": "Peking",
+        "country": "China",
+        "coords": [39.90, 116.41]
+      },
+      {
+        "slug": "yangon",
+        "name": "Yangon",
+        "country": "Myanmar",
+        "coords": [16.87, 96.19]
+      },
+      {
+        "slug": "manila",
+        "name": "Manila",
+        "country": "Philippinen",
+        "coords": [14.60, 120.98]
+      }
+    ],
+    "Afrika": [
+      {
+        "slug": "kapstadt",
+        "name": "Kapstadt",
+        "country": "Südafrika",
+        "coords": [-33.92, 18.42]
+      },
+      {
+        "slug": "marrakesch",
+        "name": "Marrakesch",
+        "country": "Marokko",
+        "coords": [31.63, -8.01]
+      },
+      {
+        "slug": "mauritius-port-louis",
+        "name": "Mauritius (Port Louis)",
+        "country": "Mauritius",
+        "coords": [-20.16, 57.50]
+      },
+      {
+        "slug": "hurghada",
+        "name": "Hurghada",
+        "country": "Ägypten",
+        "coords": [27.26, 33.81]
+      },
+      {
+        "slug": "sharm-el-sheikh",
+        "name": "Sharm El-Sheikh",
+        "country": "Ägypten",
+        "coords": [27.91, 34.33]
+      },
+      {
+        "slug": "marsa-alam",
+        "name": "Marsa Alam",
+        "country": "Ägypten",
+        "coords": [25.06, 34.90]
+      },
+      {
+        "slug": "sansibar-stadt",
+        "name": "Sansibar-Stadt",
+        "country": "Tansania",
+        "coords": [-6.16, 39.19]
+      },
+      {
+        "slug": "mombasa",
+        "name": "Mombasa",
+        "country": "Kenia",
+        "coords": [-4.04, 39.67]
+      },
+      {
+        "slug": "seychellen-victoria",
+        "name": "Seychellen (Victoria)",
+        "country": "Seychellen",
+        "coords": [-4.62, 55.45]
+      },
+      {
+        "slug": "agadir",
+        "name": "Agadir",
+        "country": "Marokko",
+        "coords": [30.42, -9.60]
+      },
+      {
+        "slug": "tunis",
+        "name": "Tunis",
+        "country": "Tunesien",
+        "coords": [36.81, 10.18]
+      }
+    ],
+    "Nordamerika": [
+      {
+        "slug": "new-york",
+        "name": "New York",
+        "country": "USA",
+        "coords": [40.71, -74.01]
+      },
+      {
+        "slug": "miami",
+        "name": "Miami",
+        "country": "USA",
+        "coords": [25.76, -80.19]
+      },
+      {
+        "slug": "los-angeles",
+        "name": "Los Angeles",
+        "country": "USA",
+        "coords": [34.05, -118.24]
+      },
+      {
+        "slug": "toronto",
+        "name": "Toronto",
+        "country": "Kanada",
+        "coords": [43.65, -79.38]
+      },
+      {
+        "slug": "havanna",
+        "name": "Havanna",
+        "country": "Kuba",
+        "coords": [23.13, -82.38]
+      },
+      {
+        "slug": "san-francisco",
+        "name": "San Francisco",
+        "country": "USA",
+        "coords": [37.77, -122.42]
+      },
+      {
+        "slug": "punta-cana",
+        "name": "Punta Cana",
+        "country": "Dominikanische Republik",
+        "coords": [18.58, -68.40]
+      },
+      {
+        "slug": "cancun",
+        "name": "Cancún",
+        "country": "Mexiko",
+        "coords": [21.17, -86.85]
+      }
+    ],
+    "Südamerika": [
+      {
+        "slug": "rio-de-janeiro",
+        "name": "Rio de Janeiro",
+        "country": "Brasilien",
+        "coords": [-22.91, -43.17]
+      }
+    ],
+    "Australien": [
+      {
+        "slug": "sydney",
+        "name": "Sydney",
+        "country": "Australien",
+        "coords": [-33.87, 151.21]
+      }
+    ]
+  }

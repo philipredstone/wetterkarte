@@ -1,0 +1,254 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import CityIndex from "../../components/CityIndex.astro";
+
+interface Link {
+  slug: string;
+  name: string;
+}
+
+interface Ziele {
+  [key: string]: Link[];
+}
+
+import zielData from "../../assets/urlaubsziele.json";
+const ziele = zielData as Ziele;
+
+const title = "Urlaubswetter Weltweit - Wettervorhersage";
+const description = `Aktueller UV-Index für Deutschland. Erfahren Sie, wie stark die UV-Strahlung in Ihrer Region ist und erhalten Sie wertvolle Tipps zum Schutz vor Sonnenbrand.`;
+
+// Get all continent names
+const continents = Object.keys(ziele);
+---
+
+<Layout title={title} description={description}>
+    <Header currentPath="/urlaubswetter/" />
+    <main>
+        <section class="content-section">
+            <article>
+                <header class="index-header">
+                    <h1>Urlaubswetter Weltweit</h1>
+                    <p>Wählen Sie Ihr Urlaubsziel</p>
+                </header>
+                <div class="page-container">
+                    <nav class="chip-nav">
+                        <div class="chips-wrapper">
+                            <button class="chip active" data-continent="all">Alle</button>
+                            {
+                                continents.map((continent) => (
+                                    <button 
+                                        class="chip" 
+                                        data-continent={continent}
+                                    >
+                                        {continent}
+                                    </button>
+                                ))
+                            }
+                        </div>
+                    </nav>
+
+                    {
+                        continents.map((continent, idx) => (
+                            <div class="continent-section" data-continent-section={continent}>
+                                <h1 class='continent-header'>
+                                    {continent}
+                                </h1>
+                                <div class="link-list">
+                                    {ziele[continent].map((link) => (
+                                        <a href={link.slug} class="link-item">
+                                            {link.name}
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+                        ))
+                    }
+                </div>
+            </article>
+        </section>
+    </main>
+    <Footer />
+</Layout>
+
+<style>
+    .content-section {
+        padding: 2rem 1.5rem;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    .index-header h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .index-header p {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        color: #555;
+    }
+
+    .continent-header {
+        font-size: 1.5rem;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .chip-nav {
+        width: 100%;
+        margin-bottom: 1.5rem;
+    }
+   
+    .chips-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 0 1rem;
+        justify-content: center;
+    }
+   
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1rem;
+        background-color: #f1f5f9;
+        color: #475569;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 0.5rem;
+        cursor: pointer;
+        position: relative;
+    }
+    
+    .chip::before {
+        content: attr(data-continent);
+        height: 0;
+        visibility: hidden;
+        overflow: hidden;
+        user-select: none;
+        pointer-events: none;
+        position: absolute;
+    }
+   
+    .chip:hover {
+        background-color: #e2e8f0;
+        color: #1e3a8a;
+        border-color: #1e3a8a;
+        text-decoration: none;
+    }
+   
+    .chip.active {
+        color: #1e3a8a;
+        background: #d2e1ee;
+        border: 1px solid #b8d9e4;
+    }
+   
+    /* Responsive Adjustments */
+    @media (max-width: 767px) {
+        .chips-wrapper {
+            padding: 0 0.75rem;
+            gap: 0.4rem;
+        }
+       
+        .chip {
+            font-size: 0.85rem;
+            padding: 0.4rem 0.8rem;
+        }
+    }
+</style>
+
+<style>
+    .page-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 70vh;
+    }
+    
+    .link-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        flex: 1;
+        align-content: flex-start;
+    }
+    
+    .link-item {
+        flex: 0 0 calc(50% - 1rem);
+        text-decoration: none;
+        color: #007acc;
+        font-size: 1.2rem;
+        padding: 0.5rem;
+        border-bottom: 2px solid transparent;
+        transition:
+            border-bottom 0.2s ease-in-out,
+            color 0.2s ease-in-out;
+        height: 3rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .link-item:hover {
+        color: #005fa3;
+        border-bottom: 2px solid #005fa3;
+    }
+
+    .continent-section {
+        display: block;
+    }
+
+    @media (max-width: 600px) {
+        .link-item {
+            flex: 0 0 100%;
+        }
+    }
+</style>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const chips = document.querySelectorAll(".chip");
+        const continentSections = document.querySelectorAll(".continent-section");
+
+        // Function to filter continents
+        function filterContinents(selectedContinent: string) {
+            if (selectedContinent === "all") {
+                // Show all continents
+                continentSections.forEach((section) => {
+                    (section as HTMLElement).style.display = "block";
+                });
+            } else {
+                // Show only selected continent
+                continentSections.forEach((section) => {
+                    const continent = section.getAttribute("data-continent-section");
+                    (section as HTMLElement).style.display = 
+                        continent === selectedContinent ? "block" : "none";
+                });
+            }
+        }
+
+        // Add click event to chips
+        chips.forEach((chip) => {
+            chip.addEventListener("click", () => {
+                // Remove active class from all chips
+                chips.forEach((c) => c.classList.remove("active"));
+                
+                // Add active class to clicked chip
+                chip.classList.add("active");
+                
+                // Filter the continent sections
+                const selectedContinent = chip.getAttribute("data-continent");
+                if (selectedContinent) {
+                    filterContinents(selectedContinent);
+                }
+            });
+        });
+
+        // Initialize with "Alle" selected
+        filterContinents("all");
+    });
+</script>
