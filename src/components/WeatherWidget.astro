@@ -157,10 +157,10 @@ function isDayTime(date: Date): boolean {
 /**
  * Returns a weather icon (img element) based on the WMO weather code.
  */
-function getWeatherIcon(weatherCode: number, date: Date): string {
+ function getWeatherIcon(weatherCode: number, date: Date): HTMLImageElement {
   let imageName = "";
   let weatherTitle = "";
-
+  
   if (weatherCode === 0 || weatherCode === 1) {
     imageName = isDayTime(date) ? "clear-day.svg" : "clear-night.svg";
     weatherTitle = "Klar";
@@ -201,8 +201,17 @@ function getWeatherIcon(weatherCode: number, date: Date): string {
     imageName = "not-available.svg";
     weatherTitle = "Keine Wetterdaten";
   }
-
-  return `<img src="/images/${imageName}" alt="${weatherTitle}" title="${weatherTitle}" style="width: 20rem; height: auto; filter: drop-shadow(5px 5px 10px #00000066);"/>`;
+  
+  const imgElement = document.createElement("img");
+  
+  imgElement.src = `/images/${imageName}`;
+  imgElement.alt = weatherTitle;
+  imgElement.title = weatherTitle;
+  imgElement.style.width = "20rem";
+  imgElement.style.height = "auto";
+  imgElement.style.filter = "drop-shadow(5px 5px 10px #00000066)";
+  
+  return imgElement;
 }
 
 const widget = document.getElementById("weather-widget") as HTMLElement;
@@ -239,8 +248,10 @@ async function fetchWeatherData(): Promise<void> {
 
     // Current Icon
     const currentIcon = getWeatherIcon(weatherData.current.weather_code, new Date(weatherData.current.time));
+    currentIcon.style.height = "10rem";
     const iconElement = document.getElementById("icon") as HTMLElement;
-    iconElement.innerHTML = currentIcon;
+    iconElement.innerHTML = "";
+    iconElement.append(currentIcon);
 
     // Current Humidity
     const currentHumidity = weatherData.current.relative_humidity_2m;
@@ -272,7 +283,7 @@ async function fetchWeatherData(): Promise<void> {
       hourlyHTML += `
         <div class=${isCurrentHour ? "current-hour" : ""}>
           <div>${formatHour(time)}</div>
-          <div>${icon}</div>
+          <div>${icon.outerHTML}</div>
           <div>${temp.toFixed(1)}°C</div>
           <div>
             <div>${windSpeed.toFixed(1)} km/h</div>
@@ -296,7 +307,7 @@ async function fetchWeatherData(): Promise<void> {
       dailyHTML += `
         <div class="daily-forecast-item forecast-card">
           <div class="daily-date">${formattedDate}</div>
-          <div class="daily-icon">${icon}</div>
+          <div class="daily-icon">${icon.outerHTML}</div>
           <div class="daily-temp">${maxTemp.toFixed(1)}°C / ${minTemp.toFixed(1)}°C</div>
         </div>
       `;

@@ -8,7 +8,13 @@ const { currentPath = "/" } = Astro.props;
 
 const navItems = [
   { path: "/", label: "Home" },
-  { path: "/radar/", label: "Regenradar" },
+  {
+    label: "Karten",
+    items: [
+    { path: "/radar/", label: "Regenradar" },
+    { path: "/satellit/", label: "Satellitenbilder" },
+    ],
+  },
   {
     label: "Wetter",
     items: [
@@ -71,7 +77,13 @@ const navItems = [
                 )}
               </a>
               {item.items && (
-                <ul class="submenu">
+                <ul class={`submenu ${
+                  item.items.length > 8 
+                    ? "multi-column-menu-large" 
+                    : item.items.length > 4 
+                      ? "multi-column-menu" 
+                      : ""
+                }`}>
                   {item.items.map((subItem) => (
                     <li>
                       <a
@@ -210,6 +222,7 @@ const navItems = [
     transition: transform 0.2s;
   }
 
+  /* Base submenu styling (desktop) */
   .submenu {
     display: none;
     position: absolute;
@@ -243,6 +256,38 @@ const navItems = [
 
   .submenu a:hover {
     background: #f5f5f5;
+  }
+
+  @media (min-width: 769px) {
+    .submenu {
+      padding: 0.75rem;
+      display: none;
+    }
+    
+    .multi-column-menu {
+      min-width: 360px;
+      column-count: 2;
+      column-gap: 1rem;
+    }
+    
+    .multi-column-menu-large {
+      min-width: 540px;
+      column-count: 3;
+      column-gap: 1rem;
+    }
+        
+    .has-submenu:hover > .submenu,
+    .has-submenu:focus-within > .submenu {
+      display: block;
+    }
+    
+    .submenu > li {
+      break-inside: avoid;
+      page-break-inside: avoid;
+      -webkit-column-break-inside: avoid;
+      padding: 0;
+      margin-bottom: 0.25rem;
+    }
   }
 
   @media (max-width: 768px) {
@@ -291,7 +336,7 @@ const navItems = [
       display: none;
     }
 
-    /* Always show submenu on mobile */
+    /* Mobile submenu styling */
     .submenu {
       position: static;
       transform: none;

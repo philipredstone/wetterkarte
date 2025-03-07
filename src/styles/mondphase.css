@@ -4,6 +4,10 @@
     margin: 0 auto;
 }
 
+img {
+    filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2))
+}
+
 .card {
     background: #ffffff;
     border-radius: 16px;
@@ -72,6 +76,7 @@
     width: 80px;
     height: 80px;
     flex-shrink: 0;
+    filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2))
 }
 
 .status-text {
@@ -208,40 +213,7 @@
     width: 24px;
     height: 24px;
     margin-top: 12px;
-}
-
-/* Calendar Legend */
-.calendar-legend {
-    margin-top: 2rem;
-    background: #fafbfc;
-    border: 1px solid #e9eef5;
-    border-radius: 8px;
-    padding: 1rem;
-}
-
-.calendar-legend h4 {
-    margin-top: 0;
-    margin-bottom: 0.75rem;
-    font-size: 1rem;
-    color: #555;
-}
-
-.legend-items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.legend-icon {
-    width: 20px;
-    height: 20px;
+    filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2))
 }
 
 /* Important Phases Section */

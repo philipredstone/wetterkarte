@@ -1,0 +1,121 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+const title = "Aktuelle Satellitenbilder für Deutschland - wetterkarte.org";
+const description =
+    "Aktuelle Satellitenbilder von Deutschland in Echtzeit - direkt vom Deutschen Wetterdienst (DWD).";
+---
+
+<Layout title={title} description={description}>
+    <Header currentPath="/satellit/" />
+    <main>
+        <div id="map"></div>
+
+        <section class="content-section">
+            <article>
+                <header>
+                    <h1>
+                        Satellitenbilder von Deutschland - Live und aktuell
+                    </h1>
+                </header>
+            </article>
+            <article>
+                <p>
+                    Hier finden Sie aktuelle Satellitenbilder für Deutschland, direkt vom <strong>Deutschen Wetterdienst (DWD)</strong>. Mit den Live-Bildern können Sie die Wetterlage und die Entwicklung von Wolken und Unwettern in Echtzeit verfolgen.
+                </p>
+                <p>
+                    Die interaktive Karte zeigt Ihnen, wie bewölkt es aktuell über Deutschland ist und wie sich das Wetter in den nächsten Stunden entwickelt. Ideal, um spontane Aktivitäten oder Ausflüge besser planen zu können.
+                </p>
+                <p>
+                    Die Karte wird regelmäßig aktualisiert und ist leicht zu bedienen. Perfekt für alle, die schnell und einfach wissen möchten, wie das Wetter aktuell aussieht.
+                </p>
+            </article>
+        </section>
+    </main>
+
+    <Footer />
+</Layout>
+
+<script>
+    import L from "leaflet";
+    import "leaflet/dist/leaflet.css";
+
+    let map = L.map("map", {
+        center: [51.163375, 10.447683],
+        zoom: 6,
+        preferCanvas: true,
+        zoomControl: true,
+        dragging: true,
+        scrollWheelZoom: true,
+        doubleClickZoom: true,
+        boxZoom: true,
+        keyboard: true,
+        attributionControl: false,
+        zoomSnap: 0.01,
+        zoomDelta: 0.01,
+    });
+
+    L.tileLayer("https://tiles.wetterkarte.org/base/{z}/{x}/{y}.webp", {
+        attribution: "© OpenStreetMap contributors",
+        maxNativeZoom: 10,
+    }).addTo(map);
+
+    const dwdWmsUrl = "https://maps.dwd.de/geoserver/ows";
+
+    const dwdWmsOptions = {
+        layers: "dwd:Satellite_meteosat_1km_euat_rgb_day_hrv_and_night_ir108_3h",
+        format: "image/png",
+        transparent: true,
+        version: "1.3.0",
+        attribution:
+            '&copy; <a href="https://www.dwd.de">Deutscher Wetterdienst</a>',
+    };
+
+    const dwdLayer = L.tileLayer.wms(dwdWmsUrl, dwdWmsOptions).addTo(map);
+    dwdLayer.setOpacity(0.8);
+
+    fetch("/germany.geojson")
+        .then((response) => response.json())
+        .then((data) => {
+            L.geoJSON(data, {
+                style: function (feature: any) {
+                    return {
+                        color: "#ffffff",
+                        weight: 1,
+                        opacity: 0.5,
+                        fillOpacity: 0.05,
+                        interactive: false,
+                    };
+                },
+            }).addTo(map);
+        });
+</script>
+
+<style>
+    .content-section {
+        padding: 2rem 1.5rem;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    #map {
+        height: 80vh;
+    }
+
+    .content-section h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+
+    .content-section p {
+        margin-bottom: 1rem;
+        line-height: 1.8;
+    }
+
+    .content-section li {
+        margin-left: 2rem;
+    }
+</style>
