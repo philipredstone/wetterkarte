@@ -47,7 +47,13 @@ const { title, description } = Astro.props;
   <body>
     <slot />
     <!-- 100% privacy-first analytics -->
-    <script async src="https://scripts.simpleanalyticscdn.com/latest.js"
-    ></script>
+    <script>
+      if (!/ahrefs|AhrefsBot|googlebot|bingbot|semrushbot|yandexbot/i.test(navigator.userAgent)) {
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://scripts.simpleanalyticscdn.com/latest.js';
+        document.head.appendChild(script);
+      }
+    </script>
   </body>
 </html>
