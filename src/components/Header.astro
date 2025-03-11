@@ -11,8 +11,9 @@ const navItems = [
   {
     label: "Karten",
     items: [
-    { path: "/radar/", label: "Regenradar" },
-    { path: "/satellit/", label: "Satellitenbilder" },
+      { path: "/karte/", label: "Wetterkarte" },
+      { path: "/radar/", label: "Regenradar" },
+      { path: "/satellit/", label: "Satellitenbilder" },
     ],
   },
   {
@@ -77,13 +78,15 @@ const navItems = [
                 )}
               </a>
               {item.items && (
-                <ul class={`submenu ${
-                  item.items.length > 8 
-                    ? "multi-column-menu-large" 
-                    : item.items.length > 4 
-                      ? "multi-column-menu" 
-                      : ""
-                }`}>
+                <ul
+                  class={`submenu ${
+                    item.items.length > 8
+                      ? "multi-column-menu-large"
+                      : item.items.length > 4
+                        ? "multi-column-menu"
+                        : ""
+                  }`}
+                >
                   {item.items.map((subItem) => (
                     <li>
                       <a
@@ -263,24 +266,24 @@ const navItems = [
       padding: 0.75rem;
       display: none;
     }
-    
+
     .multi-column-menu {
       min-width: 360px;
       column-count: 2;
       column-gap: 1rem;
     }
-    
+
     .multi-column-menu-large {
       min-width: 540px;
       column-count: 3;
       column-gap: 1rem;
     }
-        
+
     .has-submenu:hover > .submenu,
     .has-submenu:focus-within > .submenu {
       display: block;
     }
-    
+
     .submenu > li {
       break-inside: avoid;
       page-break-inside: avoid;

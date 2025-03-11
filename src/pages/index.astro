@@ -1,13 +1,12 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
-import WeatherMap from "../components/WeatherMap.astro";
 import Footer from "../components/Footer.astro";
 import Faq from "../components/Faq.astro";
+import WeatherHero from "../components/WeatherHero.astro";
 
-const title =
-	"48-Stunden Wetterkarte: Vorhersagen für Deutschland";
-const description =	"Kostenlose Wetterkarte Deutschland mit Echtzeit-Regenradar ✓ Stündliche Temperatur- & Windvorhersage ✓ 48h Wetterprognose ✓ Präzise & aktuell";
+const title = "Wetterkarten und Vorhersagen für Deutschland - wetterkarte.org";
+const description = "Kostenlose Wetterkarte und Vorhersagen für Deutschland mit Echtzeit-Regenradar ✓ Stündliche Temperatur- & Windvorhersage ✓ 48h Wetterprognose ✓ Präzise & aktuell";
 
 const questions = [
   {
@@ -37,93 +36,473 @@ const questions = [
   {
     question: "Wie liest man eine Wetterkarte?",
     answer: "Um eine Wetterkarte zu lesen, sollten Sie zunächst die Legende und die Farbcodierung beachten. Die Karte zeigt Ihnen, wo es gerade regnet, wo es warm oder kühl ist und wie stark der Wind weht. Mit Hilfe der verschiedenen Symbole und Farben können Sie schnell erkennen, wie sich das Wetter in Ihrer Region entwickelt."
+  },
+  {
+    question: "Für welche Regionen sind die Wettervorhersagen verfügbar?",
+    answer: "Unsere Wettervorhersagen decken ganz Deutschland sowie angrenzende Regionen in Europa ab. Besonders detailliert sind die Prognosen für deutsche Städte und Regionen durch die Nutzung des hochauflösenden DWD ICON D2 Modells."
+  },
+  {
+    question: "Kann ich die Wetterkarte für meine Reiseplanung nutzen?",
+    answer: "Absolut! Die 48-Stunden-Prognose ist ideal für die kurzfristige Reiseplanung. Verfolgen Sie die Wetterentwicklung an Ihrem Zielort und passen Sie Ihre Aktivitäten entsprechend an."
   }
 ];
-
 ---
 
 <Layout title={title} description={description}>
-	<Header currentPath="/"/>
-	<main>
-		<WeatherMap layerselect={true} layer="temp" zoom={6} center={[51.163375, 10.447683]} type="fullscreen" />
+  <Header currentPath="/"/>
+  <main>
+    <WeatherHero />
 
-		<section class="content-section">
-			<article>
-				<header>
-					<h1>
-						48-Stunden Wettervorhersage für Deutschland - präzise
-						Vorhersage mit wetterkarte.org
-					</h1>
-				</header>
+    <section class="content-section">
+      <!-- Services Overview Section - Moved up for better UX -->
+      <div class="services-overview">
+        <h2>Wettervorhersage auf einen Blick</h2>
+        
+        <p class="intro-text">
+          <strong>wetterkarte.org</strong> bietet präzise <strong>Echtzeit-Wettervorhersagen</strong> für Deutschland und Europa, basierend auf dem <strong>DWD ICON D2 Modell</strong> und aktuellen <strong>Radar-Daten</strong>.
+        </p>
+        
+        <div class="feature-tiles">
+          <!-- Main Weather Tile -->
+          <a href="/wetter/" class="feature-tile main-tile" aria-label="Aktuelles Wetter anzeigen">
+            <div class="tile-icon"><img src="/images/clear-day.svg" height="96" width="96" alt="" loading="eager" /></div>
+            <h3>Aktuelles Wetter</h3>
+            <p>Detaillierte Wettervorhersage für Ihre Region</p>
+          </a>
 
-				<p>
-					<strong>wetterkarte.org</strong> liefert Ihnen eine hochpräzise,
-					<strong>live</strong> Wettervorhersage für Deutschland und Europa.
-					Dabei kommen modernste Technologien zum Einsatz: Das bewährte
-					<strong>DWD ICON D2 Modell</strong> und aktuelle <strong
-						>Radolan-Radardaten</strong
-					> direkt vom <strong>Deutschen Wetterdienst (DWD)</strong> garantieren
-					zuverlässige Informationen zu Regen, Temperatur und Wind – mehrmals
-					stündlich aktualisiert.
-				</p>
+          <!-- Precipitation Group -->
+          <div class="group-label">Niederschlag & Warnungen</div>
+          <a href="/radar/" class="feature-tile" aria-label="Regenradar anzeigen">
+            <div class="tile-icon"><img src="/images/rain.svg" height="64" width="64" alt="" loading="lazy" /></div>
+            <h3>Regenradar</h3>
+            <p>Echtzeit-Niederschlagskarte</p>
+          </a>
 
-				<h2>Unsere Hauptfunktionen im Überblick</h2>
-				<ul>
-					<li>
-						<strong>Echtzeit-Regenradar:</strong> Erleben Sie die dynamische
-						Darstellung von Regenbewegungen in Echtzeit - unsere Radar-Daten
-						werden alle 5 Minuten aktualisiert.
-					</li>
-					<li>
-						<strong>DWD ICON Prognosen:</strong> Erhalten Sie detaillierte
-						Vorhersagen zu Temperatur, Wind und Niederschlag basierend
-						auf den präzisen ICON Modell-Daten, die regelmäßig erneuert
-						werden.
-					</li>
-					<li>
-						<strong>Interaktive Wetterkarten:</strong> Unsere benutzerfreundlichen,
-						interaktiven Karten visualisieren klar die aktuelle Wetterlage
-						und die Entwicklungen der nächsten 48 Stunden.
-					</li>
-				</ul>
+          <a href="/warnungen/" class="feature-tile warning-tile" aria-label="Wetterwarnungen anzeigen">
+            <div class="tile-icon"><img src="/images/code-orange.svg" height="64" width="64" alt="" loading="lazy" /></div>
+            <h3>Wetterwarnungen</h3>
+            <p>Aktuelle Unwetterwarnungen</p>
+          </a>
 
-				<br />
+          <a href="/gewitter/" class="feature-tile" aria-label="Gewitter anzeigen">
+            <div class="tile-icon"><img src="/images/lightning-bolt.svg" height="64" width="64" alt="" loading="lazy" /></div>
+            <h3>Gewitter</h3>
+            <p>Blitzortung und Gewittervorhersage</p>
+          </a>
 
-				<Faq questions={questions} />
-			</article>
-		</section>
+          <!-- Weather Conditions Group -->
+          <div class="group-label">Wetterbedingungen</div>
+          <a href="/wind/" class="feature-tile" aria-label="Wind anzeigen">
+            <div class="tile-icon"><img src="/images/umbrella-wind-alt.svg" height="64" width="64" alt="" loading="lazy" /></div>
+            <h3>Wind</h3>
+            <p>Windstärke und -richtung</p>
+          </a>
 
-	</main>
+          <a href="/satellit/" class="feature-tile" aria-label="Satellitenbilder anzeigen">
+            <div class="tile-icon">
+              <img src="/images/clear-day.svg" height="64" width="64" alt="" loading="lazy" />
+            </div>
+            <h3>Satellitenbilder</h3>
+            <p>Aktuelle Wolkenbedeckung</p>
+          </a>
 
-	<Footer />
+          <a href="/pollen/" class="feature-tile" aria-label="Pollen anzeigen">
+            <div class="tile-icon"><img src="/images/pollen-flower.svg" height="64" width="64" alt="" loading="lazy" /></div>
+            <h3>Pollen</h3>
+            <p>Aktuelle Pollenbelastung</p>
+          </a>
+        </div>
+
+        <div class="secondary-features">
+          <h3>Weitere Wetterdienste</h3>
+          <div class="service-links">
+            <a href="/urlaubswetter/" class="service-link" aria-label="Urlaubswetter anzeigen">
+              <span class="link-icon">✈️</span>
+              <span>Urlaubswetter</span>
+            </a>
+            <a href="/uv/" class="service-link" aria-label="UV-Index anzeigen">
+              <span class="link-icon"><img src="/images/uv-index.svg" height="32" width="32" alt="" loading="lazy" /></span>
+              <span>UV-Index</span>
+            </a>
+            <a href="/airquality/" class="service-link" aria-label="Luftqualität anzeigen">
+              <span class="link-icon">🌬️</span>
+              <span>Luftqualität</span>
+            </a>
+            <a href="/sonne/" class="service-link" aria-label="Sonnenverlauf anzeigen">
+              <span class="link-icon"><img src="/images/sunrise.svg" height="32" width="32" alt="" loading="lazy" /></span>
+              <span>Sonnenverlauf</span>
+            </a>
+            <a href="/mondphase/" class="service-link" aria-label="Mondphasen anzeigen">
+              <span class="link-icon"><img src="/images/clear-night.svg" height="32" width="32" alt="" loading="lazy" /></span>
+              <span>Mondphasen</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="faq-container">
+        <h2>Häufig gestellte Fragen</h2>
+        <Faq questions={questions} header={false} />
+      </div>
+      
+      <!-- Technical info moved to bottom -->
+      <div class="technical-info">
+        <h2>Technischer Hintergrund</h2>
+        <p>
+          Die Wettervorhersagen basieren auf dem ICON-Modell (ICOsahedral Nonhydrostatic) des Deutschen 
+          Wetterdienstes. Dieses numerische Wettervorhersagemodell gehört zu den modernsten und genauesten 
+          weltweit und berechnet auf Hochleistungsrechnern die physikalischen Prozesse der Atmosphäre.
+        </p>
+        <p>
+          Das für Deutschland verwendete ICON-D2 besitzt eine horizontale Auflösung von etwa 2,2 km 
+          und verwendet 65 vertikale Schichten bis in eine Höhe von 22 km. Diese hohe Auflösung 
+          ermöglicht eine besonders detaillierte Darstellung lokaler Wetterphänomene.
+        </p>
+        <p>
+          Die Radardaten basieren auf dem Radolan-System (Radar-Online-Aneichung), das Messungen 
+          von 17 Radarstationen in Deutschland kombiniert und alle 5 Minuten aktualisiert wird.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
 </Layout>
 
 <style>
-	.content-section {
-		padding: 2rem 1.5rem;
-		max-width: 900px;
-		margin: 0 auto;
-	}
+  /* Base Styles with Custom Properties */
+  :root {
+    --primary-color: #0369a1;
+    --primary-light: #e0f2fe;
+    --primary-dark: #0c4a6e;
+    --warning-light: #fef3c7;
+    --warning-dark: #92400e;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --spacing-base: 1rem;
+    --transition-base: all 0.2s ease;
+  }
 
-	.content-section h1 {
-		font-size: 2rem;
-		margin-bottom: 1rem;
-		font-weight: 700;
-	}
+  /* Layout */
+  .content-section {
+    padding: 2.5rem 1.5rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
 
-	.content-section p {
-		margin-bottom: 1rem;
-		line-height: 1.8;
-	}
+  .content-section h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+  }
 
-	.content-section li {
-		margin-left: 2rem;
-	}
+  .content-section h2 {
+    font-size: 1.75rem;
+    margin: 1.8rem 0 1rem;
+    font-weight: 600;
+    color: var(--gray-800);
+  }
 
-	a[target="_blank"]::after {
-		content: " ↪";
-		font-size: 0.8em;
-		margin-left: 0.2em;
-		vertical-align: text-top;
-	}
+  .content-section h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--gray-700);
+  }
+
+  .content-section p {
+    margin-bottom: 1.25rem;
+    line-height: 1.7;
+    color: var(--gray-700);
+  }
+
+  /* Services Overview */
+  .services-overview {
+    margin: 2rem 0 3rem;
+    padding: 2rem;
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--gray-200);
+  }
+
+  .services-overview h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--primary-dark);
+  }
+
+  .intro-text {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 2rem;
+    font-size: 1.1rem;
+  }
+
+  /* Group Labels for Feature Categories */
+  .group-label {
+    grid-column: 1 / -1;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    font-size: 1.1rem;
+    text-align: left;
+  }
+
+  /* Feature Tiles */
+  .feature-tiles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .feature-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: var(--radius-md);
+    padding: 1.75rem 1.25rem;
+    text-align: center;
+    text-decoration: none;
+    color: var(--gray-700);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-base);
+    height: 100%;
+    border: 1px solid var(--gray-200);
+  }
+
+  .feature-tile:hover, 
+  .feature-tile:focus {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    color: var(--primary-color);
+  }
+
+  .feature-tile:focus-visible {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+
+  .main-tile {
+    grid-column: span 3;
+    background: linear-gradient(135deg, #e0f7ff, #bae6fd);
+    color: var(--primary-dark);
+    border-color: #93c5fd;
+  }
+
+  .warning-tile {
+    background: linear-gradient(135deg, var(--warning-light), #fde68a);
+    color: var(--warning-dark);
+    border-color: #fcd34d;
+  }
+
+  .tile-icon {
+    margin-bottom: 1.25rem;
+  }
+
+  .feature-tile h3 {
+    font-size: 1.3rem;
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+  }
+
+  .feature-tile p {
+    font-size: 1rem;
+    margin: 0;
+    opacity: 0.9;
+  }
+
+  /* Secondary Features */
+  .secondary-features {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: 1.75rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-200);
+    margin-top: 2rem;
+  }
+
+  .secondary-features h3 {
+    margin: 0 0 1.25rem 0;
+    text-align: center;
+    color: var(--gray-700);
+  }
+
+  .service-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+  }
+
+  .service-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    background-color: var(--gray-100);
+    color: var(--gray-700);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: var(--transition-base);
+    white-space: nowrap;
+    border: 1px solid var(--gray-200);
+  }
+
+  .service-link:hover,
+  .service-link:focus {
+    background-color: var(--gray-200);
+    color: var(--primary-dark);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+  }
+
+  .service-link:focus-visible {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+
+  .link-icon {
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* FAQ Container */
+  .faq-container {
+    margin: 3rem 0;
+  }
+
+  .faq-container h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Technical Info */
+  .technical-info {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    padding: 1.75rem;
+    margin: 2rem 0 1rem;
+  }
+
+  .technical-info h2 {
+    color: var(--gray-800);
+  }
+
+  .technical-info p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* External Links */
+  a[target="_blank"]::after {
+    content: " ↪";
+    font-size: 0.8em;
+    margin-left: 0.2em;
+    vertical-align: text-top;
+  }
+
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .content-section {
+      padding: 2rem 1.25rem;
+    }
+
+    .services-overview {
+      padding: 1.5rem;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .intro-text {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .feature-tiles {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    
+    .main-tile {
+      grid-column: span 2;
+    }
+    
+    .feature-tile {
+      padding: 1.5rem 1rem;
+    }
+    
+    .feature-tile h3 {
+      font-size: 1.2rem;
+    }
+    
+    .secondary-features {
+      padding: 1.5rem;
+    }
+    
+    .service-link {
+      padding: 0.6rem 1rem;
+      font-size: 0.9rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .content-section {
+      padding: 1.5rem 1rem;
+    }
+    
+    .services-overview {
+      padding: 1.25rem;
+    }
+    
+    .feature-tiles {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    .main-tile {
+      grid-column: span 1;
+    }
+    
+    .feature-tile {
+      padding: 1.5rem 1rem;
+    }
+    
+    .secondary-features {
+      padding: 1.25rem;
+    }
+    
+    .service-links {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .service-link {
+      width: 100%;
+      justify-content: flex-start;
+      padding: 0.75rem 1.25rem;
+      font-size: 1rem;
+    }
+  }
 </style>

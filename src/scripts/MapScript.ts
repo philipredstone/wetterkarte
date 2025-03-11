@@ -1,15 +1,19 @@
 import L from "leaflet";
 import 'leaflet/dist/leaflet.css';
+import 'leaflet.fullscreen';
 
 import { WindOverlay } from "./WindOverlay";
+import { LegendControl } from "./LegendControl";
+import { LayerControl } from "./LayerControl";
 
 let map: L.Map;
-let currentLayer: L.TileLayer | null = null;
+let currentLayer: L.TileLayer | L.TileLayer.WMS | null = null;
 let currentLayerType: keyof typeof LAYERS = 'temp';
 let forecastOffset: number = 0;
 let borderLayer: L.GeoJSON | null = null;
-let windOverlay: WindOverlay
-
+let windOverlay: WindOverlay;
+let legendControl: LegendControl;
+let layerControl: LayerControl;
 
 const getTimestampDate = (offset: number): Date => {
   const date = new Date();
@@ -27,6 +31,10 @@ const formatGermanDate = (date: Date): string => {
   const year = date.getFullYear();
   const hours = date.getHours().toString().padStart(2, '0');
   return `${day} ${month} ${year}, ${hours}:00 Uhr`;
+};
+
+const formatDate = (offset: number): string => {
+  return formatGermanDate(getTimestampDate(offset));
 };
 
 const getDateString = (offset: number): string => {
@@ -60,6 +68,97 @@ const LAYERS = {
     gradient: ['#075cb4', '#0e5bb3', '#155ab1', '#1c59b0', '#2458af', '#fc5370', '#fc755a', '#fdb92f', '#fedb1a', '#fffd05'],
     labels: ['5dBZ', '10dBZ', '15dBZ', '20dBZ', '25dBZ', '30dBZ', '35dBZ', '40dBZ', '45dBZ', '50dBZ'],
     borderColor: '#000000',
+  },
+  satellit: {
+    wmsUrl: 'https://maps.dwd.de/geoserver/ows',
+    wmsParams: {
+      layers: 'dwd:Satellite_meteosat_1km_euat_rgb_day_hrv_and_night_ir108_3h',
+      format: 'image/png',
+      transparent: true,
+      version: '1.3.0',
+      opacity: 0.8,
+    },
+    attribution: '© Deutscher Wetterdienst (DWD)',
+    maxNativeZoom: 10,
+    gradient: [],
+    labels: [], 
+    borderColor: '#ffffff',
+  }
+};
+
+// Handle layer change from layer control
+const handleLayerChange = (layerType: string) => {
+  if (!map) return;
+  
+  if (!layerType || !LAYERS[layerType as keyof typeof LAYERS]) return;
+
+  currentLayerType = layerType as keyof typeof LAYERS;
+
+  if (currentLayer) {
+    map.removeLayer(currentLayer);
+  }
+
+  if (windOverlay) map.removeLayer(windOverlay);
+
+  if (layerType === 'temp' || layerType === 'wind') {
+    const newUrl = LAYERS[layerType as keyof typeof LAYERS].urlTemplate(getDateString(forecastOffset));
+    currentLayer = L.tileLayer(newUrl, LAYERS[layerType as keyof typeof LAYERS]).addTo(map);
+
+    if (layerType === 'wind') {
+      windOverlay = new WindOverlay({
+        baseURL: `https://cdn.wetterkarte.org/UV_COMP/${getDateString(forecastOffset)}.wind`,
+      });
+      map.addLayer(windOverlay);
+    }
+  } else if (layerType === 'satellit') {
+    // Handle WMS layer
+    currentLayer = L.tileLayer.wms(
+      LAYERS.satellit.wmsUrl, 
+      LAYERS.satellit.wmsParams
+    ).addTo(map);
+  } else {
+    currentLayer = L.tileLayer(LAYERS[layerType as keyof typeof LAYERS].url, LAYERS[layerType as keyof typeof LAYERS]).addTo(map);
+  }
+
+  if (borderLayer) {
+    borderLayer.setStyle(function (feature) {
+      return {
+        color: LAYERS[layerType as keyof typeof LAYERS].borderColor,
+        weight: 1,
+        opacity: 0.5,
+        fillOpacity: 0.05
+      };
+    });
+  }
+
+  // Update the legend
+  legendControl.update(layerType);
+};
+
+// Handle forecast slider change (when slider is released)
+const handleForecastChange = (value: number) => {
+  forecastOffset = value;
+  
+  if (currentLayerType === 'wind') {
+    if (windOverlay) map.removeLayer(windOverlay);
+    windOverlay = new WindOverlay({
+      baseURL: `https://cdn.wetterkarte.org/UV_COMP/${getDateString(forecastOffset)}.wind`,
+    });
+    map.addLayer(windOverlay);
+  }
+};
+
+// Handle forecast slider slide (while sliding)
+const handleForecastSlide = (value: number) => {
+  forecastOffset = value;
+  
+  if (currentLayerType === 'temp' || currentLayerType === 'wind') {
+    if (currentLayer) {
+      map.removeLayer(currentLayer);
+    }
+    const newUrl = LAYERS[currentLayerType].urlTemplate(getDateString(forecastOffset));
+    currentLayer = L.tileLayer(newUrl, LAYERS[currentLayerType]).addTo(map);
+    legendControl.update(currentLayerType);
   }
 };
 
@@ -77,13 +176,14 @@ export const initMap = () => {
   let zoom = parseInt(zoomS);
 
   let marker = mapContainer.getAttribute('data-marker') === 'true';
+  let layerselect = mapContainer.getAttribute('data-layerselect') === 'true';
+  
   //check if mobile
   const isMobile = window.matchMedia('(max-width: 767px)').matches;
 
   if (isMobile) {
     zoom -= 1;
   }
-
 
   // Initialize map with the same configuration
   map = L.map('map', {
@@ -99,6 +199,10 @@ export const initMap = () => {
     attributionControl: false,
     zoomSnap: 0.01,
     zoomDelta: 0.01,
+    fullscreenControl: true,
+    fullscreenControlOptions: {
+      position: 'topleft'
+    }
   });
 
   L.tileLayer('https://tiles.wetterkarte.org/base/{z}/{x}/{y}.webp', {
@@ -111,15 +215,32 @@ export const initMap = () => {
       html: '<div class="location-dot"></div>',
     });
 
-
-
-    let marker = new L.marker(map.getCenter(),{ icon: divIcon })
+    let marker = new L.marker(map.getCenter(), { icon: divIcon })
       .addTo(map);
-
   }
 
   // Get initial layer type
   currentLayerType = mapContainer.getAttribute('data-layer') as keyof typeof LAYERS;
+  
+  // Create and add the legend control
+  legendControl = new LegendControl(LAYERS, { position: 'topright' });
+  map.addControl(legendControl);
+
+  // Add layer control if enabled
+  if (layerselect) {
+    // Create layer control with callbacks
+    layerControl = new LayerControl(
+      LAYERS, 
+      { position: 'bottomleft' }, 
+      {
+        onLayerChange: handleLayerChange,
+        onForecastChange: handleForecastChange,
+        onForecastSlide: handleForecastSlide,
+        formatDateFn: formatDate
+      }
+    );
+    map.addControl(layerControl);
+  }
 
   // Add border layer
   fetch('/germany.geojson')
@@ -142,7 +263,7 @@ export const initMap = () => {
   switch (currentLayerType) {
     case 'temp':
       currentLayer = L.tileLayer(LAYERS.temp.urlTemplate(getDateString(forecastOffset)), LAYERS.temp).addTo(map);
-      updateLegend('temp');
+      legendControl.update('temp');
       break;
     case 'wind':
       currentLayer = L.tileLayer(LAYERS.wind.urlTemplate(getDateString(forecastOffset)), LAYERS.wind).addTo(map);
@@ -152,214 +273,17 @@ export const initMap = () => {
       });
       map.addLayer(windOverlay);
 
-      updateLegend('wind');
+      legendControl.update('wind');
       break;
     case 'radar':
       currentLayer = L.tileLayer(LAYERS.radar.url, LAYERS.radar).addTo(map);
-      updateLegend('radar');
+      legendControl.update('radar');
+      break;
+    case 'satellit':
+      currentLayer = L.tileLayer.wms(LAYERS.satellit.wmsUrl, LAYERS.satellit.wmsParams).addTo(map);
+      legendControl.update('satellit');
       break;
   }
-
-
-
-
-  // Update button event listeners for new class names
-  const buttons = document.querySelectorAll('.control-button');
-  buttons.forEach((button) => {
-    button.addEventListener('click', (e: Event) => {
-      const target = e.currentTarget as HTMLButtonElement;
-      switchLayer(target);
-    });
-  });
-
-  // Initialize forecast slider
-  const forecastSlider = document.getElementById('forecast-slider') as HTMLInputElement;
-
-  if (forecastSlider) {
-    const timeLabel = document.getElementById('forecast-hour') as HTMLSpanElement;
-
-    forecastSlider.value = forecastOffset.toString();
-    timeLabel.innerText = formatGermanDate(getTimestampDate(forecastOffset));
-
-    forecastSlider.addEventListener('input', () => {
-      forecastOffset = parseInt(forecastSlider.value, 10);
-      timeLabel.innerText = formatGermanDate(getTimestampDate(forecastOffset));
-
-      if (currentLayerType === 'temp' || currentLayerType === 'wind') {
-        if (currentLayer) {
-          map.removeLayer(currentLayer);
-        }
-        const newUrl = LAYERS[currentLayerType].urlTemplate(getDateString(forecastOffset));
-        currentLayer = L.tileLayer(newUrl, LAYERS[currentLayerType]).addTo(map);
-        updateLegend(currentLayerType);
-      }
-    });
-
-    forecastSlider.addEventListener('change', () => {
-      if (currentLayerType === 'wind') {
-        if (windOverlay) map.removeLayer(windOverlay);
-        windOverlay = new WindOverlay({
-          baseURL: `https://cdn.wetterkarte.org/UV_COMP/${getDateString(forecastOffset)}.wind`,
-        });
-        map.addLayer(windOverlay);
-      }
-
-    });
-
-
-
-
-
-  }
-};
-
-const switchLayer = (button: HTMLButtonElement) => {
-  if (!map) return;
-
-  const layerType = button.dataset.layer as keyof typeof LAYERS;
-  if (!layerType || !LAYERS[layerType]) return;
-
-  // Update active state for new class names
-  document.querySelectorAll('.control-button').forEach(btn =>
-    btn.classList.remove('active')
-  );
-  button.classList.add('active');
-
-  currentLayerType = layerType;
-
-  const forecastSlider = document.querySelector('.forecast-slider') as HTMLElement;
-
-  if (currentLayer) {
-    map.removeLayer(currentLayer);
-  }
-
-  if (windOverlay) map.removeLayer(windOverlay)
-
-
-  if (layerType === 'temp' || layerType === 'wind') {
-    forecastSlider.style.display = 'flex';
-    const newUrl = LAYERS[layerType].urlTemplate(getDateString(forecastOffset));
-    currentLayer = L.tileLayer(newUrl, LAYERS[layerType]).addTo(map);
-    const timeLabel = document.getElementById('forecast-hour') as HTMLSpanElement;
-    timeLabel.innerText = formatGermanDate(getTimestampDate(forecastOffset));
-
-    if (layerType === 'wind') {
-      windOverlay = new WindOverlay({
-        baseURL: `https://cdn.wetterkarte.org/UV_COMP/${getDateString(forecastOffset)}.wind`,
-      });
-      map.addLayer(windOverlay);
-    }
-
-  } else {
-    forecastSlider.style.display = 'none';
-    currentLayer = L.tileLayer(LAYERS[layerType].url, LAYERS[layerType]).addTo(map);
-  }
-
-  if (borderLayer) {
-    borderLayer.setStyle(function (feature) {
-      return {
-        color: LAYERS[layerType].borderColor,
-        weight: 1,
-        opacity: 0.5,
-        fillOpacity: 0.05
-      };
-    });
-  }
-
-  updateLegend(layerType);
-};
-
-const updateLegend = (layerType: keyof typeof LAYERS) => {
-  const layer = LAYERS[layerType];
-  const gradientColors = layer.gradient;
-  const values = layer.labels;
-
-  const minLabel = values[0];
-  const maxLabel = values[values.length - 1];
-  const midLabel = values[Math.floor(values.length / 2)];
-
-  const rectWidth = 20;
-  const tickLength = 0;
-  const labelOffset = 2;
-  const borderRadius = 3;
-
-  const offscreen = document.createElement("canvas");
-  const offCtx = offscreen.getContext("2d")!;
-  offCtx.font = "12px sans-serif";
-  const maxLabelWidth = Math.max(
-    offCtx.measureText(maxLabel).width,
-    offCtx.measureText(midLabel).width,
-    offCtx.measureText(minLabel).width
-  );
-
-  const neededWidth = maxLabelWidth + tickLength + labelOffset + rectWidth;
-  const canvas = document.getElementById("legend-canvas") as HTMLCanvasElement;
-  const desiredCSSHeight = canvas.clientHeight || 150;
-  const dpr = window.devicePixelRatio || 1;
-  canvas.width = neededWidth * dpr;
-  canvas.height = desiredCSSHeight * dpr;
-  canvas.style.width = `${neededWidth}px`;
-  canvas.style.height = `${desiredCSSHeight}px`;
-
-  const ctx = canvas.getContext("2d")!;
-  ctx.scale(dpr, dpr);
-  ctx.clearRect(0, 0, neededWidth, desiredCSSHeight);
-
-  function drawRoundedRect(
-    ctx: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    radius: number
-  ) {
-    ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.lineTo(x + width - radius, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-    ctx.lineTo(x + width, y + height - radius);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-    ctx.lineTo(x + radius, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-    ctx.lineTo(x, y + radius);
-    ctx.quadraticCurveTo(x, y, x + radius, y);
-    ctx.closePath();
-  }
-
-  let gradient: CanvasGradient = ctx.createLinearGradient(0, desiredCSSHeight, 0, 0);
-  gradientColors.forEach((color, index) => {
-    gradient.addColorStop(index / (gradientColors.length - 1), color);
-  });
-  ctx.fillStyle = gradient;
-  drawRoundedRect(ctx, 0, 0, rectWidth, desiredCSSHeight, borderRadius);
-  ctx.fill();
-  ctx.strokeStyle = "#ffffff";
-  ctx.lineWidth = 1;
-  drawRoundedRect(ctx, 0, 0, rectWidth, desiredCSSHeight, borderRadius);
-  ctx.stroke();
-
-
-  const labels = [
-    { text: maxLabel, y: 0, baseline: "top" as CanvasTextBaseline },
-    { text: midLabel, y: desiredCSSHeight / 2, baseline: "middle" as CanvasTextBaseline },
-    { text: minLabel, y: desiredCSSHeight, baseline: "bottom" as CanvasTextBaseline }
-  ];
-
-  ctx.font = "12px sans-serif";
-  ctx.fillStyle = "#333";
-
-  ctx.textAlign = "left";
-  labels.forEach(label => {
-    ctx.textBaseline = label.baseline;
-    ctx.beginPath();
-    ctx.moveTo(rectWidth, label.y);
-    ctx.lineTo(rectWidth + tickLength, label.y);
-    ctx.strokeStyle = "#333";
-    ctx.lineWidth = 1;
-    ctx.stroke();
-    ctx.fillText(label.text, rectWidth + tickLength + labelOffset, label.y);
-  });
-
 };
 
 document.addEventListener('DOMContentLoaded', function () {

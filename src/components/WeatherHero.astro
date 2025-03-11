@@ -1,0 +1,274 @@
+---
+// WeatherHero.astro
+interface Props {
+    imageUrl?: string;
+}
+
+const { imageUrl = "wetterkarte-hero.webp" } = Astro.props;
+---
+
+<div class="weather-hero-wrapper">
+    <div class="weather-hero-container">
+        <div class="weather-hero-text">
+            <h2>Aktuelle Wettervorhersage für Deutschland</h2>
+            <p>
+                Präzise Temperatur-, Regen- und Windvorhersagen für die nächsten 48 Stunden einfach und intuitiv zu verfolgen mit unserer interaktiven Wetterkarte.
+            </p>
+            <div class="weather-hero-cta">
+                <a href="/karte/" class="weather-cta-primary">
+                    <span class="cta-icon">🗺️</span>
+                    <span>Interaktive Wetterkarte öffnen</span>
+                </a>
+                <a href="/radar/" class="weather-cta-secondary">
+                    <span class="cta-icon">🌧️</span>
+                    <span>Zum Regenradar</span>
+                </a>
+            </div>
+        </div>
+        <div class="weather-hero-image">
+            <img src={imageUrl} alt="Wetterkarte Deutschland" width="600" height="400" loading="eager">
+        </div>
+    </div>
+    <div class="scroll-down-arrow" id="scrollDownArrow">
+        <span class="chevron"></span>
+    </div>
+</div>
+
+<style>
+    .weather-hero-wrapper {
+        background: linear-gradient(to right, #f0f8ff, #e6f2ff);
+        padding: 3rem 1.5rem;
+        margin: 2rem 0;
+        border-top: 1px solid #e1e8f0;
+        border-bottom: 1px solid #e1e8f0;
+        position: relative; /* Added for positioning the scroll arrow */
+    }
+
+    .weather-hero-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 3rem;
+    }
+
+    .weather-hero-text {
+        flex: 1;
+    }
+
+    .weather-hero-text h2 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+        color: #0c4a6e;
+    }
+
+    .weather-hero-text p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        color: #1e3a8a;
+    }
+
+    .weather-hero-image {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        overflow: hidden;
+        border-radius: 10px;
+    }
+
+    .weather-hero-image img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        border: 2px solid white;
+    }
+
+    .weather-hero-cta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .weather-cta-primary, .weather-cta-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        padding: 1rem 1.8rem;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        text-align: center;
+    }
+    
+    .weather-cta-primary {
+        background: linear-gradient(135deg, #3b82f6, #1e40af);
+        color: white;
+        box-shadow: 0 4px 14px rgba(30, 64, 175, 0.25);
+    }
+
+    .weather-cta-primary:hover {
+        background: linear-gradient(135deg, #2563eb, #1e3a8a);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(29, 78, 216, 0.4);
+    }
+
+    .weather-cta-secondary {
+        background: white;
+        color: #1e3a8a;
+        border: 1px solid #3b82f6;
+    }
+ 
+    .weather-cta-secondary:hover {
+        background: #f0f7ff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    }
+    
+    .cta-icon {
+        margin-right: 8px;
+        font-size: 1.1em;
+    }
+
+    /* Scroll down arrow */
+    .scroll-down-arrow {
+        text-align: center;
+        position: absolute;
+        bottom: 15px;
+        left: 0;
+        right: 0;
+        opacity: 0.6;
+        transition: opacity 0.3s ease;
+        cursor: pointer;
+    }
+
+    .scroll-down-arrow:hover {
+        opacity: 0.8;
+    }
+
+    .scroll-down-arrow .chevron {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-bottom: 1px solid #1e3a8a;
+        border-right: 1px solid #1e3a8a;
+        transform: rotate(45deg);
+        position: relative;
+        animation: subtle-bounce 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes subtle-bounce {
+        0%, 100% {
+            top: 0;
+        }
+        50% {
+            top: 3px;
+        }
+    }
+
+    /* Tablet and smaller devices */
+    @media (max-width: 768px) {
+        .weather-hero-wrapper {
+            padding: 2rem 1rem;
+            margin: 1rem 0;
+        }
+        
+        .weather-hero-container {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .weather-hero-text {
+            order: 1;
+        }
+
+        .weather-hero-image {
+            order: 0;
+            margin-bottom: 0;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        
+        .weather-hero-text h2 {
+            font-size: 1.8rem;
+            text-align: center;
+        }
+        
+        .weather-hero-text p {
+            text-align: center;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .weather-hero-cta {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .weather-cta-primary, .weather-cta-secondary {
+            width: 100%;
+            padding: 0.9rem 1rem;
+        }
+        
+        .scroll-down-arrow {
+            bottom: 5px;
+        }
+    }
+    
+    /* Mobile specific improvements */
+    @media (max-width: 480px) {
+        .weather-hero-wrapper {
+            padding: 1.5rem 0.75rem;
+            margin: 0.5rem 0;
+            padding-bottom: 2rem; /* Subtle padding for scroll arrow */
+        }
+        
+        .weather-hero-text h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .weather-hero-text p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1.2rem;
+        }
+        
+        .weather-hero-image {
+            margin: 0 -0.75rem; /* Extend image to edges */
+        }
+        
+        .weather-hero-image img {
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .weather-cta-primary, .weather-cta-secondary {
+            padding: 0.8rem 1rem;
+            font-size: 0.95rem;
+        }
+        
+        .scroll-down-arrow span {
+            font-size: 1.2rem;
+        }
+    }
+</style>
+
+<script>
+    // Add scroll functionality when the arrow is clicked
+    document.addEventListener('DOMContentLoaded', () => {
+        const scrollArrow = document.getElementById('scrollDownArrow');
+        if (scrollArrow) {
+            scrollArrow.addEventListener('click', () => {
+                const heroHeight = document.querySelector('.weather-hero-wrapper').offsetHeight;
+                window.scrollTo({
+                    top: heroHeight,
+                    behavior: 'smooth'
+                });
+            });
+        }
+    });
+</script>

@@ -6,9 +6,10 @@ interface Question {
 
 interface Props {
   questions: Question[];
+  header?: boolean;
 }
 
-const { questions } = Astro.props;
+const { questions, header = true} = Astro.props;
 
 const stripHtml = (html: string): string =>
   html.replace(/<\/?[^>]+(>|$)/g, '');
@@ -26,7 +27,7 @@ const jsonLd = {
   })),
 };
 ---
-<h2>Häufig gestellte Fragen (FAQ)</h2>
+{header && <h2>Häufig gestellte Fragen (FAQ)</h2>}
 <br />
 <section class="faq">
   {questions.map((question) => (
