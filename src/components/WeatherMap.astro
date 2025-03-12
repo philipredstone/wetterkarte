@@ -19,8 +19,6 @@ if (!center) {
 if (!zoom) {
   zoom = 8;
 }
-
-let borderRadius = type === "borderless" ? "0" : "8";
 ---
 
 <div
@@ -53,6 +51,15 @@ let borderRadius = type === "borderless" ? "0" : "8";
 
   .map-wrapper {
     position: relative;
+    height: 100%;
+    width: 100%;
+  }
+
+  .widget {
+    border-radius: 8px;
+  }
+
+  .widget #map {
     height: 100%;
     width: 100%;
   }
