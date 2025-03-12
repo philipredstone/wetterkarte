@@ -79,8 +79,6 @@ Leistungsstarke Supercomputer sind das Herzstück moderner Wettervorhersagen. Da
 
 Solche Technologien bilden die Grundlage für die praktische Nutzung von Temperaturprognosen.
 
-###### sbb-itb-f943d7c
-
 ## Temperaturvorhersagen lesen
 
 ### Tages- und Wochenvorhersagen
@@ -118,7 +116,7 @@ So nutzen Sie die Plattform optimal:
 
 ### Wetter-Apps und Webseiten
 
-Um präzise Temperaturprognosen zu erhalten, sollten Sie auf zuverlässige [Wetter-Apps und Webseiten](https://wetterkarte.org/datenschutz/) setzen. Die kostenlose WarnWetter-App des Deutschen Wetterdienstes (DWD) liefert detaillierte Vorhersagen basierend auf dem ICON-Modell. Mit der kostenpflichtigen Premiumversion stehen Ihnen zusätzliche Funktionen zur Verfügung [\[9\]](https://www.dwd.de/DE/service/dwd-apps/dwdapps_node.html).
+Um präzise Temperaturprognosen zu erhalten, sollten Sie auf zuverlässige Wetter-Apps und Webseiten setzen. Die kostenlose WarnWetter-App des Deutschen Wetterdienstes (DWD) liefert detaillierte Vorhersagen basierend auf dem ICON-Modell. Mit der kostenpflichtigen Premiumversion stehen Ihnen zusätzliche Funktionen zur Verfügung [\[9\]](https://www.dwd.de/DE/service/dwd-apps/dwdapps_node.html).
 
 Hier sind einige der besten Wetter-Apps und ihre Stärken:
 

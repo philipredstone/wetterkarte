@@ -19,7 +19,7 @@ image: "/stundliche-wetterdaten-wie-icon-d2-funktioniert.jpg"
 -   **Datenquellen**: Satelliten, Bodenmessungen und Radardaten.
 -   **Anwendungsbereiche**: Outdoor-Planung, Verkehr, Landwirtschaft, Energiewirtschaft.
 
-Das Modell kombiniert physikalische Berechnungen mit Echtzeitdaten und ist ideal für [kurzfristige Wetterprognosen](https://wetterkarte.org/sources/). Mit ICON-D2 können Sie Wetterlagen bis zu 48 Stunden im Voraus genau einschätzen – egal ob für persönliche oder geschäftliche Zwecke.
+Das Modell kombiniert physikalische Berechnungen mit Echtzeitdaten und ist ideal für [kurzfristige Wetterprognosen](https://wetterkarte.org/wetter/). Mit ICON-D2 können Sie Wetterlagen bis zu 48 Stunden im Voraus genau einschätzen – egal ob für persönliche oder geschäftliche Zwecke.
 
 ## Neuer Superrechner des Deutschen Wetterdienstes
 <iframe width="560" height="315" src="https://www.youtube.com/embed/1HBeQk-yU-M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -85,9 +85,7 @@ Die Windprognosen berücksichtigen sowohl Geschwindigkeit als auch Richtung in v
 
 ### Weitere Wettermessungen
 
-Zusätzlich zu Temperatur, Niederschlag, Wind und Wolken liefert das ICON-D2-Modell weitere [meteorologische Daten](https://wetterkarte.org/datenschutz/). Dank der mehrmals stündlichen Aktualisierungen sind präzise Vorhersagen für die nächsten 48 Stunden möglich [\[1\]](https://wetterkarte.org/). Diese Daten bilden die Grundlage für die praktische Nutzung, z. B. über die Plattformen des DWD und wetterkarte.org.
-
-###### sbb-itb-f943d7c
+Zusätzlich zu Temperatur, Niederschlag, Wind und Wolken liefert das ICON-D2-Modell weitere meteorologische Daten. Dank der mehrmals stündlichen Aktualisierungen sind präzise Vorhersagen für die nächsten 48 Stunden möglich [\[1\]](https://wetterkarte.org/). Diese Daten bilden die Grundlage für die praktische Nutzung, z. B. über die Plattformen des DWD und wetterkarte.org.
 
 ## ICON-D2-Daten finden und lesen
 
