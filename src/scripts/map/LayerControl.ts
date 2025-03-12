@@ -1,5 +1,5 @@
 import L from "leaflet";
-import '../styles/LayerControl.css';
+import '../../styles/LayerControl.css';
 
 export class LayerControl extends L.Control {
   private _container: HTMLElement;

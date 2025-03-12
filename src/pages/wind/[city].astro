@@ -6,7 +6,7 @@ import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 import Faq from "../../components/Faq.astro";
 import WeatherMap from "../../components/WeatherMap.astro";
-import { getCity, getStatics } from "../../scripts/city";
+import { getCity, getStatics } from "../../utils/city";
 import HorizontalNavigation from "../../components/HorizontalNavigation.astro";
 
 export async function getStaticPaths() {
@@ -45,7 +45,8 @@ const questions = [
       "Neben der durchschnittlichen Windgeschwindigkeit berücksichtigen wir auch Böen, die kurzzeitige Erhöhungen der Windgeschwindigkeit darstellen. Diese sind besonders wichtig für Warnungen vor stürmischen Bedingungen und werden in unseren Vorhersagen separat ausgewiesen.",
   },
   {
-    question: "Kann ich die Windvorhersage für Aktivitäten wie Segeln oder Kiten nutzen?",
+    question:
+      "Kann ich die Windvorhersage für Aktivitäten wie Segeln oder Kiten nutzen?",
     answer:
       "Ja, unsere detaillierten Windvorhersagen sind ideal für Wassersportaktivitäten, die von Windbedingungen abhängen. Beachten Sie jedoch, dass für professionelle Entscheidungen und Sicherheitsbelange zusätzliche, spezifische Wetterinformationen eingeholt werden sollten.",
   },
@@ -53,7 +54,7 @@ const questions = [
 ---
 
 <Layout title={title} description={description}>
-  <Header currentPath="/wind/"/>
+  <Header currentPath="/wind/" />
 
   <main>
     <section class="content-section">
@@ -65,12 +66,12 @@ const questions = [
           <HorizontalNavigation city={city.key} currentPath="wind" />
           <div class="card-body">
             <p>
-              Entdecken Sie unsere detaillierte Windvorhersage für {
-                city.name
-              }. Erfahren Sie, wie stark der Wind in Ihrer Region heute oder in den nächsten
-              sieben Tagen sein wird. Dank hochaktueller Wetterdaten, interaktiver Karten und
-              Windanimationen sind Sie bestens vorbereitet, um schnell und
-              sicher auf wechselnde Windbedingungen zu reagieren.
+              Entdecken Sie unsere detaillierte Windvorhersage für {city.name}.
+              Erfahren Sie, wie stark der Wind in Ihrer Region heute oder in den
+              nächsten sieben Tagen sein wird. Dank hochaktueller Wetterdaten,
+              interaktiver Karten und Windanimationen sind Sie bestens
+              vorbereitet, um schnell und sicher auf wechselnde Windbedingungen
+              zu reagieren.
             </p>
 
             <div
@@ -82,18 +83,31 @@ const questions = [
             >
               <div class="weather-status">
                 <div class="status-box">
-                  <span class="status-icon"><img src="/images/wind.svg" alt="Wind" height="48" width="48"></span>
+                  <span class="status-icon"
+                    ><img
+                      src="/images/wind.svg"
+                      alt="Wind"
+                      height="48"
+                      width="48"
+                    /></span
+                  >
                   <p id="wind-speed" class="status-text">
                     Wind-Daten werden geladen…&nbsp;
                   </p>
                 </div>
                 <div class="status-box">
-                  <span class="status-icon"><img src="/images/windsock.svg" alt="Windböen" height="48" width="48"></span>
+                  <span class="status-icon"
+                    ><img
+                      src="/images/windsock.svg"
+                      alt="Windböen"
+                      height="48"
+                      width="48"
+                    /></span
+                  >
                   <p id="wind-gusts" class="status-text">
                     Wind-Daten werden geladen…&nbsp;
                   </p>
                 </div>
-                
               </div>
               <div id="chart"></div>
             </div>
@@ -104,13 +118,13 @@ const questions = [
 
         <h2>Aktuelle Windkarte</h2>
         <br />
-          <WeatherMap
-            layerselect={false}
-            layer="wind"
-            type="widget"
-            center={[city.coords[0], city.coords[1]]}
-            marker={true}
-          />
+        <WeatherMap
+          layerselect={false}
+          layer="wind"
+          type="widget"
+          center={[city.coords[0], city.coords[1]]}
+          marker={true}
+        />
 
         <Faq questions={questions} />
       </article>
@@ -119,5 +133,109 @@ const questions = [
 
   <Footer />
 
-  <script src="../../scripts/wind.ts"></script>
+  <script>
+    import weatherApi from "../../scripts/weather/WeatherAPI";
+    import TimeLineChart from "../../scripts/charts/LineChart";
+
+
+    const weatherWidget = document.getElementById(
+      "weather-widget",
+    ) as HTMLElement;
+
+    const lat = weatherWidget.getAttribute("data-lat")!;
+    const lng = weatherWidget.getAttribute("data-lng")!;
+    const cityName = weatherWidget.getAttribute("data-city")!;
+
+    function formatWindDirection(degrees: number): string {
+      const directions = [
+        "Norden",
+        "Nordosten",
+        "Osten",
+        "Südosten",
+        "Süden",
+        "Südwesten",
+        "Westen",
+        "Nordwesten",
+      ];
+      const index = Math.round(degrees / 45) % 8;
+      return directions[index];
+    }
+
+    async function fetchWeather(): Promise<void> {
+      try {
+        let weatherData = await weatherApi.getWeather({
+          latitude: parseFloat(lat),
+          longitude: parseFloat(lng),
+          current: [
+            "wind_speed_10m",
+            "wind_direction_10m",
+            "wind_gusts_10m",
+          ] as const,
+          hourly: [
+            "wind_speed_10m",
+            "wind_direction_10m",
+            "wind_gusts_10m",
+          ] as const,
+          forecastDays: 7,
+          pastDays: 1,
+        });
+
+        const currentWindSpeed = weatherData.current.wind_speed_10m;
+        const currentWindDirection = weatherData.current.wind_direction_10m;
+        const currentWindGusts = weatherData.current.wind_gusts_10m;
+        const currentTime = new Date(weatherData.current.time);
+
+        const windSpeedElement = document.getElementById(
+          "wind-speed",
+        ) as HTMLElement;
+        windSpeedElement.innerHTML = `
+        Windgeschwindigkeit in ${cityName}: <strong>${currentWindSpeed} m/s</strong> aus ${formatWindDirection(currentWindDirection)}
+      `;
+
+        const windGustsElement = document.getElementById(
+          "wind-gusts",
+        ) as HTMLElement;
+        windGustsElement.innerHTML = `
+        Böen in ${cityName}: <strong>${currentWindGusts} m/s</strong> aus ${formatWindDirection(currentWindDirection)}
+        `;
+
+        const graphData = [];
+
+        for (let i = 20; i < weatherData.hourly.time.length; i++) {
+          graphData.push({
+            date: new Date(weatherData.hourly.time[i]),
+            value: weatherData.hourly.wind_speed_10m[i],
+          });
+        }
+
+        const container = document.getElementById("chart");
+        if (container) {
+          const chart = new TimeLineChart(container, graphData, {
+            width: 800,
+            height: 350,
+            valueLabel: "Windgeschwindigkeit",
+            valueUnit: "m/s",
+            showPoints: false,
+            smoothing: "cardinal",
+            smoothingTension: 0.7,
+          });
+          chart.render();
+        }
+
+        const updateInfoElement = document.getElementById(
+          "update-info",
+        ) as HTMLElement;
+        const formattedTime = currentTime.toLocaleTimeString("de-DE", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        updateInfoElement.innerHTML = `Letzte Aktualisierung: <time datetime="${currentTime.toISOString()}">${formattedTime}</time> Uhr`;
+      } catch (error) {
+        console.error("Fehler beim Laden der Wetterdaten:", error);
+        weatherWidget.innerHTML = `<p>Wetterdaten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.</p>`;
+      }
+    }
+
+    fetchWeather();
+  </script>
 </Layout>

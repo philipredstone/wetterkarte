@@ -6,7 +6,7 @@ import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 import Faq from "../../components/Faq.astro";
 import WeatherMap from "../../components/WeatherMap.astro";
-import { getCity, getStatics } from "../../scripts/city";
+import { getCity, getStatics } from "../../utils/city";
 import HorizontalNavigation from "../../components/HorizontalNavigation.astro";
 
 export async function getStaticPaths() {
@@ -53,7 +53,7 @@ const questions = [
 ---
 
 <Layout title={title} description={description}>
-  <Header currentPath="/gewitter/"/>
+  <Header currentPath="/gewitter/" />
 
   <main>
     <section class="content-section">
@@ -83,7 +83,14 @@ const questions = [
             >
               <div class="weather-status">
                 <div class="status-box">
-                  <span class="status-icon"><img src="/images/lightning-bolt.svg" alt="Gewitter" height="48" width="48"></span>
+                  <span class="status-icon"
+                    ><img
+                      src="/images/lightning-bolt.svg"
+                      alt="Gewitter"
+                      height="48"
+                      width="48"
+                    /></span
+                  >
                   <p id="today-message" class="status-text">
                     Gewitter-Daten werden geladen…&nbsp;
                   </p>
@@ -102,13 +109,13 @@ const questions = [
 
         <h2>Live Regenradar</h2>
         <br />
-          <WeatherMap
-            layerselect={false}
-            layer="radar"
-            type="widget"
-            center={[city.coords[0], city.coords[1]]}
-            marker={true}
-          />
+        <WeatherMap
+          layerselect={false}
+          layer="radar"
+          type="widget"
+          center={[city.coords[0], city.coords[1]]}
+          marker={true}
+        />
 
         <Faq questions={questions} />
       </article>
@@ -117,5 +124,87 @@ const questions = [
 
   <Footer />
 
-  <script src="../../scripts/gewitter.ts"></script>
+  <script>
+    import weatherApi from "../../scripts/weather/WeatherAPI";
+
+    const weatherWidget = document.getElementById(
+      "weather-widget",
+    ) as HTMLElement;
+
+    const lat = weatherWidget.getAttribute("data-lat")!;
+    const lng = weatherWidget.getAttribute("data-lng")!;
+
+    async function fetchWeather(): Promise<void> {
+      try {
+        let weatherData = await weatherApi.getWeather({
+          latitude: parseFloat(lat),
+          longitude: parseFloat(lng),
+          current: ["weather_code"] as const,
+          daily: ["weather_code"] as const,
+          hourly: ["weather_code"] as const,
+          forecastDays: 7,
+        });
+
+        const now = new Date();
+        const midnight = new Date(now);
+        midnight.setHours(24, 0, 0, 0);
+
+        const todayThunderIndex = weatherData.hourly.time.findIndex(
+          (timeStr, i) => {
+            const hourTime = new Date(timeStr);
+            return (
+              hourTime >= now &&
+              hourTime < midnight &&
+              [95, 96, 99].includes(weatherData.hourly.weather_code[i])
+            );
+          },
+        );
+
+        let todayMessage = "Heute bleibt es gewitterfrei.";
+        if (todayThunderIndex !== -1) {
+          const thunderTime = new Date(
+            weatherData.hourly.time[todayThunderIndex],
+          );
+          const formattedTime = thunderTime.toLocaleTimeString("de-DE", {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+          todayMessage = `Heute wird es um ${formattedTime} gewittern.`;
+        }
+
+        const thunder7Days =
+          weatherData.daily.weather_code?.some((code) =>
+            [95, 96, 99].includes(code),
+          ) ?? false;
+
+        const sevenDayMessage = thunder7Days
+          ? "In den nächsten 7 Tagen wird es an mindestens einem Tag gewittern."
+          : "In den nächsten 7 Tagen bleibt es gewitterfrei.";
+
+        const currentTime = new Date(weatherData.current.time);
+        const formattedTime = currentTime.toLocaleTimeString("de-DE", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        const todayMessageElement = document.getElementById("today-message");
+        if (todayMessageElement) todayMessageElement.innerHTML = todayMessage;
+
+        const sevenDayMessageElement =
+          document.getElementById("seven-day-message");
+        if (sevenDayMessageElement)
+          sevenDayMessageElement.innerHTML = sevenDayMessage;
+
+        const updateInfoElement = document.getElementById("update-info");
+        if (updateInfoElement) {
+          updateInfoElement.innerHTML = `Letzte Aktualisierung: <time datetime="${currentTime.toISOString()}">${formattedTime}</time> Uhr`;
+        }
+      } catch (error) {
+        console.error("Fehler beim Laden der Wetterdaten:", error);
+        weatherWidget.innerHTML = `<p>Wetterdaten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.</p>`;
+      }
+    }
+
+    fetchWeather();
+  </script>
 </Layout>

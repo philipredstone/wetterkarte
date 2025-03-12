@@ -7,10 +7,41 @@ import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 import Faq from "../../components/Faq.astro";
-import { getCity, getStatics } from "../../scripts/city";
+import { getCity, getStatics } from "../../utils/city";
 import HorizontalNavigation from "../../components/HorizontalNavigation.astro";
+import { point, booleanPointInPolygon } from "@turf/turf";
 
-import { findPolygonFeaturesAtPoint } from "../../scripts/polygon";
+function findPolygonFeaturesAtPoint(
+  featureCollection: any,
+  latLng: {lat: number, lng: number}
+): any[] {
+  const tPoint = point([latLng.lng, latLng.lat]);
+  const result: any[] = [];
+  
+  const features = featureCollection.features || 
+                   (featureCollection.type === 'Feature' ? [featureCollection] : []);
+  
+  for (const feature of features) {
+    if (!feature.geometry) continue;
+    
+    const geomType = feature.geometry.type;
+    if (geomType !== 'Polygon' && geomType !== 'MultiPolygon') {
+      continue;
+    }
+    
+    try {
+      const isInside = booleanPointInPolygon(tPoint, feature);
+      
+      if (isInside) {
+        result.push(feature);
+      }
+    } catch (error) {
+      console.error('Error checking if point is in polygon:', error);
+    }
+  }
+  
+  return result;
+}
 
 export async function getStaticPaths() {
   return getStatics();
@@ -969,7 +1000,7 @@ const questions = [
 
   <Footer />
 
-  <script src="../../scripts/pollen.ts"></script>
+  <script src="../../scripts/weather/pollen.ts"></script>
 </Layout>
 
 <style>

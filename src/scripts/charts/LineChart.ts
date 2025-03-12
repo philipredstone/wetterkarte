@@ -20,10 +20,10 @@ interface TimeLineData {
     lineWidth?: number;
     pointSize?: number;
     smoothing?: 'none' | 'bezier' | 'cardinal';
-    smoothingTension?: number; // Controls curve tightness (0-1)
+    smoothingTension?: number;
   }
   
-  export class TimeLineChart {
+  export default class TimeLineChart {
     private container: HTMLElement;
     private data: TimeLineData[];
     private options: Required<TimeLineChartOptions>;

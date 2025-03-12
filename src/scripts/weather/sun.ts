@@ -1,5 +1,5 @@
 import { getSunrise, getSunset } from 'sunrise-sunset-js';
-import { TimeBarChart } from "./BarChart";
+import TimeBarChart from "../charts/BarChart";
 
 interface SolarDay {
   date: Date;
@@ -12,23 +12,11 @@ interface SolarDay {
   solarNoon: Date | null;
 }
 
-interface YearData {
-  days: SolarDay[];
-  summerSolstice: Date | null;
-  winterSolstice: Date | null;
-  springEquinox: Date | null;
-  fallEquinox: Date | null;
-  longestDay: number;
-  shortestDay: number;
-}
-
-// Format time as HH:MM
 function formatTime(date: Date | null): string {
   if (!date) return 'N/A';
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-// Format hours as HH:MM
 function formatHours(hours: number | null): string {
   if (hours === null) return 'N/A';
   const h = Math.floor(hours);
@@ -36,14 +24,12 @@ function formatHours(hours: number | null): string {
   return `${h} Std ${m} Min`;
 }
 
-// Calculate day length in hours from sunrise and sunset
 function calculateDayLength(sunrise: Date | null, sunset: Date | null): number | null {
   if (!sunrise || !sunset) return null;
   const diff = sunset.getTime() - sunrise.getTime();
-  return diff / (1000 * 60 * 60); // convert ms to hours
+  return diff / (1000 * 60 * 60);
 }
 
-// Calculate civil twilight (simplified approximation - sun 6 degrees below horizon)
 function getCivilTwilight(lat: number, lng: number, date: Date, isMorning: boolean): Date | null {
   const baseDate = new Date(date);
   const sunrise = getSunrise(lat, lng, baseDate);
@@ -51,8 +37,6 @@ function getCivilTwilight(lat: number, lng: number, date: Date, isMorning: boole
 
   if (!sunrise || !sunset) return null;
 
-  // Civil twilight is roughly 30 minutes before sunrise or after sunset
-  // This is an approximation - a real calculation would use solar position formulas
   if (isMorning) {
     const civilTwilight = new Date(sunrise);
     civilTwilight.setMinutes(civilTwilight.getMinutes() - 30);
@@ -64,7 +48,6 @@ function getCivilTwilight(lat: number, lng: number, date: Date, isMorning: boole
   }
 }
 
-// Calculate solar noon (midpoint between sunrise and sunset)
 function getSolarNoon(lat: number, lng: number, date: Date): Date | null {
   const sunrise = getSunrise(lat, lng, date);
   const sunset = getSunset(lat, lng, date);
@@ -75,7 +58,6 @@ function getSolarNoon(lat: number, lng: number, date: Date): Date | null {
   return noonTime;
 }
 
-// Get all solar events for a year
 function getSolarEventsForYear(latitude: number, longitude: number, year: number): SolarDay[] {
   const results: SolarDay[] = [];
   const daysInYear = (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)) ? 366 : 365;
@@ -96,27 +78,25 @@ function getSolarEventsForYear(latitude: number, longitude: number, year: number
       sunrise,
       sunset,
       dayLength,
-      dayLengthChange: 0, // Will be calculated in a second pass
+      dayLengthChange: 0,
       civilDawn,
       civilDusk,
       solarNoon
     });
   }
 
-  // Calculate day length change
   for (let i = 1; i < results.length; i++) {
     const prevDayLength = results[i - 1].dayLength;
     const currentDayLength = results[i].dayLength;
 
     if (prevDayLength !== null && currentDayLength !== null) {
-      results[i].dayLengthChange = (currentDayLength - prevDayLength) * 60; // Convert to minutes
+      results[i].dayLengthChange = (currentDayLength - prevDayLength) * 60;
     }
   }
 
   return results;
 }
 
-// Find equinoxes and solstices (approximate)
 function findSignificantDates(data: SolarDay[]): {
   summerSolstice: Date | null;
   winterSolstice: Date | null;
@@ -125,7 +105,6 @@ function findSignificantDates(data: SolarDay[]): {
   longestDay: number;
   shortestDay: number;
 } {
-  // Find max and min day lengths for solstices
   let maxDayLength = -Infinity;
   let minDayLength = Infinity;
   let maxIndex = 0;
@@ -144,7 +123,6 @@ function findSignificantDates(data: SolarDay[]): {
     }
   });
 
-  // Approximation for equinoxes (days when day length is closest to 12 hours)
   const springEquinoxIndex = data.findIndex((day, index) =>
     index > 31 && index < 180 && day.dayLength !== null && Math.abs(day.dayLength - 12) < 0.2);
 
@@ -166,7 +144,6 @@ function formatGermanDate(date: Date | null): string {
   return date.toLocaleDateString('de-DE', { day: 'numeric', month: 'long' });
 }
 
-// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   const sunWidget = document.getElementById('sun-widget');
 
@@ -174,9 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const lat = parseFloat(sunWidget.getAttribute('data-lat') || '0');
   const lng = parseFloat(sunWidget.getAttribute('data-lng') || '0');
-  const cityName = sunWidget.getAttribute('data-city') || '';
 
-  // Get DOM elements
   const sunriseTimeEl = document.getElementById('sunrise-time');
   const sunsetTimeEl = document.getElementById('sunset-time');
   const dayLengthEl = document.getElementById('day-length');
@@ -191,11 +166,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const winterSolsticeEl = document.getElementById('winter-solstice');
   const updateInfoEl = document.getElementById('update-info');
 
-  // Get current date and time
   const now = new Date();
   const currentYear = now.getFullYear();
 
-  // Get today's solar data
   const today = new Date();
   const sunrise = getSunrise(lat, lng, today);
   const sunset = getSunset(lat, lng, today);
@@ -204,25 +177,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const civilDusk = getCivilTwilight(lat, lng, today, false);
   const solarNoon = getSolarNoon(lat, lng, today);
 
-  // Yesterday's data for day length change
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdaySunrise = getSunrise(lat, lng, yesterday);
   const yesterdaySunset = getSunset(lat, lng, yesterday);
   const yesterdayDayLength = calculateDayLength(yesterdaySunrise, yesterdaySunset);
 
-  // Calculate day length change
   let dayLengthChange = 0;
   if (dayLength !== null && yesterdayDayLength !== null) {
-    dayLengthChange = (dayLength - yesterdayDayLength) * 60; // in minutes
+    dayLengthChange = (dayLength - yesterdayDayLength) * 60;
   }
 
-  // Calculate year data for seasonal events
   const yearData = getSolarEventsForYear(lat, lng, currentYear);
   const significantDates = findSignificantDates(yearData);
 
-  // Determine next solstice or equinox
-  let nextEvent = { name: '', date: null };
+  let nextEvent: { name: string; date: Date | null } = { name: '', date: null };
   const events = [
     { name: 'Frühlings-Tagundnachtgleiche', date: significantDates.springEquinox },
     { name: 'Sommersonnenwende', date: significantDates.summerSolstice },
@@ -237,12 +206,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // If we're past all events for this year, the next one is spring equinox of next year
   if (!nextEvent.date) {
     nextEvent = { name: 'Frühlings-Tagundnachtgleiche', date: new Date(currentYear + 1, 2, 20) };
   }
 
-  // Update DOM elements with solar data
   if (sunriseTimeEl) sunriseTimeEl.textContent = formatTime(sunrise);
   if (sunsetTimeEl) sunsetTimeEl.textContent = formatTime(sunset);
   if (dayLengthEl) dayLengthEl.textContent = formatHours(dayLength);
@@ -267,7 +234,6 @@ document.addEventListener('DOMContentLoaded', () => {
     updateInfoEl.textContent = `Letzte Aktualisierung: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} Uhr`;
   }
 
-  // Add styles based on time of day
   const currentTime = now.getTime();
   if (sunrise && sunset) {
     const isDaytime = currentTime > sunrise.getTime() && currentTime < sunset.getTime();
@@ -277,35 +243,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (sunriseBox && sunsetBox) {
       if (isDaytime) {
-        // It's daytime
         sunriseBox.classList.add('past-event');
         if (currentTime > solarNoon?.getTime()!) {
-          // It's afternoon
           sunsetBox.classList.add('upcoming-event');
         }
       } else {
-        // It's nighttime
         if (currentTime < sunrise.getTime()) {
-          // It's before sunrise
           sunriseBox.classList.add('upcoming-event');
         } else {
-          // It's after sunset
           sunsetBox.classList.add('past-event');
         }
       }
     }
   }
 
-  // Initialize the chart (if available)
   initializeChart(yearData);
 });
 
-// Initialize chart to show day length throughout the year
 function initializeChart(yearData: SolarDay[]): void {
   const chartContainer = document.getElementById('chart');
   if (!chartContainer) return;
 
-  // Format data for the chart
   const graphData = [];
   for (let i = 0; i < yearData.length; i += 15) {
     if (yearData[i].dayLength !== null) {
@@ -320,7 +278,6 @@ function initializeChart(yearData: SolarDay[]): void {
     }
   }
 
-  // Create and render the chart
   if (graphData.length > 0) {
     const chart = new TimeBarChart(chartContainer, graphData, {
       width: 800,

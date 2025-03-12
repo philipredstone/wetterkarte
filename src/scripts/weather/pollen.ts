@@ -39,8 +39,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-
-
     let fetched = await fetch(`https://cdn.wetterkarte.org/pollen/${pollenRegion}.json`)
     let pollenJson = (await fetched.json()) as APIPollenData
 

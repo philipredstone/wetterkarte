@@ -5,7 +5,7 @@ import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 import Faq from "../../components/Faq.astro";
-import { getCity, getStatics } from "../../scripts/city";
+import { getCity, getStatics } from "../../utils/city";
 import HorizontalNavigation from "../../components/HorizontalNavigation.astro";
 
 export async function getStaticPaths() {
@@ -136,5 +136,80 @@ const questions = [
 
   <Footer />
 
-  <script src="../../scripts/uv.ts"></script>
+  <script>
+    import weatherApi from "../../scripts/weather/WeatherAPI";
+
+    const weatherWidget = document.getElementById(
+      "weather-widget",
+    ) as HTMLElement;
+
+    const lat = weatherWidget.getAttribute("data-lat")!;
+    const lng = weatherWidget.getAttribute("data-lng")!;
+    const cityName = weatherWidget.getAttribute("data-city")!;
+
+    async function fetchWeather(): Promise<void> {
+      try {
+        let weatherData = await weatherApi.getWeather({
+          latitude: parseFloat(lat),
+          longitude: parseFloat(lng),
+          hourly: ["uv_index"] as const,
+          forecastDays: 1,
+        });
+
+        const now = new Date();
+        let currentIndex = weatherData.hourly.time.findIndex((t) => new Date(t) >= now);
+        if (currentIndex === -1) {
+            currentIndex = weatherData.hourly.time.length - 1;
+        }
+        const currentUv = weatherData.hourly.uv_index[currentIndex];
+        const currentTime = new Date(weatherData.hourly.time[currentIndex]);
+
+        let recommendation = "";
+        let uvBoxColor = "";
+        let uvBoxBorderColor = "";
+
+        if (currentUv <= 2) {
+            recommendation = "<strong>Geringes Risiko</strong><br />In der Regel ist kein besonderer Sonnenschutz nötig.";
+            uvBoxColor = "#daf5da";
+            uvBoxBorderColor = "#bbf0bb";
+        } else if (currentUv < 6) {
+            recommendation = "<strong>Mäßiges Risiko</strong><br />Bei längerer Sonnenexposition sollte ein leichter Sonnenschutz verwendet werden.";
+            uvBoxColor = "#fff8cd";
+            uvBoxBorderColor = "#e6e0c7";
+        } else if (currentUv < 8) {
+            recommendation = "<strong>Hohes Risiko</strong><br />schützen Sie sich mit geeigneter Kleidung und Sonnencreme.";
+            uvBoxColor = "#ffe4c4";
+            uvBoxBorderColor = "#e9d6c0";
+        } else if (currentUv < 11) {
+            recommendation = "<strong>Sehr hohes Risiko</strong><br />meiden Sie, wenn möglich, die direkte Sonne.";
+            uvBoxColor = "#ffc9c9";
+            uvBoxBorderColor = "#f2c9c9";
+        } else {
+            recommendation = "<strong>Extrem hohes Risiko</strong><br />bleiben Sie im Schatten und vermeiden Sie direkte Sonneneinstrahlung.";
+            uvBoxColor = "#f2c9ff";
+            uvBoxBorderColor = "#c9b9ff";
+        }
+
+        const uvMessageElement = document.getElementById("uv-message") as HTMLElement;
+        uvMessageElement.innerHTML = `${recommendation}`;
+        const uvIndexElement = document.getElementById("uv-index") as HTMLElement;
+        uvIndexElement.innerHTML = `UV-Index in ${cityName}: <strong>${currentUv}</strong>`;
+
+
+        
+        const uvBoxElement = document.getElementById("uv-box") as HTMLElement;
+        uvBoxElement.style.backgroundColor = uvBoxColor;
+        uvBoxElement.style.border = `1px solid ${uvBoxBorderColor}`;
+
+        const updateInfoElement = document.getElementById("update-info") as HTMLElement;
+        const formattedTime = currentTime.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+        updateInfoElement.innerHTML = `Letzte Aktualisierung: <time datetime="${currentTime.toISOString()}">${formattedTime}</time> Uhr`;
+      } catch (error) {
+        console.error("Fehler beim Laden der Wetterdaten:", error);
+        weatherWidget.innerHTML = `<p>Wetterdaten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.</p>`;
+      }
+    }
+
+    fetchWeather();
+  </script>
 </Layout>

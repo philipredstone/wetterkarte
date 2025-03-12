@@ -19,7 +19,7 @@ interface TimeBarChartOptions {
   showTimeInTooltip?: boolean;
 }
 
-export class TimeBarChart {
+export default class TimeBarChart {
   private container: HTMLElement;
   private data: TimeBarData[];
   private options: Required<TimeBarChartOptions>;

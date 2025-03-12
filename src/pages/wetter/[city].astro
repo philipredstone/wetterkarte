@@ -7,7 +7,7 @@ import Footer from "../../components/Footer.astro";
 import HorizontalNavigation from "../../components/HorizontalNavigation.astro";
 import Faq from "../../components/Faq.astro";
 import WeatherWidget from "../../components/WeatherWidget.astro";
-import { getCity, getStatics } from "../../scripts/city";
+import { getCity, getStatics } from "../../utils/city";
 
 export async function getStaticPaths() {
   return getStatics();

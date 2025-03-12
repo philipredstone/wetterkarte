@@ -5,7 +5,7 @@ import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
 import Faq from "../../components/Faq.astro";
-import { getCity, getStatics } from "../../scripts/city";
+import { getCity, getStatics } from "../../utils/city";
 import HorizontalNavigation from "../../components/HorizontalNavigation.astro";
 
 export async function getStaticPaths() {
@@ -177,5 +177,5 @@ const questions = [
 
   <Footer />
 
-  <script src="../../scripts/sun.ts"></script>
+  <script src="../../scripts/weather/sun.ts"></script>
 </Layout>
