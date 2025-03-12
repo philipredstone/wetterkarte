@@ -19,7 +19,8 @@ const description = `Luftqualitätsindex heute in ${city.name}: Aktuelle Luftqua
 
 const questions = [
   {
-    question: "Welche Datenquellen werden für die Luftqualitätsvorhersage genutzt?",
+    question:
+      "Welche Datenquellen werden für die Luftqualitätsvorhersage genutzt?",
     answer:
       "Für präzise Luftqualitätsvorhersagen greifen wir auf Daten des Europäischen Copernicus-Programms (CAMS) sowie lokale Messungen zurück. Diese Kombination ermöglicht es uns, die Luftqualität zuverlässig zu prognostizieren.",
   },
@@ -67,8 +68,8 @@ const questions = [
             <p>
               Entdecken Sie die aktuelle Luftqualität in {city.name} und die Prognose
               für die kommenden Tage. Unsere Daten liefern präzise Informationen
-              über Schadstoffe in der Luft - ideal, um Outdoor-Aktivitäten entsprechend zu planen
-              und Ihre Gesundheit zu schützen.
+              über Schadstoffe in der Luft - ideal, um Outdoor-Aktivitäten entsprechend
+              zu planen und Ihre Gesundheit zu schützen.
             </p>
 
             <div
@@ -80,7 +81,14 @@ const questions = [
             >
               <div class="weather-status">
                 <div class="status-box" id="aqi-box">
-                  <span class="status-icon"><img src="/images/aqi.svg" alt="Luftqualitätsindex" height="32" width="32"></span>
+                  <span class="status-icon"
+                    ><img
+                      src="/images/aqi.svg"
+                      alt="Luftqualitätsindex"
+                      height="32"
+                      width="32"
+                    /></span
+                  >
                   <p id="aqi-index" class="status-text">
                     Luftqualitätsdaten werden geladen…&nbsp;
                   </p>
@@ -92,7 +100,7 @@ const questions = [
                 </div>
               </div>
             </div>
-            
+
             <p class="update-info" id="update-info">&nbsp;</p>
 
             <div class="aqi-level-explanation">
@@ -134,5 +142,95 @@ const questions = [
 
   <Footer />
 
-  <script src="../../scripts/weather/airquality.ts"></script>
+  <script>
+    import { airQualityApi } from "../../scripts/weather/WeatherAPI";
+
+    const weatherWidget = document.getElementById(
+      "weather-widget",
+    ) as HTMLElement;
+
+    const lat = weatherWidget.getAttribute("data-lat")!;
+    const lng = weatherWidget.getAttribute("data-lng")!;
+    const cityName = weatherWidget.getAttribute("data-city")!;
+
+    async function fetchAqiData(): Promise<void> {
+      try {
+        const aqiData = await airQualityApi.getAirQuality({
+          latitude: parseFloat(lat),
+          longitude: parseFloat(lng),
+          current: ["european_aqi"] as const,
+          hourly: ["european_aqi"] as const,
+          domains: "cams_europe",
+          timezone: "auto",
+        });
+
+        let currentAqi = aqiData.current.european_aqi;
+        let currentTime = new Date(aqiData.current.time);
+
+        let recommendation = "";
+        let aqiBoxColor = "";
+        let aqiBoxBorderColor = "";
+
+        if (currentAqi <= 20) {
+          recommendation =
+            "<strong>Sehr gut</strong><br />Die Luftqualität ist sehr gut. Perfekt für Outdoor-Aktivitäten.";
+          aqiBoxColor = "#c3eaa3";
+          aqiBoxBorderColor = "#b0d890";
+        } else if (currentAqi <= 40) {
+          recommendation =
+            "<strong>Gut</strong><br />Die Luftqualität ist gut. Ein guter Tag für Outdoor-Aktivitäten.";
+          aqiBoxColor = "#ffe5a3";
+          aqiBoxBorderColor = "#ead48f";
+        } else if (currentAqi <= 60) {
+          recommendation =
+            "<strong>Mäßig</strong><br />Die Luftqualität ist mäßig. Empfindliche Personen sollten längere Aktivitäten im Freien einschränken.";
+          aqiBoxColor = "#ffd2a8";
+          aqiBoxBorderColor = "#eac197";
+        } else if (currentAqi <= 80) {
+          recommendation =
+            "<strong>Schlecht</strong><br />Die Luftqualität ist schlecht. Reduzieren Sie Aktivitäten im Freien.";
+          aqiBoxColor = "#ffb3b3";
+          aqiBoxBorderColor = "#eaa2a2";
+        } else if (currentAqi <= 100) {
+          recommendation =
+            "<strong>Sehr schlecht</strong><br />Die Luftqualität ist sehr schlecht. Vermeiden Sie Aktivitäten im Freien.";
+          aqiBoxColor = "#d4c1e0";
+          aqiBoxBorderColor = "#c3b0cf";
+        } else {
+          recommendation =
+            "<strong>Extrem schlecht</strong><br />Die Luftqualität ist extrem schlecht. Bleiben Sie drinnen und schließen Sie Fenster.";
+          aqiBoxColor = "#eaa6c7";
+          aqiBoxBorderColor = "#d995b6";
+        }
+
+        const aqiMessageElement = document.getElementById(
+          "aqi-message",
+        ) as HTMLElement;
+        aqiMessageElement.innerHTML = `${recommendation}`;
+
+        const aqiIndexElement = document.getElementById(
+          "aqi-index",
+        ) as HTMLElement;
+        aqiIndexElement.innerHTML = `Luftqualitätsindex in ${cityName}: <strong>${currentAqi}</strong>`;
+
+        const aqiBoxElement = document.getElementById("aqi-box") as HTMLElement;
+        aqiBoxElement.style.backgroundColor = aqiBoxColor;
+        aqiBoxElement.style.border = `1px solid ${aqiBoxBorderColor}`;
+
+        const updateInfoElement = document.getElementById(
+          "update-info",
+        ) as HTMLElement;
+        const formattedTime = currentTime.toLocaleTimeString("de-DE", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        updateInfoElement.innerHTML = `Letzte Aktualisierung: <time datetime="${currentTime.toISOString()}">${formattedTime} Uhr</time>`;
+      } catch (error) {
+        console.error("Fehler beim Laden der Luftqualitätsdaten:", error);
+        weatherWidget.innerHTML = `<p>Luftqualitätsdaten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.</p>`;
+      }
+    }
+
+    fetchAqiData();
+  </script>
 </Layout>

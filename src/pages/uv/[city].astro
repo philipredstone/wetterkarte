@@ -85,7 +85,14 @@ const questions = [
             >
               <div class="weather-status">
                 <div class="status-box" id="uv-box">
-                  <span class="status-icon"><img src="/images/uv-index.svg" alt="UV-Index" height="32" width="32"></span>
+                  <span class="status-icon"
+                    ><img
+                      src="/images/uv-index.svg"
+                      alt="UV-Index"
+                      height="32"
+                      width="32"
+                    /></span
+                  >
                   <p id="uv-index" class="status-text">
                     UV-Daten werden geladen…&nbsp;
                   </p>
@@ -97,7 +104,6 @@ const questions = [
                 </div>
               </div>
             </div>
-            
 
             <p class="update-info" id="update-info">&nbsp;</p>
 
@@ -137,7 +143,7 @@ const questions = [
   <Footer />
 
   <script>
-    import weatherApi from "../../scripts/weather/WeatherAPI";
+    import { weatherApi } from "../../scripts/weather/WeatherAPI";
 
     const weatherWidget = document.getElementById(
       "weather-widget",
@@ -157,9 +163,11 @@ const questions = [
         });
 
         const now = new Date();
-        let currentIndex = weatherData.hourly.time.findIndex((t) => new Date(t) >= now);
+        let currentIndex = weatherData.hourly.time.findIndex(
+          (t) => new Date(t) >= now,
+        );
         if (currentIndex === -1) {
-            currentIndex = weatherData.hourly.time.length - 1;
+          currentIndex = weatherData.hourly.time.length - 1;
         }
         const currentUv = weatherData.hourly.uv_index[currentIndex];
         const currentTime = new Date(weatherData.hourly.time[currentIndex]);
@@ -169,40 +177,52 @@ const questions = [
         let uvBoxBorderColor = "";
 
         if (currentUv <= 2) {
-            recommendation = "<strong>Geringes Risiko</strong><br />In der Regel ist kein besonderer Sonnenschutz nötig.";
-            uvBoxColor = "#daf5da";
-            uvBoxBorderColor = "#bbf0bb";
+          recommendation =
+            "<strong>Geringes Risiko</strong><br />In der Regel ist kein besonderer Sonnenschutz nötig.";
+          uvBoxColor = "#daf5da";
+          uvBoxBorderColor = "#bbf0bb";
         } else if (currentUv < 6) {
-            recommendation = "<strong>Mäßiges Risiko</strong><br />Bei längerer Sonnenexposition sollte ein leichter Sonnenschutz verwendet werden.";
-            uvBoxColor = "#fff8cd";
-            uvBoxBorderColor = "#e6e0c7";
+          recommendation =
+            "<strong>Mäßiges Risiko</strong><br />Bei längerer Sonnenexposition sollte ein leichter Sonnenschutz verwendet werden.";
+          uvBoxColor = "#fff8cd";
+          uvBoxBorderColor = "#e6e0c7";
         } else if (currentUv < 8) {
-            recommendation = "<strong>Hohes Risiko</strong><br />schützen Sie sich mit geeigneter Kleidung und Sonnencreme.";
-            uvBoxColor = "#ffe4c4";
-            uvBoxBorderColor = "#e9d6c0";
+          recommendation =
+            "<strong>Hohes Risiko</strong><br />schützen Sie sich mit geeigneter Kleidung und Sonnencreme.";
+          uvBoxColor = "#ffe4c4";
+          uvBoxBorderColor = "#e9d6c0";
         } else if (currentUv < 11) {
-            recommendation = "<strong>Sehr hohes Risiko</strong><br />meiden Sie, wenn möglich, die direkte Sonne.";
-            uvBoxColor = "#ffc9c9";
-            uvBoxBorderColor = "#f2c9c9";
+          recommendation =
+            "<strong>Sehr hohes Risiko</strong><br />meiden Sie, wenn möglich, die direkte Sonne.";
+          uvBoxColor = "#ffc9c9";
+          uvBoxBorderColor = "#f2c9c9";
         } else {
-            recommendation = "<strong>Extrem hohes Risiko</strong><br />bleiben Sie im Schatten und vermeiden Sie direkte Sonneneinstrahlung.";
-            uvBoxColor = "#f2c9ff";
-            uvBoxBorderColor = "#c9b9ff";
+          recommendation =
+            "<strong>Extrem hohes Risiko</strong><br />bleiben Sie im Schatten und vermeiden Sie direkte Sonneneinstrahlung.";
+          uvBoxColor = "#f2c9ff";
+          uvBoxBorderColor = "#c9b9ff";
         }
 
-        const uvMessageElement = document.getElementById("uv-message") as HTMLElement;
+        const uvMessageElement = document.getElementById(
+          "uv-message",
+        ) as HTMLElement;
         uvMessageElement.innerHTML = `${recommendation}`;
-        const uvIndexElement = document.getElementById("uv-index") as HTMLElement;
+        const uvIndexElement = document.getElementById(
+          "uv-index",
+        ) as HTMLElement;
         uvIndexElement.innerHTML = `UV-Index in ${cityName}: <strong>${currentUv}</strong>`;
 
-
-        
         const uvBoxElement = document.getElementById("uv-box") as HTMLElement;
         uvBoxElement.style.backgroundColor = uvBoxColor;
         uvBoxElement.style.border = `1px solid ${uvBoxBorderColor}`;
 
-        const updateInfoElement = document.getElementById("update-info") as HTMLElement;
-        const formattedTime = currentTime.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+        const updateInfoElement = document.getElementById(
+          "update-info",
+        ) as HTMLElement;
+        const formattedTime = currentTime.toLocaleTimeString("de-DE", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
         updateInfoElement.innerHTML = `Letzte Aktualisierung: <time datetime="${currentTime.toISOString()}">${formattedTime}</time> Uhr`;
       } catch (error) {
         console.error("Fehler beim Laden der Wetterdaten:", error);

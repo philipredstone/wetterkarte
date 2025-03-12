@@ -146,7 +146,7 @@ const questions = [
   <Footer />
 
   <script>
-    import weatherApi from "../../scripts/weather/WeatherAPI";
+    import { weatherApi } from "../../scripts/weather/WeatherAPI";
     import TimeBarChart from "../../scripts/charts/BarChart";
 
     const weatherWidget = document.getElementById(
@@ -197,7 +197,10 @@ const questions = [
         } else {
           for (let i = 0; i < weatherData.hourly.time.length; i++) {
             const forecastTime = new Date(weatherData.hourly.time[i]);
-            if (forecastTime >= currentTime && weatherData.hourly.precipitation[i] > 0) {
+            if (
+              forecastTime >= currentTime &&
+              weatherData.hourly.precipitation[i] > 0
+            ) {
               let date = forecastTime.toLocaleDateString("de-DE", {
                 year: "numeric",
                 month: "long",

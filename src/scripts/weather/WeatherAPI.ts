@@ -1,4 +1,5 @@
 const BASE_URL = 'https://api.open-meteo.com/v1/forecast';
+const AIR_QUALITY_BASE_URL = 'https://air-quality-api.open-meteo.com/v1/air-quality';
 
 export interface WeatherApiRequestConfig {
   latitude: number;
@@ -151,4 +152,121 @@ export class WeatherApi {
   }
 }
 
-export default new WeatherApi();
+export interface AirQualityApiRequestConfig {
+  latitude: number;
+  longitude: number;
+  current?: readonly string[];
+  hourly?: readonly string[];
+  domains?: string;
+  timezone?: string;
+}
+
+export interface AirQualityUnits {
+  [key: string]: string;
+}
+
+export interface CurrentAirQualityBase {
+  time: string;
+  interval: number;
+}
+
+export interface AirQualityArrayBase {
+  time: string[];
+}
+
+type AirQualityArrayElement<T extends readonly any[]> = T extends readonly (infer U)[] ? U : never;
+
+type PickRequestedAirQualityKeys<T extends readonly string[]> = {
+  [K in AirQualityArrayElement<T>]: number;
+} & CurrentAirQualityBase;
+
+type PickRequestedAirQualityArrayKeys<T extends readonly string[]> = {
+  [K in AirQualityArrayElement<T>]: number[];
+} & AirQualityArrayBase;
+
+export interface AirQualityApiResponse<
+  C extends readonly string[] | undefined = undefined,
+  H extends readonly string[] | undefined = undefined
+> {
+  latitude: number;
+  longitude: number;
+  generationtime_ms: number;
+  utc_offset_seconds: number;
+  timezone: string;
+  timezone_abbreviation: string;
+  elevation: number;
+
+  current_units: C extends readonly string[] ? AirQualityUnits : undefined;
+  hourly_units: H extends readonly string[] ? AirQualityUnits : undefined;
+
+  current: C extends readonly string[] ? PickRequestedAirQualityKeys<C> : undefined;
+  hourly: H extends readonly string[] ? PickRequestedAirQualityArrayKeys<H> : undefined;
+}
+
+export class AirQualityApi {
+  private buildUrl(config: AirQualityApiRequestConfig): string {
+    const params = new URLSearchParams();
+
+    params.append('latitude', config.latitude.toString());
+    params.append('longitude', config.longitude.toString());
+
+    if (config.domains) {
+      params.append('domains', config.domains);
+    }
+
+    params.append('timezone', config.timezone || 'auto');
+
+    if (config.current && config.current.length > 0) {
+      params.append('current', config.current.join(','));
+    }
+
+    if (config.hourly && config.hourly.length > 0) {
+      params.append('hourly', config.hourly.join(','));
+    }
+
+    return `${AIR_QUALITY_BASE_URL}?${params.toString()}`;
+  }
+
+  public async getAirQuality<
+    C extends readonly string[] | undefined = undefined,
+    H extends readonly string[] | undefined = undefined
+  >(config: AirQualityApiRequestConfig & {
+    current?: C;
+    hourly?: H;
+  }): Promise<AirQualityApiResponse<C, H>> {
+    const url = this.buildUrl(config);
+
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        let errorMessage = `API request failed with status: ${response.status}`;
+
+        try {
+          const errorData = await response.json();
+          if (errorData.reason) {
+            errorMessage = `API Error: ${errorData.reason}`;
+          }
+        } catch (e) {
+        }
+
+        throw new WeatherApiError(errorMessage, response.status);
+      }
+
+      const data = await response.json();
+
+      return data as AirQualityApiResponse<C, H>;
+    } catch (error) {
+      if (error instanceof WeatherApiError) {
+        throw error;
+      }
+
+      throw new WeatherApiError(
+        `Failed to fetch air quality data: ${(error as Error).message}`
+      );
+    }
+  }
+}
+
+export const weatherApi = new WeatherApi();
+export const airQualityApi = new AirQualityApi();

@@ -1,5 +1,4 @@
 ---
-
 import "../styles/weatherwidget.css";
 
 interface Props {
@@ -22,7 +21,7 @@ const { lat, lng, cityName, forecastDays = 7 } = Astro.props;
   <div class="weather-status">
     <div id="icon" class="status-text">Temperatur wird geladen...</div>
     <div id="temperature" class="status-text">Temperatur wird geladen...</div>
-    
+
     <div class="weather-metrics">
       <div class="status-box">
         <span class="status-icon">
@@ -31,18 +30,28 @@ const { lat, lng, cityName, forecastDays = 7 } = Astro.props;
         <p class="status-label">Wind</p>
         <p id="wind" class="status-value">Wird geladen...</p>
       </div>
-      
+
       <div class="status-box">
         <span class="status-icon">
-          <img src="/images/humidity.svg" alt="Luftfeuchtigkeit" height="48" width="48" />
+          <img
+            src="/images/humidity.svg"
+            alt="Luftfeuchtigkeit"
+            height="48"
+            width="48"
+          />
         </span>
         <p class="status-label">Luftfeuchtigkeit</p>
         <p id="humidity" class="status-value">Wird geladen...</p>
       </div>
-      
+
       <div class="status-box">
         <span class="status-icon">
-          <img src="/images/rain.svg" alt="Niederschlag" height="48" width="48" />
+          <img
+            src="/images/rain.svg"
+            alt="Niederschlag"
+            height="48"
+            width="48"
+          />
         </span>
         <p class="status-label">Niederschlag</p>
         <p id="rainfall" class="status-value">Wird geladen...</p>
@@ -53,16 +62,38 @@ const { lat, lng, cityName, forecastDays = 7 } = Astro.props;
   <div class="forecast-section">
     <h2 class="forecast-title">Stündliche Vorhersage</h2>
     <div class="forecast-container">
-      <button class="scroll-button scroll-left" aria-label="Nach links scrollen">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button
+        class="scroll-button scroll-left"
+        aria-label="Nach links scrollen"
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
       </button>
       <div class="forecast-grid" id="hourly-forecast">
-        <div class="forecast-loading">Stündliche Vorhersage wird geladen...</div>
+        <div class="forecast-loading">
+          Stündliche Vorhersage wird geladen...
+        </div>
       </div>
-      <button class="scroll-button scroll-right" aria-label="Nach rechts scrollen">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button
+        class="scroll-button scroll-right"
+        aria-label="Nach rechts scrollen"
+      >
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
           <polyline points="9 18 15 12 9 6"></polyline>
         </svg>
       </button>
@@ -72,7 +103,9 @@ const { lat, lng, cityName, forecastDays = 7 } = Astro.props;
   <div class="forecast-section">
     <h2 class="forecast-title">{forecastDays}-Tage Vorhersage</h2>
     <div class="daily-forecast-list" id="daily-forecast">
-      <div class="forecast-loading">{forecastDays}-Tage Vorhersage wird geladen...</div>
+      <div class="forecast-loading">
+        {forecastDays}-Tage Vorhersage wird geladen...
+      </div>
     </div>
   </div>
 </div>
@@ -80,185 +113,201 @@ const { lat, lng, cityName, forecastDays = 7 } = Astro.props;
   <time datetime="2024-02-20">Letzte Aktualisierung: Wird geladen...</time>
 </p>
 
-
 <script>
-import WeatherApi from '../scripts/weather/WeatherAPI';
+  import { weatherApi } from "../scripts/weather/WeatherAPI";
 
-function getAttributeOrThrow(element: HTMLElement, attr: string): string {
-  const value = element.getAttribute(attr);
-  if (!value) {
-    throw new Error(`Attribut "${attr}" nicht gefunden.`);
-  }
-  return value;
-}
-
-function formatHour(date: Date): string {
-  return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-}
-
-function isDayTime(date: Date): boolean {
-  const hour = date.getHours();
-  return hour >= 6 && hour < 18;
-}
-
-/**
- * Returns a weather icon (img element) based on the WMO weather code.
- */
- function getWeatherIcon(weatherCode: number, date: Date): HTMLImageElement {
-  let imageName = "";
-  let weatherTitle = "";
-  
-  if (weatherCode === 0 || weatherCode === 1) {
-    imageName = isDayTime(date) ? "clear-day.svg" : "clear-night.svg";
-    weatherTitle = "Klar";
-  } else if (weatherCode === 2) {
-    imageName = isDayTime(date) ? "cloudy.svg" : "partly-cloudy-night.svg";
-    weatherTitle = "Wolkig";
-  } else if (weatherCode === 3) {
-    imageName = "overcast.svg";
-    weatherTitle = "Überwiegend bewölkt";
-  } else if ([45, 48].includes(weatherCode)) {
-    imageName = isDayTime(date) ? "fog-day.svg" : "fog-night.svg";
-    weatherTitle = "Nebel";
-  } else if ([51, 53, 55].includes(weatherCode)) {
-    imageName = "drizzle.svg";
-    weatherTitle = "Nieselregen";
-  } else if ([56, 57].includes(weatherCode)) {
-    imageName = "drizzle.svg";
-    weatherTitle = "Nieselregen";
-  } else if ([61, 63, 65].includes(weatherCode)) {
-    imageName = "rain.svg";
-    weatherTitle = "Regen";
-  } else if ([66, 67].includes(weatherCode)) {
-    imageName = "sleet.svg";
-    weatherTitle = "Schneeregen";
-  } else if ([71, 73, 75, 77].includes(weatherCode)) {
-    imageName = "snowflake.svg";
-    weatherTitle = "Schneesturm";
-  } else if ([80, 81, 82].includes(weatherCode)) {
-    imageName = isDayTime(date) ? "partly-cloudy-day-rain.svg" : "partly-cloudy-night-rain.svg";
-    weatherTitle = "Regen";
-  } else if ([85, 86].includes(weatherCode)) {
-    imageName = isDayTime(date) ? "partly-cloudy-day-snow.svg" : "partly-cloudy-night-snow.svg";
-    weatherTitle = "Schnee";
-  } else if ([95, 96, 99].includes(weatherCode)) {
-    imageName = "thunderstorms.svg";
-    weatherTitle = "Gewitter";
-  } else {
-    imageName = "not-available.svg";
-    weatherTitle = "Keine Wetterdaten";
-  }
-  
-  const imgElement = document.createElement("img");
-  
-  imgElement.src = `/images/${imageName}`;
-  imgElement.alt = weatherTitle;
-  imgElement.title = weatherTitle;
-  imgElement.style.width = "20rem";
-  imgElement.style.height = "auto";
-  imgElement.style.filter = "drop-shadow(5px 5px 10px #00000066)";
-  
-  return imgElement;
-}
-
-const widget = document.getElementById("weather-widget") as HTMLElement;
-if (!widget) {
-  throw new Error("Weather widget Element nicht gefunden!");
-}
-
-const lat = widget.getAttribute("data-lat")!;
-const lng = widget.getAttribute("data-lng")!;
-const forecastDays = widget.getAttribute("data-forecast-days")!;
-
-// Define the weather data parameters we need
-const CURRENT_PARAMS = [
-  'temperature_2m',
-  'relative_humidity_2m',
-  'precipitation',
-  'wind_speed_10m',
-  'weather_code'
-] as const;
-
-const HOURLY_PARAMS = [
-  'temperature_2m',
-  'wind_speed_10m',
-  'wind_direction_10m',
-  'weather_code'
-] as const;
-
-const DAILY_PARAMS = [
-  'temperature_2m_max',
-  'temperature_2m_min',
-  'weather_code'
-] as const;
-
-async function fetchWeatherData(): Promise<void> {
-  try {
-    const weatherData = await WeatherApi.getWeather({
-      latitude: parseFloat(lat),
-      longitude: parseFloat(lng),
-      forecastDays: parseInt(forecastDays),
-      timezone: 'auto',
-      current: CURRENT_PARAMS,
-      hourly: HOURLY_PARAMS,
-      daily: DAILY_PARAMS
+  function formatHour(date: Date): string {
+    return date.toLocaleTimeString("de-DE", {
+      hour: "2-digit",
+      minute: "2-digit",
     });
+  }
 
-    const now = new Date();
-    let currentIndex = weatherData.hourly?.time.findIndex((t) => new Date(t) >= now) ?? -1;
-    if (currentIndex === -1 && weatherData.hourly) {
-      currentIndex = weatherData.hourly.time.length - 1;
+  function isDayTime(date: Date): boolean {
+    const hour = date.getHours();
+    return hour >= 6 && hour < 18;
+  }
+
+  /**
+   * Returns a weather icon (img element) based on the WMO weather code.
+   */
+  function getWeatherIcon(weatherCode: number, date: Date): HTMLImageElement {
+    let imageName = "";
+    let weatherTitle = "";
+
+    if (weatherCode === 0 || weatherCode === 1) {
+      imageName = isDayTime(date) ? "clear-day.svg" : "clear-night.svg";
+      weatherTitle = "Klar";
+    } else if (weatherCode === 2) {
+      imageName = isDayTime(date) ? "cloudy.svg" : "partly-cloudy-night.svg";
+      weatherTitle = "Wolkig";
+    } else if (weatherCode === 3) {
+      imageName = "overcast.svg";
+      weatherTitle = "Überwiegend bewölkt";
+    } else if ([45, 48].includes(weatherCode)) {
+      imageName = isDayTime(date) ? "fog-day.svg" : "fog-night.svg";
+      weatherTitle = "Nebel";
+    } else if ([51, 53, 55].includes(weatherCode)) {
+      imageName = "drizzle.svg";
+      weatherTitle = "Nieselregen";
+    } else if ([56, 57].includes(weatherCode)) {
+      imageName = "drizzle.svg";
+      weatherTitle = "Nieselregen";
+    } else if ([61, 63, 65].includes(weatherCode)) {
+      imageName = "rain.svg";
+      weatherTitle = "Regen";
+    } else if ([66, 67].includes(weatherCode)) {
+      imageName = "sleet.svg";
+      weatherTitle = "Schneeregen";
+    } else if ([71, 73, 75, 77].includes(weatherCode)) {
+      imageName = "snowflake.svg";
+      weatherTitle = "Schneesturm";
+    } else if ([80, 81, 82].includes(weatherCode)) {
+      imageName = isDayTime(date)
+        ? "partly-cloudy-day-rain.svg"
+        : "partly-cloudy-night-rain.svg";
+      weatherTitle = "Regen";
+    } else if ([85, 86].includes(weatherCode)) {
+      imageName = isDayTime(date)
+        ? "partly-cloudy-day-snow.svg"
+        : "partly-cloudy-night-snow.svg";
+      weatherTitle = "Schnee";
+    } else if ([95, 96, 99].includes(weatherCode)) {
+      imageName = "thunderstorms.svg";
+      weatherTitle = "Gewitter";
+    } else {
+      imageName = "not-available.svg";
+      weatherTitle = "Keine Wetterdaten";
     }
 
-    // Current Temperature
-    if (weatherData.current) {
-      const currentTemp = weatherData.current.temperature_2m;
-      const tempElement = document.getElementById("temperature") as HTMLElement;
-      tempElement.innerHTML = `${currentTemp.toFixed(1)}°C`;
+    const imgElement = document.createElement("img");
 
-      // Current Icon
-      const currentIcon = getWeatherIcon(weatherData.current.weather_code, new Date(weatherData.current.time));
-      currentIcon.style.height = "10rem";
-      const iconElement = document.getElementById("icon") as HTMLElement;
-      iconElement.innerHTML = "";
-      iconElement.append(currentIcon);
+    imgElement.src = `/images/${imageName}`;
+    imgElement.alt = weatherTitle;
+    imgElement.title = weatherTitle;
+    imgElement.style.width = "20rem";
+    imgElement.style.height = "auto";
+    imgElement.style.filter = "drop-shadow(5px 5px 10px #00000066)";
 
-      // Current Humidity
-      const currentHumidity = weatherData.current.relative_humidity_2m;
-      const humidityElement = document.getElementById("humidity") as HTMLElement;
-      humidityElement.innerHTML = `${currentHumidity.toFixed(1)}%`;
+    return imgElement;
+  }
 
-      // Current Rainfall
-      const currentRainfall = weatherData.current.precipitation;
-      const rainfallElement = document.getElementById("rainfall") as HTMLElement;
-      rainfallElement.innerHTML = `${currentRainfall.toFixed(1)} mm`;
+  const widget = document.getElementById("weather-widget") as HTMLElement;
+  if (!widget) {
+    throw new Error("Weather widget Element nicht gefunden!");
+  }
 
-      // Update time
-      const updateInfoElement = document.getElementById("update-info") as HTMLElement;
-      const currentTime = new Date(weatherData.current.time);
-      const formattedTime = formatHour(currentTime);
-      updateInfoElement.innerHTML = `Letzte Aktualisierung: ${formattedTime} Uhr`;
-    }
+  const lat = widget.getAttribute("data-lat")!;
+  const lng = widget.getAttribute("data-lng")!;
+  const forecastDays = widget.getAttribute("data-forecast-days")!;
 
-    // Current Wind
-    if (weatherData.hourly && currentIndex >= 0) {
-      const currentWind = weatherData.hourly.wind_speed_10m[currentIndex];
-      const windElement = document.getElementById("wind") as HTMLElement;
-      windElement.innerHTML = `${currentWind.toFixed(1)} km/h`;
+  // Define the weather data parameters we need
+  const CURRENT_PARAMS = [
+    "temperature_2m",
+    "relative_humidity_2m",
+    "precipitation",
+    "wind_speed_10m",
+    "weather_code",
+  ] as const;
 
-      // Hourly Forecast
-      const hourlyElement = document.getElementById("hourly-forecast") as HTMLElement;
-      let hourlyHTML = '';
+  const HOURLY_PARAMS = [
+    "temperature_2m",
+    "wind_speed_10m",
+    "wind_direction_10m",
+    "weather_code",
+  ] as const;
 
-      for (let i = currentIndex; i < currentIndex + 24 && i < weatherData.hourly.time.length; i++) {
-        const time = new Date(weatherData.hourly.time[i]);
-        const temp = weatherData.hourly.temperature_2m[i];
-        const windSpeed = weatherData.hourly.wind_speed_10m[i];
-        const weatherCode = weatherData.hourly.weather_code[i];
-        const icon = getWeatherIcon(weatherCode, time);
-        const isCurrentHour = i === currentIndex;
+  const DAILY_PARAMS = [
+    "temperature_2m_max",
+    "temperature_2m_min",
+    "weather_code",
+  ] as const;
 
-        hourlyHTML += `
+  async function fetchWeatherData(): Promise<void> {
+    try {
+      const weatherData = await weatherApi.getWeather({
+        latitude: parseFloat(lat),
+        longitude: parseFloat(lng),
+        forecastDays: parseInt(forecastDays),
+        timezone: "auto",
+        current: CURRENT_PARAMS,
+        hourly: HOURLY_PARAMS,
+        daily: DAILY_PARAMS,
+      });
+
+      const now = new Date();
+      let currentIndex =
+        weatherData.hourly?.time.findIndex((t) => new Date(t) >= now) ?? -1;
+      if (currentIndex === -1 && weatherData.hourly) {
+        currentIndex = weatherData.hourly.time.length - 1;
+      }
+
+      // Current Temperature
+      if (weatherData.current) {
+        const currentTemp = weatherData.current.temperature_2m;
+        const tempElement = document.getElementById(
+          "temperature",
+        ) as HTMLElement;
+        tempElement.innerHTML = `${currentTemp.toFixed(1)}°C`;
+
+        // Current Icon
+        const currentIcon = getWeatherIcon(
+          weatherData.current.weather_code,
+          new Date(weatherData.current.time),
+        );
+        currentIcon.style.height = "10rem";
+        const iconElement = document.getElementById("icon") as HTMLElement;
+        iconElement.innerHTML = "";
+        iconElement.append(currentIcon);
+
+        // Current Humidity
+        const currentHumidity = weatherData.current.relative_humidity_2m;
+        const humidityElement = document.getElementById(
+          "humidity",
+        ) as HTMLElement;
+        humidityElement.innerHTML = `${currentHumidity.toFixed(1)}%`;
+
+        // Current Rainfall
+        const currentRainfall = weatherData.current.precipitation;
+        const rainfallElement = document.getElementById(
+          "rainfall",
+        ) as HTMLElement;
+        rainfallElement.innerHTML = `${currentRainfall.toFixed(1)} mm`;
+
+        // Update time
+        const updateInfoElement = document.getElementById(
+          "update-info",
+        ) as HTMLElement;
+        const currentTime = new Date(weatherData.current.time);
+        const formattedTime = formatHour(currentTime);
+        updateInfoElement.innerHTML = `Letzte Aktualisierung: ${formattedTime} Uhr`;
+      }
+
+      // Current Wind
+      if (weatherData.hourly && currentIndex >= 0) {
+        const currentWind = weatherData.hourly.wind_speed_10m[currentIndex];
+        const windElement = document.getElementById("wind") as HTMLElement;
+        windElement.innerHTML = `${currentWind.toFixed(1)} km/h`;
+
+        // Hourly Forecast
+        const hourlyElement = document.getElementById(
+          "hourly-forecast",
+        ) as HTMLElement;
+        let hourlyHTML = "";
+
+        for (
+          let i = currentIndex;
+          i < currentIndex + 24 && i < weatherData.hourly.time.length;
+          i++
+        ) {
+          const time = new Date(weatherData.hourly.time[i]);
+          const temp = weatherData.hourly.temperature_2m[i];
+          const windSpeed = weatherData.hourly.wind_speed_10m[i];
+          const weatherCode = weatherData.hourly.weather_code[i];
+          const icon = getWeatherIcon(weatherCode, time);
+          const isCurrentHour = i === currentIndex;
+
+          hourlyHTML += `
           <div class=${isCurrentHour ? "current-hour" : ""}>
             <div>${formatHour(time)}</div>
             <div>${icon.outerHTML}</div>
@@ -268,107 +317,115 @@ async function fetchWeatherData(): Promise<void> {
             </div>
           </div>
         `;
+        }
+        hourlyElement.innerHTML = hourlyHTML;
       }
-      hourlyElement.innerHTML = hourlyHTML;
-    }
 
-    // Daily Forecast
-    if (weatherData.daily) {
-      const dailyElement = document.getElementById("daily-forecast") as HTMLElement;
-      let dailyHTML = '';
-      for (let i = 0; i < weatherData.daily.time.length; i++) {
-        const date = new Date(weatherData.daily.time[i]);
-        const maxTemp = weatherData.daily.temperature_2m_max[i];
-        const minTemp = weatherData.daily.temperature_2m_min[i];
-        const weatherCode = weatherData.daily.weather_code[i];
-        const icon = getWeatherIcon(weatherCode, date);
-        // Format date to show weekday and date (e.g., "Mo, 20.02.")
-        const formattedDate = date.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' });
-        dailyHTML += `
+      // Daily Forecast
+      if (weatherData.daily) {
+        const dailyElement = document.getElementById(
+          "daily-forecast",
+        ) as HTMLElement;
+        let dailyHTML = "";
+        for (let i = 0; i < weatherData.daily.time.length; i++) {
+          const date = new Date(weatherData.daily.time[i]);
+          const maxTemp = weatherData.daily.temperature_2m_max[i];
+          const minTemp = weatherData.daily.temperature_2m_min[i];
+          const weatherCode = weatherData.daily.weather_code[i];
+          const icon = getWeatherIcon(weatherCode, date);
+          // Format date to show weekday and date (e.g., "Mo, 20.02.")
+          const formattedDate = date.toLocaleDateString("de-DE", {
+            weekday: "short",
+            day: "2-digit",
+            month: "2-digit",
+          });
+          dailyHTML += `
           <div class="daily-forecast-item forecast-card">
             <div class="daily-date">${formattedDate}</div>
             <div class="daily-icon">${icon.outerHTML}</div>
             <div class="daily-temp">${maxTemp.toFixed(1)}°C / ${minTemp.toFixed(1)}°C</div>
           </div>
         `;
+        }
+        dailyElement.innerHTML = dailyHTML;
       }
-      dailyElement.innerHTML = dailyHTML;
-    }
-
-  } catch (error) {
-    console.error("Fehler beim Laden der Wetterdaten:", error);
-    widget.innerHTML = `<p>Wetterdaten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.</p>`;
-  }
-}
-
-fetchWeatherData();
-
-class ForecastScroll {
-  private container: HTMLElement;
-  private scrollContainer: HTMLElement;
-  private leftButton: HTMLButtonElement;
-  private rightButton: HTMLButtonElement;
-  private scrollAmount: number = 240;
-
-  constructor() {
-    this.container = document.querySelector('.forecast-container')!;
-    this.scrollContainer = this.container.querySelector('.forecast-grid')!;
-    this.leftButton = this.container.querySelector('.scroll-left')!;
-    this.rightButton = this.container.querySelector('.scroll-right')!;
-
-    this.init();
-  }
-
-  private init(): void {
-    this.leftButton.addEventListener('click', () => this.scroll('left'));
-    this.rightButton.addEventListener('click', () => this.scroll('right'));
-
-    this.scrollContainer.addEventListener('scroll', () => this.updateButtonStates());
-
-    const observer = new MutationObserver(() => {
-      this.updateButtonStates();
-    });
-
-    observer.observe(this.scrollContainer, {
-      childList: true,
-      subtree: true,
-      attributes: true
-    });
-
-    this.checkForOverflow();
-    window.addEventListener('resize', () => this.updateButtonStates());
-  }
-
-  private checkForOverflow(): void {
-    this.updateButtonStates();
-    setTimeout(() => {
-      this.updateButtonStates();
-    }, 100);
-  }
-
-  private scroll(direction: 'left' | 'right'): void {
-    const newScrollPosition = this.scrollContainer.scrollLeft +
-      (direction === 'left' ? -this.scrollAmount : this.scrollAmount);
-    this.scrollContainer.scrollTo({
-      left: newScrollPosition,
-      behavior: 'smooth'
-    });
-  }
-
-  private updateButtonStates(): void {
-    const { scrollLeft, scrollWidth, clientWidth } = this.scrollContainer;
-    const canScroll = scrollWidth > clientWidth;
-    this.leftButton.style.display = canScroll ? 'flex' : 'none';
-    this.rightButton.style.display = canScroll ? 'flex' : 'none';
-
-    if (canScroll) {
-      this.leftButton.disabled = scrollLeft <= 0;
-      this.rightButton.disabled = scrollLeft >= scrollWidth - clientWidth;
+    } catch (error) {
+      console.error("Fehler beim Laden der Wetterdaten:", error);
+      widget.innerHTML = `<p>Wetterdaten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.</p>`;
     }
   }
-}
 
-document.addEventListener('DOMContentLoaded', () => {
-  new ForecastScroll();
-});
+  fetchWeatherData();
+
+  class ForecastScroll {
+    private container: HTMLElement;
+    private scrollContainer: HTMLElement;
+    private leftButton: HTMLButtonElement;
+    private rightButton: HTMLButtonElement;
+    private scrollAmount: number = 240;
+
+    constructor() {
+      this.container = document.querySelector(".forecast-container")!;
+      this.scrollContainer = this.container.querySelector(".forecast-grid")!;
+      this.leftButton = this.container.querySelector(".scroll-left")!;
+      this.rightButton = this.container.querySelector(".scroll-right")!;
+
+      this.init();
+    }
+
+    private init(): void {
+      this.leftButton.addEventListener("click", () => this.scroll("left"));
+      this.rightButton.addEventListener("click", () => this.scroll("right"));
+
+      this.scrollContainer.addEventListener("scroll", () =>
+        this.updateButtonStates(),
+      );
+
+      const observer = new MutationObserver(() => {
+        this.updateButtonStates();
+      });
+
+      observer.observe(this.scrollContainer, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+      });
+
+      this.checkForOverflow();
+      window.addEventListener("resize", () => this.updateButtonStates());
+    }
+
+    private checkForOverflow(): void {
+      this.updateButtonStates();
+      setTimeout(() => {
+        this.updateButtonStates();
+      }, 100);
+    }
+
+    private scroll(direction: "left" | "right"): void {
+      const newScrollPosition =
+        this.scrollContainer.scrollLeft +
+        (direction === "left" ? -this.scrollAmount : this.scrollAmount);
+      this.scrollContainer.scrollTo({
+        left: newScrollPosition,
+        behavior: "smooth",
+      });
+    }
+
+    private updateButtonStates(): void {
+      const { scrollLeft, scrollWidth, clientWidth } = this.scrollContainer;
+      const canScroll = scrollWidth > clientWidth;
+      this.leftButton.style.display = canScroll ? "flex" : "none";
+      this.rightButton.style.display = canScroll ? "flex" : "none";
+
+      if (canScroll) {
+        this.leftButton.disabled = scrollLeft <= 0;
+        this.rightButton.disabled = scrollLeft >= scrollWidth - clientWidth;
+      }
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    new ForecastScroll();
+  });
 </script>
