@@ -7,7 +7,6 @@ interface Props {
 const { currentPath = "/" } = Astro.props;
 
 const navItems = [
-  { path: "/", label: "Home" },
   {
     label: "Karten",
     items: [
@@ -21,17 +20,28 @@ const navItems = [
     items: [
       { path: "/wetter/", label: "Wetter" },
       { path: "/urlaubswetter/", label: "Urlaubswetter" },
+      { path: "/warnungen/", label: "Wetterwarnungen" },
       { path: "/regen/", label: "Regen" },
       { path: "/gewitter/", label: "Gewitter" },
       { path: "/wind/", label: "Wind" },
-      { path: "/uv/", label: "UV-Index" },
-      { path: "/airquality/", label: "Luftqualität" },
-      { path: "/sonne/", label: "Sonnenverlauf" },
-      { path: "/mondphase/", label: "Mondphasen" },
-      { path: "/pollen/", label: "Pollen" },
     ],
   },
-  { path: "/warnungen/", label: "Wetterwarnungen" },
+  {
+    label: "Umwelt",
+    items: [
+      { path: "/uv/", label: "UV-Index" },
+      { path: "/airquality/", label: "Luftqualität" },
+      { path: "/pollen/", label: "Pollen" },
+      { path: "/bodentemperatur/", label: "Bodentemperatur" },
+    ],
+  },
+  {
+    label: "Astronomie",
+    items: [
+      { path: "/sonne/", label: "Sonnenverlauf" },
+      { path: "/mondphase/", label: "Mondphasen" },
+    ],
+  },
   { path: "/blog/", label: "Blog" },
 ];
 ---
@@ -297,7 +307,6 @@ const navItems = [
   }
 
   @media (max-width: 768px) {
-
     .site-header {
       position: relative;
     }

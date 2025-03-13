@@ -1,0 +1,320 @@
+.content-section {
+    padding: 2rem 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.card-header {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.card-header h1 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+}
+
+.weather-info {
+    background: #f7f9fc;
+    border: 1px solid #e1e8f0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.weather-status {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.status-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #eef7ff;
+    border: 1px solid #dce9f9;
+    border-radius: 8px;
+    padding: 1rem;
+    max-width: 500px;
+    width: 100%;
+    justify-content: center;
+}
+
+.status-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(37, 99, 235, 0.1);
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+}
+
+.status-text {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.update-info {
+    color: #707070;
+    text-align: right;
+}
+
+.back-link {
+    color: #000;
+}
+
+@media (max-width: 768px) {
+    .content-section {
+        padding: 1rem 0.75rem;
+    }
+
+    .card-body {
+        padding: 0;
+    }
+
+    .weather-info {
+        padding: 0.5rem;
+        margin: 0.5rem 0;
+    }
+}
+
+.soil-data-container {
+    margin-top: 1.5rem;
+}
+
+.soil-data-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.data-section {
+    background: #eef7ff;
+    border: 1px solid #dce9f9;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.data-section h3 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    color: #333;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Table styling */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+    padding: 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #dce9f9;
+}
+
+.data-table th {
+    font-weight: 600;
+    color: #333;
+    background-color: rgba(37, 99, 235, 0.1);
+}
+
+.data-table tr:last-child td {
+    border-bottom: none;
+}
+
+.data-loading {
+    text-align: center;
+    padding: 2rem;
+    color: #707070;
+}
+
+/* Temperature gradient indicators */
+.temp-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+/* Moisture gradient colors */
+.moisture-very-low {
+    background-color: #f9d59b;
+}
+
+.moisture-low {
+    background-color: #f5c76a;
+}
+
+.moisture-medium {
+    background-color: #78bdf8;
+}
+
+.moisture-high {
+    background-color: #3498db;
+}
+
+.moisture-very-high {
+    background-color: #2166ac;
+}
+
+/* Temperature gradient colors */
+.temp-very-cold {
+    background-color: #9ecae1;
+}
+
+.temp-cold {
+    background-color: #c6dbef;
+}
+
+.temp-moderate {
+    background-color: #e6f5d0;
+}
+
+.temp-warm {
+    background-color: #fee8c8;
+}
+
+.temp-hot {
+    background-color: #fdbb84;
+}
+
+.temp-very-hot {
+    background-color: #e34a33;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .soil-data-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .data-section {
+        padding: 0.75rem;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 0.4rem;
+        font-size: 0.9rem;
+    }
+
+    .depth-bar {
+        width: 25px;
+    }
+
+    .depth-section {
+        flex-wrap: wrap;
+    }
+}
+
+/* Trend arrows */
+.trend-up {
+    color: #e74c3c;
+}
+
+.trend-down {
+    color: #3498db;
+}
+
+.trend-stable {
+    color: #7f8c8d;
+}
+
+/* Tooltip styling */
+.data-tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+}
+
+.data-tooltip .tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.85rem;
+}
+
+.data-tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Optimal temperature range indicator */
+.optimal-range {
+    background-color: rgba(46, 204, 113, 0.15);
+}
+
+.forecast-pagination {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+  }
+  
+  .pagination-btn {
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .pagination-btn:hover:not(:disabled) {
+    background-color: #e9e9e9;
+  }
+  
+  #current-day {
+    font-weight: 500;
+    padding: 5px 10px;
+  }

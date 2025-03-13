@@ -1,0 +1,649 @@
+---
+import "../../styles/bodentemperatur.css";
+
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Faq from "../../components/Faq.astro";
+import { getCity, getStatics } from "../../utils/city";
+import HorizontalNavigation from "../../components/HorizontalNavigation.astro";
+
+export async function getStaticPaths() {
+  return getStatics();
+}
+
+const city = getCity(Astro.params.city);
+
+const title = `Bodentemperatur in ${city.name} - Wettervorhersage`;
+const description = `Aktuelle Bodentemperaturdaten für ${city.name}. Erfahren Sie die Temperatur und Feuchtigkeit in verschiedenen Bodentiefen für Landwirtschaft, Gartenbau und mehr.`;
+
+const questions = [
+  {
+    question:
+      "Welche Datenquellen werden für die Bodentemperaturmessung genutzt?",
+    answer:
+      "Unsere Bodentemperaturdaten basieren auf den zuverlässigen Daten des <a href='https://www.dwd.de/DE/forschung/wettervorhersage/num_modellierung/01_num_vorhersagemodelle/regionalmodell_icon_d2.html' target='_blank'><strong>DWD ICON D2</strong></a>-Modells sowie des <a href='https://dwd-geoportal.de/products/G_D5M/' target='_blank'>DWD ICON EU</a>-Modells. Wir integrieren mehrere Messtiefenpunkte, um ein umfassendes Bild der Bodenbedingungen zu liefern.",
+  },
+  {
+    question: "Wie häufig werden die Bodentemperaturdaten aktualisiert?",
+    answer:
+      "Die Bodentemperaturdaten werden mehrmals täglich aktualisiert, sodass Sie stets die aktuellsten Informationen zu Bodenbedingungen in verschiedenen Tiefen erhalten.",
+  },
+  {
+    question: "Warum sind Bodentemperaturdaten wichtig?",
+    answer:
+      "Bodentemperaturdaten sind besonders für Landwirtschaft, Gartenbau und ökologische Untersuchungen relevant. Sie beeinflussen Keimung, Pflanzenwachstum, mikrobielle Aktivität und Nährstoffverfügbarkeit maßgeblich.",
+  },
+  {
+    question: "Was bedeuten die verschiedenen Bodentiefen?",
+    answer:
+      "Wir messen Bodentemperaturen in verschiedenen Tiefen (0cm, 6cm, 18cm und 54cm), da diese für unterschiedliche Anwendungen relevant sind. Oberflächentemperaturen (0cm) ändern sich schnell und beeinflussen Keimung, während tiefere Messungen (54cm) stabilere Werte für langfristige Prognosen liefern.",
+  },
+  {
+    question: "Wie werden Bodenfeuchtigkeitsdaten gemessen?",
+    answer:
+      "Die Bodenfeuchtigkeit wird in verschiedenen Tiefenschichten gemessen und als Volumenanteil des Wassers im Boden dargestellt. Diese Daten sind wichtig für die Bewässerungsplanung, Erntezeitpunktwahl und zur Vermeidung von Bodenerosion.",
+  },
+  {
+    question: "Wie kann ich die Bodentemperaturdaten interpretieren?",
+    answer:
+      "Die Bodentemperatur beeinflusst viele landwirtschaftliche Prozesse. Für die meisten Kulturpflanzen liegt die optimale Keimtemperatur zwischen 10°C und 30°C. Die Bodenfeuchtigkeit sollte für die meisten Pflanzen zwischen 30% und 70% liegen, abhängig von Bodenart und Pflanzenart.",
+  },
+];
+---
+
+<Layout title={title} description={description}>
+  <Header currentPath="/bodentemperatur/" />
+
+  <main>
+    <section class="content-section">
+      <article>
+        <div class="card">
+          <div class="card-header">
+            <h1>Bodentemperatur in {city.name}</h1>
+          </div>
+          <HorizontalNavigation city={city.key} currentPath="bodentemperatur" />
+          <div class="card-body">
+            <p>
+              Entdecken Sie unsere detaillierten Bodentemperatur- und
+              Feuchtigkeitsdaten für {city.name}. Erfahren Sie die aktuellen
+              Werte in verschiedenen Bodentiefen für optimale
+              landwirtschaftliche Planung, Gartenbau oder wissenschaftliche
+              Analysen. Dank hochaktueller Messdaten und übersichtlicher
+              Darstellung sind Sie bestens informiert über die Bodenbedingungen
+              in Ihrer Region.
+            </p>
+
+            <div
+              class="weather-info"
+              id="soil-widget"
+              data-lat={city.coords[0]}
+              data-lng={city.coords[1]}
+              data-city={city.name}
+            >
+              <!-- Pagination for forecast days -->
+              <div class="forecast-pagination">
+                <h2 id="forecast-date">Bodendaten für heute</h2>
+                <div class="pagination-controls">
+                  <button id="prev-day" class="pagination-btn" disabled
+                    >&laquo; Vorheriger Tag</button
+                  >
+                  <span id="current-day">Tag 1 von 7</span>
+                  <button id="next-day" class="pagination-btn"
+                    >Nächster Tag &raquo;</button
+                  >
+                </div>
+              </div>
+
+              <div class="soil-data-container" id="soil-data-container">
+                <!-- Pre-rendered HTML structure for SEO -->
+                <div class="soil-data-grid">
+                  <div class="data-section">
+                    <h3>Bodentemperatur</h3>
+                    <table class="data-table" id="temperature-table">
+                      <tr>
+                        <th>Tiefe</th>
+                        <th>Temperatur</th>
+                      </tr>
+                      <tr>
+                        <td>Luft (2m)</td>
+                        <td>
+                          <span class="temp-indicator"></span>
+                          <span id="temp-air">--</span>°C
+                        </td>
+                      </tr>
+                      <tr id="row-temp-0cm">
+                        <td>Oberfläche (0cm)</td>
+                        <td>
+                          <span class="temp-indicator"></span>
+                          <span id="temp-0cm">--</span>°C
+                        </td>
+                      </tr>
+                      <tr id="row-temp-6cm">
+                        <td>6cm Tiefe</td>
+                        <td>
+                          <span class="temp-indicator"></span>
+                          <span id="temp-6cm">--</span>°C
+                        </td>
+                      </tr>
+                      <tr id="row-temp-18cm">
+                        <td>18cm Tiefe</td>
+                        <td>
+                          <span class="temp-indicator"></span>
+                          <span id="temp-18cm">--</span>°C
+                        </td>
+                      </tr>
+                      <tr id="row-temp-54cm">
+                        <td>54cm Tiefe</td>
+                        <td>
+                          <span class="temp-indicator"></span>
+                          <span id="temp-54cm">--</span>°C
+                        </td>
+                      </tr>
+                    </table>
+                    <div class="data-tooltip">
+                      <small>ⓘ Optimale Temperatur</small>
+                      <span class="tooltip-text"
+                        >Temperaturen zwischen 10°C und 25°C sind optimal für
+                        die meisten Kulturpflanzen.</span
+                      >
+                    </div>
+                  </div>
+
+                  <div class="data-section">
+                    <h3>Bodenfeuchtigkeit</h3>
+                    <table class="data-table" id="moisture-table">
+                      <tr>
+                        <th>Schicht</th>
+                        <th>Feuchtigkeit</th>
+                      </tr>
+                      <tr id="row-moisture-0-1">
+                        <td>0-1cm</td>
+                        <td>
+                          <span class="temp-indicator"></span>
+                          <span id="moisture-0-1">--</span>%
+                        </td>
+                      </tr>
+                      <tr id="row-moisture-1-3">
+                        <td>1-3cm</td>
+                        <td>
+                          <span class="temp-indicator"></span>
+                          <span id="moisture-1-3">--</span>%
+                        </td>
+                      </tr>
+                      <tr id="row-moisture-3-9">
+                        <td>3-9cm</td>
+                        <td>
+                          <span class="temp-indicator"></span>
+                          <span id="moisture-3-9">--</span>%
+                        </td>
+                      </tr>
+                      <tr id="row-moisture-9-27">
+                        <td>9-27cm</td>
+                        <td>
+                          <span class="temp-indicator"></span>
+                          <span id="moisture-9-27">--</span>%
+                        </td>
+                      </tr>
+                      <tr id="row-moisture-27-81">
+                        <td>27-81cm</td>
+                        <td>
+                          <span class="temp-indicator"></span>
+                          <span id="moisture-27-81">--</span>%
+                        </td>
+                      </tr>
+                    </table>
+                    <div class="data-tooltip">
+                      <small>ⓘ Optimale Feuchtigkeit</small>
+                      <span class="tooltip-text"
+                        >Bodenfeuchtigkeit zwischen 30% und 70% ist ideal für
+                        die meisten Pflanzenarten.</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p class="update-info" id="update-info">Daten werden geladen...</p>
+          </div>
+        </div>
+        <Faq questions={questions} />
+      </article>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script>
+    import { weatherApi } from "../../scripts/weather/WeatherAPI";
+
+    interface SoilData {
+      temperature_2m: number;
+      soil_temperature_0cm: number;
+      soil_temperature_6cm: number;
+      soil_temperature_18cm: number;
+      soil_temperature_54cm: number;
+      soil_moisture_0_to_1cm: number;
+      soil_moisture_1_to_3cm: number;
+      soil_moisture_3_to_9cm: number;
+      soil_moisture_9_to_27cm: number;
+      soil_moisture_27_to_81cm: number;
+      time: string;
+    }
+
+    interface WeatherResponse {
+      current: SoilData;
+      hourly: {
+        time: string[];
+        temperature_2m: number[];
+        soil_temperature_0cm: number[];
+        soil_temperature_6cm: number[];
+        soil_temperature_18cm: number[];
+        soil_temperature_54cm: number[];
+        soil_moisture_0_to_1cm: number[];
+        soil_moisture_1_to_3cm: number[];
+        soil_moisture_3_to_9cm: number[];
+        soil_moisture_9_to_27cm: number[];
+        soil_moisture_27_to_81cm: number[];
+      };
+      daily: {
+        temperature_2m_max: number[];
+        temperature_2m_min: number[];
+      };
+    }
+
+    const soilWidget = document.getElementById("soil-widget") as HTMLElement;
+    const prevDayBtn = document.getElementById("prev-day") as HTMLButtonElement;
+    const nextDayBtn = document.getElementById("next-day") as HTMLButtonElement;
+    const currentDaySpan = document.getElementById(
+      "current-day",
+    ) as HTMLElement;
+    const forecastDateHeading = document.getElementById(
+      "forecast-date",
+    ) as HTMLElement;
+
+    const lat = soilWidget.getAttribute("data-lat")!;
+    const lng = soilWidget.getAttribute("data-lng")!;
+    const cityName = soilWidget.getAttribute("data-city")!;
+
+    if (!lat || !lng || !cityName) {
+      console.error("Required data attributes missing");
+      throw new Error("Required data attributes missing");
+    }
+
+    let allForecastData: WeatherResponse | null = null;
+    let currentDayIndex = 0;
+    const FORECAST_DAYS = 7;
+
+    prevDayBtn.addEventListener("click", () => navigateDay(-1));
+    nextDayBtn.addEventListener("click", () => navigateDay(1));
+
+    function navigateDay(direction: number): void {
+      currentDayIndex += direction;
+
+      if (prevDayBtn) prevDayBtn.disabled = currentDayIndex === 0;
+      if (nextDayBtn)
+        nextDayBtn.disabled = currentDayIndex === FORECAST_DAYS - 1;
+
+      if (currentDaySpan) {
+        currentDaySpan.textContent = `Tag ${currentDayIndex + 1} von ${FORECAST_DAYS}`;
+      }
+
+      displayDataForDay(currentDayIndex);
+    }
+
+    function formatDate(dateString: string): string {
+      const date = new Date(dateString);
+      return date.toLocaleDateString("de-DE", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+      });
+    }
+
+    function displayDataForDay(dayIndex: number): void {
+      if (!allForecastData || !forecastDateHeading) return;
+
+      const day = new Date();
+      day.setDate(day.getDate() + dayIndex);
+
+      const formattedDate = formatDate(day.toISOString());
+      forecastDateHeading.textContent = `Bodendaten für ${formattedDate}`;
+
+      let dayData: SoilData | undefined;
+
+      if (dayIndex === 0) {
+        dayData = {
+          temperature_2m: allForecastData.current.temperature_2m,
+          soil_temperature_0cm: allForecastData.current.soil_temperature_0cm,
+          soil_temperature_6cm: allForecastData.current.soil_temperature_6cm,
+          soil_temperature_18cm: allForecastData.current.soil_temperature_18cm,
+          soil_temperature_54cm: allForecastData.current.soil_temperature_54cm,
+          soil_moisture_0_to_1cm:
+            allForecastData.current.soil_moisture_0_to_1cm,
+          soil_moisture_1_to_3cm:
+            allForecastData.current.soil_moisture_1_to_3cm,
+          soil_moisture_3_to_9cm:
+            allForecastData.current.soil_moisture_3_to_9cm,
+          soil_moisture_9_to_27cm:
+            allForecastData.current.soil_moisture_9_to_27cm,
+          soil_moisture_27_to_81cm:
+            allForecastData.current.soil_moisture_27_to_81cm,
+          time: allForecastData.current.time,
+        };
+      } else {
+        const targetDate = new Date();
+        targetDate.setDate(targetDate.getDate() + dayIndex);
+        const dateStr = targetDate.toISOString().split("T")[0];
+
+        let dataIndex = allForecastData.hourly.time.findIndex(
+          (time) => time.startsWith(dateStr) && time.includes("12:00"),
+        );
+
+        if (dataIndex === -1) {
+          dataIndex = allForecastData.hourly.time.findIndex((time) =>
+            time.startsWith(dateStr),
+          );
+        }
+
+        if (dataIndex !== -1) {
+          dayData = {
+            temperature_2m: allForecastData.hourly.temperature_2m[dataIndex],
+            soil_temperature_0cm:
+              allForecastData.hourly.soil_temperature_0cm[dataIndex],
+            soil_temperature_6cm:
+              allForecastData.hourly.soil_temperature_6cm[dataIndex],
+            soil_temperature_18cm:
+              allForecastData.hourly.soil_temperature_18cm[dataIndex],
+            soil_temperature_54cm:
+              allForecastData.hourly.soil_temperature_54cm[dataIndex],
+            soil_moisture_0_to_1cm:
+              allForecastData.hourly.soil_moisture_0_to_1cm[dataIndex],
+            soil_moisture_1_to_3cm:
+              allForecastData.hourly.soil_moisture_1_to_3cm[dataIndex],
+            soil_moisture_3_to_9cm:
+              allForecastData.hourly.soil_moisture_3_to_9cm[dataIndex],
+            soil_moisture_9_to_27cm:
+              allForecastData.hourly.soil_moisture_9_to_27cm[dataIndex],
+            soil_moisture_27_to_81cm:
+              allForecastData.hourly.soil_moisture_27_to_81cm[dataIndex],
+            time: allForecastData.hourly.time[dataIndex],
+          };
+        }
+      }
+
+      if (!dayData) return;
+
+      updateTemperatureData(dayData);
+      updateMoistureData(dayData);
+    }
+
+    function getTempClass(temp: number): string {
+      if (temp < 5) return "temp-very-cold";
+      if (temp < 10) return "temp-cold";
+      if (temp < 15) return "temp-moderate";
+      if (temp < 20) return "temp-warm";
+      if (temp < 25) return "temp-hot";
+      return "temp-very-hot";
+    }
+
+    function getMoistureClass(moisture: number): string {
+      const percent = moisture * 100;
+      if (percent < 20) return "moisture-very-low";
+      if (percent < 30) return "moisture-low";
+      if (percent < 50) return "moisture-medium";
+      if (percent < 70) return "moisture-high";
+      return "moisture-very-high";
+    }
+
+    function updateTemperatureData(data: SoilData): void {
+      const tempAirElement = document.getElementById("temp-air");
+      if (tempAirElement)
+        tempAirElement.textContent = data.temperature_2m.toFixed(1);
+
+      const temp0cmElement = document.getElementById("temp-0cm");
+      if (temp0cmElement)
+        temp0cmElement.textContent = data.soil_temperature_0cm.toFixed(1);
+
+      const temp6cmElement = document.getElementById("temp-6cm");
+      if (temp6cmElement)
+        temp6cmElement.textContent = data.soil_temperature_6cm.toFixed(1);
+
+      const temp18cmElement = document.getElementById("temp-18cm");
+      if (temp18cmElement)
+        temp18cmElement.textContent = data.soil_temperature_18cm.toFixed(1);
+
+      const temp54cmElement = document.getElementById("temp-54cm");
+      if (temp54cmElement)
+        temp54cmElement.textContent = data.soil_temperature_54cm.toFixed(1);
+
+      const tempIndicator0cm = document.querySelector(
+        "#row-temp-0cm .temp-indicator",
+      );
+      if (tempIndicator0cm)
+        tempIndicator0cm.className = `temp-indicator ${getTempClass(data.soil_temperature_0cm)}`;
+
+      const tempIndicator6cm = document.querySelector(
+        "#row-temp-6cm .temp-indicator",
+      );
+      if (tempIndicator6cm)
+        tempIndicator6cm.className = `temp-indicator ${getTempClass(data.soil_temperature_6cm)}`;
+
+      const tempIndicator18cm = document.querySelector(
+        "#row-temp-18cm .temp-indicator",
+      );
+      if (tempIndicator18cm)
+        tempIndicator18cm.className = `temp-indicator ${getTempClass(data.soil_temperature_18cm)}`;
+
+      const tempIndicator54cm = document.querySelector(
+        "#row-temp-54cm .temp-indicator",
+      );
+      if (tempIndicator54cm)
+        tempIndicator54cm.className = `temp-indicator ${getTempClass(data.soil_temperature_54cm)}`;
+
+      const rowTemp0cm = document.getElementById("row-temp-0cm");
+      if (rowTemp0cm)
+        rowTemp0cm.className =
+          data.soil_temperature_0cm >= 10 && data.soil_temperature_0cm <= 25
+            ? "optimal-range"
+            : "";
+
+      const rowTemp6cm = document.getElementById("row-temp-6cm");
+      if (rowTemp6cm)
+        rowTemp6cm.className =
+          data.soil_temperature_6cm >= 10 && data.soil_temperature_6cm <= 25
+            ? "optimal-range"
+            : "";
+
+      const rowTemp18cm = document.getElementById("row-temp-18cm");
+      if (rowTemp18cm)
+        rowTemp18cm.className =
+          data.soil_temperature_18cm >= 10 && data.soil_temperature_18cm <= 25
+            ? "optimal-range"
+            : "";
+
+      const rowTemp54cm = document.getElementById("row-temp-54cm");
+      if (rowTemp54cm)
+        rowTemp54cm.className =
+          data.soil_temperature_54cm >= 10 && data.soil_temperature_54cm <= 25
+            ? "optimal-range"
+            : "";
+    }
+
+    function updateMoistureData(data: SoilData): void {
+      const moisture01Element = document.getElementById("moisture-0-1");
+      if (moisture01Element)
+        moisture01Element.textContent = (
+          data.soil_moisture_0_to_1cm * 100
+        ).toFixed(1);
+
+      const moisture13Element = document.getElementById("moisture-1-3");
+      if (moisture13Element)
+        moisture13Element.textContent = (
+          data.soil_moisture_1_to_3cm * 100
+        ).toFixed(1);
+
+      const moisture39Element = document.getElementById("moisture-3-9");
+      if (moisture39Element)
+        moisture39Element.textContent = (
+          data.soil_moisture_3_to_9cm * 100
+        ).toFixed(1);
+
+      const moisture927Element = document.getElementById("moisture-9-27");
+      if (moisture927Element)
+        moisture927Element.textContent = (
+          data.soil_moisture_9_to_27cm * 100
+        ).toFixed(1);
+
+      const moisture2781Element = document.getElementById("moisture-27-81");
+      if (moisture2781Element)
+        moisture2781Element.textContent = (
+          data.soil_moisture_27_to_81cm * 100
+        ).toFixed(1);
+
+      const moistureIndicator01 = document.querySelector(
+        "#row-moisture-0-1 .temp-indicator",
+      );
+      if (moistureIndicator01)
+        moistureIndicator01.className = `temp-indicator ${getMoistureClass(data.soil_moisture_0_to_1cm)}`;
+
+      const moistureIndicator13 = document.querySelector(
+        "#row-moisture-1-3 .temp-indicator",
+      );
+      if (moistureIndicator13)
+        moistureIndicator13.className = `temp-indicator ${getMoistureClass(data.soil_moisture_1_to_3cm)}`;
+
+      const moistureIndicator39 = document.querySelector(
+        "#row-moisture-3-9 .temp-indicator",
+      );
+      if (moistureIndicator39)
+        moistureIndicator39.className = `temp-indicator ${getMoistureClass(data.soil_moisture_3_to_9cm)}`;
+
+      const moistureIndicator927 = document.querySelector(
+        "#row-moisture-9-27 .temp-indicator",
+      );
+      if (moistureIndicator927)
+        moistureIndicator927.className = `temp-indicator ${getMoistureClass(data.soil_moisture_9_to_27cm)}`;
+
+      const moistureIndicator2781 = document.querySelector(
+        "#row-moisture-27-81 .temp-indicator",
+      );
+      if (moistureIndicator2781)
+        moistureIndicator2781.className = `temp-indicator ${getMoistureClass(data.soil_moisture_27_to_81cm)}`;
+
+      const rowMoisture01 = document.getElementById("row-moisture-0-1");
+      if (rowMoisture01)
+        rowMoisture01.className =
+          data.soil_moisture_0_to_1cm >= 0.3 &&
+          data.soil_moisture_0_to_1cm <= 0.7
+            ? "optimal-range"
+            : "";
+
+      const rowMoisture13 = document.getElementById("row-moisture-1-3");
+      if (rowMoisture13)
+        rowMoisture13.className =
+          data.soil_moisture_1_to_3cm >= 0.3 &&
+          data.soil_moisture_1_to_3cm <= 0.7
+            ? "optimal-range"
+            : "";
+
+      const rowMoisture39 = document.getElementById("row-moisture-3-9");
+      if (rowMoisture39)
+        rowMoisture39.className =
+          data.soil_moisture_3_to_9cm >= 0.3 &&
+          data.soil_moisture_3_to_9cm <= 0.7
+            ? "optimal-range"
+            : "";
+
+      const rowMoisture927 = document.getElementById("row-moisture-9-27");
+      if (rowMoisture927)
+        rowMoisture927.className =
+          data.soil_moisture_9_to_27cm >= 0.3 &&
+          data.soil_moisture_9_to_27cm <= 0.7
+            ? "optimal-range"
+            : "";
+
+      const rowMoisture2781 = document.getElementById("row-moisture-27-81");
+      if (rowMoisture2781)
+        rowMoisture2781.className =
+          data.soil_moisture_27_to_81cm >= 0.3 &&
+          data.soil_moisture_27_to_81cm <= 0.7
+            ? "optimal-range"
+            : "";
+    }
+
+    async function fetchSoilData(): Promise<void> {
+      try {
+        const currentParams = [
+          "temperature_2m",
+          "soil_temperature_0cm",
+          "soil_temperature_6cm",
+          "soil_temperature_18cm",
+          "soil_temperature_54cm",
+          "soil_moisture_0_to_1cm",
+          "soil_moisture_1_to_3cm",
+          "soil_moisture_3_to_9cm",
+          "soil_moisture_9_to_27cm",
+          "soil_moisture_27_to_81cm",
+        ] as const;
+
+        const hourlyParams = [
+          "temperature_2m",
+          "soil_temperature_0cm",
+          "soil_temperature_6cm",
+          "soil_temperature_18cm",
+          "soil_temperature_54cm",
+          "soil_moisture_0_to_1cm",
+          "soil_moisture_1_to_3cm",
+          "soil_moisture_3_to_9cm",
+          "soil_moisture_9_to_27cm",
+          "soil_moisture_27_to_81cm",
+        ] as const;
+
+        const dailyParams = [
+          "temperature_2m_max",
+          "temperature_2m_min",
+        ] as const;
+
+        allForecastData = await weatherApi.getWeather({
+          latitude: parseFloat(lat),
+          longitude: parseFloat(lng),
+          current: currentParams,
+          hourly: hourlyParams,
+          daily: dailyParams,
+          forecastDays: FORECAST_DAYS,
+        });
+
+        const currentTime = new Date(allForecastData.current.time);
+        const formattedTime = currentTime.toLocaleTimeString("de-DE", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        const updateInfoElement = document.getElementById("update-info");
+        if (updateInfoElement)
+          updateInfoElement.innerHTML = `Letzte Aktualisierung: <time datetime="${currentTime.toISOString()}">${formattedTime}</time> Uhr`;
+
+        displayDataForDay(currentDayIndex);
+      } catch (error) {
+        console.error("Fehler beim Laden der Bodendaten:", error);
+
+        const soilDataContainer = document.getElementById(
+          "soil-data-container",
+        );
+        const updateInfoElement = document.getElementById("update-info");
+
+        if (soilDataContainer) {
+          soilDataContainer.innerHTML = `<p>Bodendaten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.</p>`;
+        }
+
+        if (updateInfoElement) {
+          updateInfoElement.innerHTML = "Daten konnten nicht geladen werden.";
+        }
+      }
+    }
+
+    fetchSoilData();
+  </script>
+</Layout>
