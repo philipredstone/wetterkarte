@@ -1,0 +1,197 @@
+---
+import "../styles/webcams.css";
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+const title = "DWD Webcams - Aktuelle Wetterbilder - wetterkarte.org";
+const description =
+  "Aktuelle Livebilder von DWD-Webcams aus ganz Deutschland. Sehen Sie die Wetterlage in Echtzeit an verschiedenen Standorten des Deutschen Wetterdienstes.";
+
+const webcams = [
+  {
+    title: "Hamburg Panorama",
+    description:
+      "Beeindruckender Blick über die Hamburger Hafencity mit Sicht auf die Elbe und maritime Aktivitäten",
+    url: "https://opendata.dwd.de/weather/webcam/Hamburg-SO/Hamburg-SO_latest_1200.jpg",
+    region: "Nord",
+  },
+  {
+    title: "Hamburg Westansicht",
+    description:
+      "Weitreichender Blick über die westlichen Stadtteile mit typisch norddeutscher Wetterdynamik",
+    url: "https://opendata.dwd.de/weather/webcam/Hamburg-SW/Hamburg-SW_latest_1200.jpg",
+    region: "Nord",
+  },
+  {
+    title: "Alpenblick Hohenpeissenberg",
+    description:
+      "Majestätische Aussicht vom Alpennordrand ins Voralpenland - idealer Standort für die Beobachtung von Föhnwetterlagen",
+    url: "https://opendata.dwd.de/weather/webcam/Hohenpeissenberg-S/Hohenpeissenberg-S_latest_1200.jpg",
+    region: "Süd",
+  },
+  {
+    title: "Observatorium Lindenberg",
+    description:
+      "Traditionsreiches meteorologisches Observatorium im Brandenburger Land mit über 100-jähriger Wetterbeobachtungsgeschichte",
+    url: "https://opendata.dwd.de/weather/webcam/Lindenberg-NNE/Lindenberg-NNE_latest_1200.jpg",
+    region: "Ost",
+  },
+  {
+    title: "DWD-Zentrale Ostblick",
+    description:
+      "Panoramablick vom Hauptsitz des Deutschen Wetterdienstes über die dynamische Rhein-Main-Region",
+    url: "https://opendata.dwd.de/weather/webcam/Offenbach-O/Offenbach-O_latest_1200.jpg",
+    region: "Mitte",
+  },
+  {
+    title: "Skyline-Blick Offenbach",
+    description:
+      "Eindrucksvolles Stadtpanorama mit Sicht auf die Frankfurter Skyline und wichtiger Standort zur Erfassung urbaner Wetterphänomene",
+    url: "https://opendata.dwd.de/weather/webcam/Offenbach-W/Offenbach-W_latest_1200.jpg",
+    region: "Mitte",
+  },
+  {
+    title: "Bergwetter Schmücke",
+    description:
+      "Höhenstation im Herzen des Thüringer Waldes (916m ü. NN) - perfekt zur Beobachtung von Mittelgebirgswetterlagen und Jahreszeiten",
+    url: "https://opendata.dwd.de/weather/webcam/Schmuecke-SW/Schmuecke-SW_latest_1200.jpg",
+    region: "Mitte",
+  },
+  {
+    title: "Rhön-Gipfel Wasserkuppe",
+    description:
+      "Beeindruckender Rundum-Blick vom höchsten Berg der Rhön (950m ü. NN) - bekannt für spektakuläre Wolkenformationen und Wetterwechsel",
+    url: "https://opendata.dwd.de/weather/webcam/Wasserkuppe-SW/Wasserkuppe-SW_latest_1200.jpg",
+    region: "Mitte",
+  },
+];
+---
+
+<Layout title={title} description={description}>
+  <Header currentPath="/webcams/" />
+  <main>
+    <section class="content-section">
+      <article class="intro">
+        <header>
+          <h1>DWD-Webcams: Deutschland in Echtzeit</h1>
+          <p class="subtitle">
+            Entdecken Sie die aktuelle Wetterlage an verschiedenen Standorten
+            des Deutschen Wetterdienstes. Die Livecams des DWD bieten einen
+            direkten Blick auf das Wettergeschehen in Deutschland rund um die
+            Uhr.
+          </p>
+        </header>
+      </article>
+
+      <div class="webcam-grid">
+        {
+          webcams.map((webcam) => (
+            <div class="webcam-card">
+              <div class="webcam-image-container">
+                <img
+                  src={webcam.url}
+                  alt={`Webcam ${webcam.title}`}
+                  loading="lazy"
+                  class="webcam-image"
+                />
+                <div class="image-overlay">
+                  <span>Zum Vergrößern klicken</span>
+                </div>
+              </div>
+              <div class="webcam-info">
+                <h3>{webcam.title}</h3>
+                <p class="webcam-description">{webcam.description}</p>
+                <span class="webcam-region">Region: {webcam.region}</span>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <div id="image-lightbox" class="lightbox">
+      <div class="lightbox-content">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-image" src="" alt="Vergrößerte Webcam-Ansicht" />
+        <div class="lightbox-caption">
+          <h3 id="lightbox-title"></h3>
+          <p id="lightbox-description"></p>
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const webcamImages: NodeListOf<HTMLImageElement> =
+      document.querySelectorAll(".webcam-image-container img");
+    const lightbox: HTMLElement = document.getElementById("image-lightbox")!;
+    const lightboxImage: HTMLImageElement = document.getElementById(
+      "lightbox-image",
+    ) as HTMLImageElement;
+    const lightboxTitle: HTMLElement =
+      document.getElementById("lightbox-title")!;
+    const lightboxDescription: HTMLElement = document.getElementById(
+      "lightbox-description",
+    )!;
+    const closeButton: HTMLElement = document.querySelector(".lightbox-close")!;
+
+    if (
+      !lightbox ||
+      !lightboxImage ||
+      !lightboxTitle ||
+      !lightboxDescription ||
+      !closeButton
+    ) {
+      console.error("One or more lightbox elements not found");
+      return;
+    }
+
+    webcamImages.forEach((img) => {
+      img.addEventListener("click", function () {
+        const imgSrc: string | null = this.getAttribute("src");
+
+        const card: HTMLElement | null = this.closest(".webcam-card");
+        if (!card) return;
+
+        const title: string = card.querySelector("h3")?.textContent || "";
+        const description: string =
+          card.querySelector(".webcam-description")?.textContent || "";
+
+        lightboxImage.setAttribute("src", imgSrc || "");
+        lightboxImage.setAttribute("alt", title);
+        lightboxTitle.textContent = title;
+        lightboxDescription.textContent = description;
+
+        lightbox.classList.add("show");
+        document.body.classList.add("lightbox-open");
+      });
+    });
+
+    closeButton.addEventListener("click", closeLightbox);
+
+    lightbox.addEventListener("click", function (e: MouseEvent) {
+      if (e.target === lightbox) {
+        closeLightbox();
+      }
+    });
+
+    document.addEventListener("keydown", function (e: KeyboardEvent) {
+      if (e.key === "Escape" && lightbox.classList.contains("show")) {
+        closeLightbox();
+      }
+    });
+
+    function closeLightbox(): void {
+      lightbox.classList.remove("show");
+      document.body.classList.remove("lightbox-open");
+
+      setTimeout(() => {
+        lightboxImage.setAttribute("src", "");
+      }, 300);
+    }
+  });
+</script>

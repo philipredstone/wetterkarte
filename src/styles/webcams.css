@@ -1,0 +1,280 @@
+:root {
+    /* --primary-color: #0056b3;
+    --secondary-color: #f8f9fa;
+    --accent-color: #ffc107;
+    --text-color: #333;
+    --light-text: #6c757d; */
+    --border-radius: 12px;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+main {
+    background-color: #f5f7fa;
+}
+
+.content-section {
+    padding: 2rem 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.intro {
+    margin-bottom: 2rem;
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    border-radius: var(--border-radius);
+}
+
+.content-section h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: var(--light-text);
+    line-height: 1.8;
+    max-width: 800px;
+    margin: 0 auto 2rem auto;
+}
+
+/* Webcam section styling */
+.webcam-heading {
+    font-size: 1.8rem;
+    margin: 2rem 0;
+    color: var(--primary-color);
+    text-align: center;
+    font-weight: 600;
+}
+
+.webcam-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.webcam-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.webcam-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.webcam-image-container {
+    height: 180px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+}
+
+.webcam-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.webcam-card:hover .webcam-image-container img {
+    transform: scale(1.05);
+}
+
+/* Image overlay for click indication */
+.image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 0.85rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.webcam-image-container:hover .image-overlay {
+    opacity: 1;
+}
+
+.webcam-info {
+    padding: 1rem;
+}
+
+.webcam-info h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.webcam-description {
+    font-size: 0.95rem;
+    color: var(--text-color);
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+}
+
+.webcam-region {
+    display: inline-block;
+    font-size: 0.85rem;
+    background-color: var(--secondary-color);
+    color: var(--light-text);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+/* Lightbox styling */
+.lightbox {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    overflow: hidden;
+    transition: opacity 0.3s ease;
+}
+
+.lightbox.show {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.lightbox-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 1rem;
+    right: 2rem;
+    color: white;
+    font-size: 3rem;
+    cursor: pointer;
+    z-index: 1001;
+    line-height: 1;
+    transition: color 0.3s ease;
+}
+
+.lightbox-close:hover {
+    color: #115597;
+}
+
+#lightbox-image {
+    max-width: 90%;
+    max-height: 75vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
+}
+
+.lightbox-caption {
+    color: white;
+    text-align: center;
+    margin-top: 1.5rem;
+    max-width: 800px;
+}
+
+.lightbox-caption h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: white;
+}
+
+.lightbox-caption p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #e0e0e0;
+}
+
+/* Prevent body scrolling when lightbox is open */
+body.lightbox-open {
+    overflow: hidden;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .content-section h1 {
+        font-size: 2rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .webcam-heading {
+        font-size: 1.5rem;
+    }
+
+    .webcam-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .intro {
+        padding: 1.5rem 1rem;
+    }
+
+    .lightbox-content {
+        padding: 1rem;
+    }
+
+    .lightbox-close {
+        top: 0.5rem;
+        right: 1rem;
+        font-size: 2.5rem;
+    }
+
+    #lightbox-image {
+        max-height: 65vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .content-section {
+        padding: 1.5rem 1rem;
+    }
+
+    .webcam-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .lightbox-caption h3 {
+        font-size: 1.2rem;
+    }
+
+    .lightbox-caption p {
+        font-size: 0.9rem;
+    }
+}

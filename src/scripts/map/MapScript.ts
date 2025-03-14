@@ -6,7 +6,7 @@ import { WindOverlay } from "./WindOverlay";
 import { LegendControl } from "./LegendControl";
 import { LayerControl } from "./LayerControl";
 
-type LayerType = 'temp' | 'wind' | 'radar' | 'satellit';
+type LayerType = 'temp' | 'wind' | 'radar' | 'satellit' | 'lightpollution';
 
 interface BaseLayerConfig {
   type: LayerType;
@@ -93,6 +93,31 @@ const LAYERS: Record<LayerType, LayerConfig> = {
     labels: ['5dBZ', '10dBZ', '15dBZ', '20dBZ', '25dBZ', '30dBZ', '35dBZ', '40dBZ', '45dBZ', '50dBZ'],
     borderColor: '#000000',
     urlTemplate: (dateString: string) => 'https://radar.rainmap.app/latest/{z}/{x}/{y}.webp',
+    isTimeDependent: false
+  },
+  lightpollution: {
+    type: 'lightpollution',
+    layerType: 'tile',
+    maxNativeZoom: 9,
+    opacity: 0.7,
+    gradient: [
+      '#1E2D5F', '#28468C', '#1464AA', '#0F8296', '#0A9678', '#14A55A', 
+      '#28B43C', '#50BE28', '#78C31E', '#A0C814', '#BEC30F', '#D7B90A', '#E6AA0A', '#F0960F', 
+      '#F57814', '#FA5A19', '#FA3C1E', '#FA2828', '#F01E46', '#E62364', '#DC2882', '#D232A0', 
+      '#C83CBE', '#BE46D2', '#B450E1', '#AA64EB', '#A578F0', '#AA8CF5', '#B4A0FA', '#BEAFFA', 
+      '#FEFEFF', '#FFFFFF'
+    ],
+    labels: [
+      '0.2 mcd/m²', '0.25 mcd/m²', '0.5 mcd/m²', '0.6 mcd/m²', 
+      '0.7 mcd/m²', '0.8 mcd/m²', '0.9 mcd/m²', '1.0 mcd/m²', '1.1 mcd/m²', '1.2 mcd/m²', 
+      '1.3 mcd/m²', '1.35 mcd/m²', '1.4 mcd/m²', '1.45 mcd/m²', '1.8 mcd/m²', '2.1 mcd/m²', 
+      '2.4 mcd/m²', '2.7 mcd/m²', '3 mcd/m²', '3.5 mcd/m²', '4 mcd/m²', '4.5 mcd/m²', 
+      '5 mcd/m²', '5.5 mcd/m²', '6 mcd/m²', '7 mcd/m²', '8 mcd/m²', '9 mcd/m²', '10 mcd/m²', 
+      '11 mcd/m²', '12 mcd/m²',
+      '25 mcd/m²', '50 mcd/m²'
+    ],
+    borderColor: '#ffffff',
+    urlTemplate: (dateString: string) => 'https://tiles.wetterkarte.org/lightpollution/{z}/{x}/{y}.webp',
     isTimeDependent: false
   },
   satellit: {
