@@ -12,36 +12,37 @@ const description =
 ---
 
 <Layout title={title} description={description}>
-	<Header currentPath="/lichtverschmutzung/" />
-	<main>
-		<WeatherMap layerselect={false} layer="lightpollution" zoom={6} center={[51.163375, 10.447683]} type="fullscreen" />
-
+    <Header currentPath="/lichtverschmutzung/" />
+    <main>
+        <WeatherMap layerselect={false} layer="lightpollution" zoom={6} center={[51.163375, 10.447683]} type="fullscreen" />
+        
 		<section class="content-section">
-			<article>
-				<header>
-					<h1>
-						Interaktive Karte zur Lichtverschmutzung in Deutschland
-					</h1>
-				</header>
-			</article>
-			<article>
-				<p>
-					Unsere <strong>interaktive Karte der Lichtverschmutzung</strong> zeigt Ihnen detailliert, wie stark Ihre Region von künstlicher Beleuchtung betroffen ist. Basierend auf zuverlässigen Daten können Sie die nächtliche Helligkeit in Deutschland erkunden und die Auswirkungen auf Umwelt und Gesundheit besser verstehen.
-				</p>
-				<p>
-					Nutzen Sie unsere Karte, um herauszufinden, welche Gebiete besonders von Lichtverschmutzung betroffen sind und wo natürliche Nachthimmel noch erhalten geblieben sind. Informieren Sie sich über die negativen Effekte der Lichtverschmutzung auf Tiere, Pflanzen und Menschen.
-				</p>
-			</article>
-			<article>
-				<h3>Datenquelle:</h3>
-				<p class="credits">
-					Falchi, Fabio; Cinzano, Pierantonio; Duriscoe, Dan; Kyba, Christopher C. M.; Elvidge, Christopher D.; Baugh, Kimberly; Portnov, Boris; Rybnikova, Nataliya A.; Furgoni, Riccardo (2016): Supplement to: The New World Atlas of Artificial Night Sky Brightness. GFZ Data Services. <a href="http://doi.org/10.5880/GFZ.1.4.2016.001" target="_blank">http://doi.org/10.5880/GFZ.1.4.2016.001</a>
-				</p>
-			</article>
-		</section>
-
+            <article>
+                <header>
+                    <h1>
+                        Interaktive Karte zur Lichtverschmutzung in Deutschland
+                    </h1>
+                </header>
+            </article>
+            <article>
+                <p>
+                    Unsere <strong>interaktive Karte der Lichtverschmutzung</strong> zeigt Ihnen detailliert, wie stark Ihre Region von künstlicher Beleuchtung betroffen ist. Basierend auf zuverlässigen Daten können Sie die nächtliche Helligkeit in Deutschland erkunden und die Auswirkungen auf Umwelt und Gesundheit besser verstehen.
+                </p>
+                <p>
+                    Nutzen Sie unsere Karte, um herauszufinden, welche Gebiete besonders von Lichtverschmutzung betroffen sind und wo natürliche Nachthimmel noch erhalten geblieben sind. Informieren Sie sich über die negativen Effekte der Lichtverschmutzung auf Tiere, Pflanzen und Menschen.
+                </p>
+            </article>
+            <article>
+                <h3>Datenquelle:</h3>
+                <p class="credits">
+                    Diese Karte wurde unter Verwendung von VIIRS-Nachtlichtdaten (VNL) erstellt, die von der Earth Observation Group, Payne Institute for Public Policy, Colorado School of Mines, produziert wurden.<br/>
+                    C. D. Elvidge, K. Baugh, M. Zhizhin, F. C. Hsu, und T. Ghosh, "VIIRS night-time lights," International Journal of Remote Sensing, vol. 38, S. 5860-5879, 2017. <a href="https://doi.org/10.3390/rs13050922" target="_blank">https://doi.org/10.3390/rs13050922</a>
+                </p>
+            </article>
+        </section>
+    
 	</main>
-
+    
 	<Footer />
 </Layout>
 

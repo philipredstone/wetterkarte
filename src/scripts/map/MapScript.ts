@@ -98,26 +98,23 @@ const LAYERS: Record<LayerType, LayerConfig> = {
   lightpollution: {
     type: 'lightpollution',
     layerType: 'tile',
-    maxNativeZoom: 9,
+    maxNativeZoom: 11,
     opacity: 0.7,
-    gradient: [
-      '#1E2D5F', '#28468C', '#1464AA', '#0F8296', '#0A9678', '#14A55A', 
-      '#28B43C', '#50BE28', '#78C31E', '#A0C814', '#BEC30F', '#D7B90A', '#E6AA0A', '#F0960F', 
-      '#F57814', '#FA5A19', '#FA3C1E', '#FA2828', '#F01E46', '#E62364', '#DC2882', '#D232A0', 
-      '#C83CBE', '#BE46D2', '#B450E1', '#AA64EB', '#A578F0', '#AA8CF5', '#B4A0FA', '#BEAFFA', 
-      '#FEFEFF', '#FFFFFF'
-    ],
+    gradient: ["#0D1A2B", "#203A60", "#346D95", "#349181", "#60AE3F", "#A6BA28", "#F0B800", "#F07605", "#E72900", "#FFFFFF"],
     labels: [
-      '0.2 mcd/m²', '0.25 mcd/m²', '0.5 mcd/m²', '0.6 mcd/m²', 
-      '0.7 mcd/m²', '0.8 mcd/m²', '0.9 mcd/m²', '1.0 mcd/m²', '1.1 mcd/m²', '1.2 mcd/m²', 
-      '1.3 mcd/m²', '1.35 mcd/m²', '1.4 mcd/m²', '1.45 mcd/m²', '1.8 mcd/m²', '2.1 mcd/m²', 
-      '2.4 mcd/m²', '2.7 mcd/m²', '3 mcd/m²', '3.5 mcd/m²', '4 mcd/m²', '4.5 mcd/m²', 
-      '5 mcd/m²', '5.5 mcd/m²', '6 mcd/m²', '7 mcd/m²', '8 mcd/m²', '9 mcd/m²', '10 mcd/m²', 
-      '11 mcd/m²', '12 mcd/m²',
-      '25 mcd/m²', '50 mcd/m²'
+      "0 nW/cm²/sr",
+      "0.1 nW/cm²/sr",
+      "0.3 nW/cm²/sr",
+      "1 nW/cm²/sr",
+      "3 nW/cm²/sr",
+      "10 nW/cm²/sr",
+      "30 nW/cm²/sr",
+      "100 nW/cm²/sr",
+      "300 nW/cm²/sr",
+      "1000 nW/cm²/sr"
     ],
     borderColor: '#ffffff',
-    urlTemplate: (dateString: string) => 'https://tiles.wetterkarte.org/lightpollution/{z}/{x}/{y}.webp',
+    urlTemplate: (dateString: string) => 'https://tiles.wetterkarte.org/viirs/{z}/{x}/{y}.webp',
     isTimeDependent: false
   },
   satellit: {
@@ -197,30 +194,30 @@ class WeatherMap {
     if (!this.map) return;
 
     const layerConfig = LAYERS[layerType];
-    
+
     if (this.currentLayer) {
       this.map.removeLayer(this.currentLayer);
     }
-    
+
     if (this.windOverlay) {
       this.map.removeLayer(this.windOverlay);
       this.windOverlay = null;
     }
-    
+
     this.currentLayer = LayerService.createLayer(layerConfig, offset);
     this.map.addLayer(this.currentLayer);
-    
+
     if (layerType === 'wind') {
       this.windOverlay = LayerService.createWindOverlay(offset);
       this.map.addLayer(this.windOverlay);
     }
-    
+
     if (this.borderLayer) {
       this.borderLayer.setStyle(LayerService.getBorderStyle(layerConfig));
     }
-    
+
     this.legendControl.update(layerType);
-    
+
     this.currentLayerType = layerType;
   }
 
@@ -240,7 +237,7 @@ class WeatherMap {
 
   handleForecastSlide(value: number): void {
     this.forecastOffset = value;
-    
+
     if (LAYERS[this.currentLayerType].isTimeDependent) {
       this.setMapLayer(this.currentLayerType, value);
     }
@@ -256,7 +253,7 @@ class WeatherMap {
     const showMarker = mapContainer.getAttribute('data-marker') === 'true';
     const showLayerControl = mapContainer.getAttribute('data-layerselect') === 'true';
     const initialLayerType = (mapContainer.getAttribute('data-layer') || 'temp') as LayerType;
-    
+
     if (window.matchMedia('(max-width: 767px)').matches) {
       zoom -= 1;
     }
@@ -285,7 +282,7 @@ class WeatherMap {
       const divIcon = L.divIcon({
         html: '<div class="location-dot"></div>',
       });
-      
+
       L.marker(this.map.getCenter(), { icon: divIcon }).addTo(this.map);
     }
 
@@ -294,8 +291,8 @@ class WeatherMap {
 
     if (showLayerControl) {
       this.layerControl = new LayerControl(
-        LAYERS, 
-        { position: 'bottomleft' }, 
+        LAYERS,
+        { position: 'bottomleft' },
         {
           onLayerChange: this.handleLayerChange,
           onForecastChange: this.handleForecastChange,
@@ -318,7 +315,7 @@ class WeatherMap {
             interactive: false
           })
         }).addTo(this.map);
-        
+
         if (this.currentLayerType) {
           this.borderLayer.setStyle(LayerService.getBorderStyle(LAYERS[this.currentLayerType]));
         }

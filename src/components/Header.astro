@@ -77,7 +77,7 @@ const navItems = [
                 href={item.path}
                 class:list={[
                   currentPath === item.path ? "active" : "",
-                  item.items && currentPath.startsWith(item.path)
+                  item.items && currentPath.startsWith(item.path!)
                     ? "parent-active"
                     : "",
                 ]}
