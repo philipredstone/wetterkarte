@@ -11,6 +11,9 @@ import { getCity, getStatics } from "../../utils/city";
 import HorizontalNavigation from "../../components/HorizontalNavigation.astro";
 import { point, booleanPointInPolygon } from "@turf/turf";
 
+
+const dayLabels = ["Heute", "Morgen", "Übermorgen"];
+
 function findPolygonFeaturesAtPoint(
   featureCollection: any,
   latLng: {lat: number, lng: number}
@@ -62,36 +65,11 @@ if (pollenRegion.length == 0) {
 } else {
   pollenRegionID = pollenRegion[0].properties["GF"];
 }
-
+ 
 const title = `Pollenflug in ${city.name} - Aktuelle Pollenbelastung`;
 const description = `Aktueller Pollenflug in ${city.name}: Erfahren Sie die tägliche Pollenbelastung und Prognosen für Erle, Birke, Gräser, Beifuß, Olive und Ambrosia in Ihrer Region`;
 
-const pollenCalendar = {
-  alder: {
-    peakText: "Februar - April",
-  },
-  ash: {
-    peakText: "März - Mai",
-  },
-  birch: {
-    peakText: "April - Mai",
-  },
-  grasses: {
-    peakText: "Mai - August",
-  },
-  hazel: {
-    peakText: "Januar - April",
-  },
-  mugwort: {
-    peakText: "Juli - September",
-  },
-  ragweed: {
-    peakText: "August - Oktober",
-  },
-  rye: {
-    peakText: "Mai - Juli",
-  },
-};
+
 
 // Static seasonal allergen information
 const seasonalAllergens = {
@@ -160,7 +138,7 @@ const questions = [
               id="pollen-widget"
               data-pollen-region={pollenRegionID}
             >
-              <h3>Aktuelle Pollenbelastung in {city.name}</h3>
+              <h3>Pollenbelastung in {city.name} - 3-Tages-Vorhersage</h3>
               {
                 nodata ? (
                   <div class="pollen-extra-info">
@@ -180,114 +158,26 @@ const questions = [
                     </div>
                   </div>
                 ) : (
-                  <div class="pollen-extra-info">
-                    <div class="pollen-extra-grid">
-                      <div class="pollen-extra-item">
-                        <img
-                          src="/images/pollen-tree.svg"
-                          alt="Erlenpollen"
-                          height="64"
-                          width="64"
-                        />
-                        <h3>Erle (Alder)</h3>
-                        <p id="alder-pollen-level">-</p>
-                        <p class="pollen-season">
-                          Hauptsaison: {pollenCalendar.alder.peakText}
-                        </p>
-                      </div>
-                      <div class="pollen-extra-item">
-                        <img
-                          src="/images/pollen-tree.svg"
-                          alt="Eschenpollen"
-                          height="64"
-                          width="64"
-                        />
-                        <h3>Esche (Ash)</h3>
-                        <p id="ash-pollen-level">-</p>
-                        <p class="pollen-season">
-                          Hauptsaison: {pollenCalendar.ash.peakText}
-                        </p>
-                      </div>
-                      <div class="pollen-extra-item">
-                        <img
-                          src="/images/pollen-birch.svg"
-                          alt="Birkenpollen"
-                          height="64"
-                          width="64"
-                        />
-                        <h3>Birke (Birch)</h3>
-                        <p id="birch-pollen-level">-</p>
-                        <p class="pollen-season">
-                          Hauptsaison: {pollenCalendar.birch.peakText}
-                        </p>
-                      </div>
-                      <div class="pollen-extra-item">
-                        <img
-                          src="/images/pollen-grass.svg"
-                          alt="Gräserpollen"
-                          height="64"
-                          width="64"
-                        />
-                        <h3>Gräser (Grasses)</h3>
-                        <p id="grasses-pollen-level">-</p>
-                        <p class="pollen-season">
-                          Hauptsaison: {pollenCalendar.grasses.peakText}
-                        </p>
-                      </div>
-                      <div class="pollen-extra-item">
-                        <img
-                          src="/images/pollen-tree.svg"
-                          alt="Haselpollen"
-                          height="64"
-                          width="64"
-                        />
-                        <h3>Hasel (Hazel)</h3>
-                        <p id="hazel-pollen-level">-</p>
-                        <p class="pollen-season">
-                          Hauptsaison: {pollenCalendar.hazel.peakText}
-                        </p>
-                      </div>
-                      <div class="pollen-extra-item">
-                        <img
-                          src="/images/pollen-flower.svg"
-                          alt="Beifußpollen"
-                          height="64"
-                          width="64"
-                        />
-                        <h3>Beifuß (Mugwort)</h3>
-                        <p id="mugwort-pollen-level">-</p>
-                        <p class="pollen-season">
-                          Hauptsaison: {pollenCalendar.mugwort.peakText}
-                        </p>
-                      </div>
-                      <div class="pollen-extra-item">
-                        <img
-                          src="/images/pollen-flower.svg"
-                          alt="Ambrosiapollen"
-                          height="64"
-                          width="64"
-                        />
-                        <h3>Ambrosia (Ragweed)</h3>
-                        <p id="ragweed-pollen-level">-</p>
-                        <p class="pollen-season">
-                          Hauptsaison: {pollenCalendar.ragweed.peakText}
-                        </p>
-                      </div>
-                      <div class="pollen-extra-item">
-                        <img
-                          src="/images/pollen-grass.svg"
-                          alt="Roggenpollen"
-                          height="64"
-                          width="64"
-                        />
-                        <h3>Roggen (Rye)</h3>
-                        <p id="rye-pollen-level">-</p>
-                        <p class="pollen-season">
-                          Hauptsaison: {pollenCalendar.rye.peakText}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                    <table class="pollen-table">
+                      <thead>
+                        <tr>
+                          <th class="pollen-type-column">Pollenart</th>
+                          {dayLabels.map(day => (
+                            <th class="day-column">{day}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody id="pollen-data-body">
+                        <tr>
+                          <td colspan="4" style="text-align: center; padding: 20px;">
+                            <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+                              <div class="loading-spinner"></div>
+                              <span>Pollen-Daten werden geladen...</span>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                 )
               }
             </div>
@@ -1092,6 +982,45 @@ const questions = [
     background-color: #fff;
   }
 
+  .pollen-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    border: 1px solid #e0e0e0;
+  }
+
+  .pollen-table th,
+  .pollen-table td {
+    padding: 0.75rem;
+    border: 1px solid #e0e0e0;
+    text-align: center;
+  }
+
+  .pollen-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+  }
+
+  .pollen-type-cell {
+    text-align: left;
+  }
+
+  .pollen-type-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .pollen-badge-table {
+    display: inline-block;
+    min-width: 2.5rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+    text-align: center;
+  }
+
   @media (max-width: 768px) {
     .pollen-calendar {
       font-size: 0.75rem;
@@ -1100,6 +1029,21 @@ const questions = [
     .pollen-calendar th,
     .pollen-calendar td {
       padding: 0.1rem 0.0.5rem;
+    }
+    
+    .pollen-table {
+      font-size: 0.8rem;
+    }
+    
+    .pollen-table th,
+    .pollen-table td {
+      padding: 0.5rem 0.25rem;
+    }
+    
+    .pollen-type-wrapper {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
     }
   }
 </style>
