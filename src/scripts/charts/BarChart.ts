@@ -463,6 +463,54 @@ export default class TimeBarChart {
     // Add hover group after drawing bars
     g.appendChild(hoverGroup);
 
+    // Add a transparent overlay for chart-wide touch/mouse interaction
+    const overlay = document.createElementNS(svgNS, "rect");
+    overlay.setAttribute("x", "0");
+    overlay.setAttribute("y", "0");
+    overlay.setAttribute("width", chartWidth.toString());
+    overlay.setAttribute("height", chartHeight.toString());
+    overlay.setAttribute("fill", "transparent");
+    overlay.style.cursor = "crosshair";
+
+    // Add mouse events for desktop
+    overlay.addEventListener("mousemove", (event) => {
+      this.handleChartPointerMove(event, margin, chartWidth, chartHeight, paddedMinTime, paddedMaxTime, paddedTimeRange, maxValue, baseBarWidth, tooltipConnector, hoverPoint);
+    });
+
+    overlay.addEventListener("mouseout", () => {
+      this.hideTooltip(tooltipConnector, hoverPoint);
+    });
+
+    // Add touch events for mobile - this enables sliding across the chart
+    overlay.addEventListener("touchstart", (event) => {
+      this.touchActive = true;
+      const touch = event.touches[0];
+      this.lastTouchX = touch.clientX;
+      this.handleChartPointerMove(touch, margin, chartWidth, chartHeight, paddedMinTime, paddedMaxTime, paddedTimeRange, maxValue, baseBarWidth, tooltipConnector, hoverPoint);
+      event.preventDefault(); // Prevent scrolling while touching the chart
+    });
+
+    overlay.addEventListener("touchmove", (event) => {
+      if (this.touchActive) {
+        const touch = event.touches[0];
+        this.lastTouchX = touch.clientX;
+        this.handleChartPointerMove(touch, margin, chartWidth, chartHeight, paddedMinTime, paddedMaxTime, paddedTimeRange, maxValue, baseBarWidth, tooltipConnector, hoverPoint);
+        event.preventDefault(); // Prevent scrolling while touching the chart
+      }
+    });
+
+    overlay.addEventListener("touchend", () => {
+      // Keep tooltip visible for a moment after touch ends for better UX
+      setTimeout(() => {
+        if (!this.touchActive) {
+          this.hideTooltip(tooltipConnector, hoverPoint);
+        }
+      }, 1500);
+      this.touchActive = false;
+    });
+
+    g.appendChild(overlay);
+
     // Draw time labels
     this.drawTimeAxis(g, chartWidth, chartHeight, paddedMinTime, paddedMaxTime);
     
@@ -471,6 +519,71 @@ export default class TimeBarChart {
 
     // Draw current time indicator (line or dot based on options)
     this.drawCurrentTimeIndicator(g, chartWidth, chartHeight, paddedMinTime, paddedMaxTime);
+  }
+
+  private handleChartPointerMove(
+    event: MouseEvent | Touch,
+    margin: { top: number; right: number; bottom: number; left: number },
+    chartWidth: number,
+    chartHeight: number, 
+    minTime: number,
+    maxTime: number,
+    timeRange: number,
+    maxValue: number,
+    baseBarWidth: number,
+    tooltipConnector: SVGLineElement,
+    hoverPoint: SVGCircleElement
+  ): void {
+    const containerRect = this.container.getBoundingClientRect();
+    const mouseX = event.clientX - containerRect.left - margin.left;
+    
+    // Convert mouse position to timestamp
+    const mouseTimeRatio = Math.max(0, Math.min(1, mouseX / chartWidth));
+    const mouseTime = minTime + mouseTimeRatio * timeRange;
+    
+    // Find closest data point in time
+    let closestIndex = 0;
+    let minTimeDiff = Infinity;
+    
+    for (let i = 0; i < this.data.length; i++) {
+      const timeDiff = Math.abs(this.data[i].date.getTime() - mouseTime);
+      if (timeDiff < minTimeDiff) {
+        minTimeDiff = timeDiff;
+        closestIndex = i;
+      }
+    }
+    
+    // Get the nearest data point
+    const nearestPoint = this.data[closestIndex];
+    const timestamp = nearestPoint.date.getTime();
+    const xRatio = (timestamp - minTime) / timeRange;
+    const x = xRatio * chartWidth;
+    
+    // Calculate bar height and position
+    const barHeight = maxValue > 0 ? (nearestPoint.value / maxValue) * chartHeight : 0;
+    const y = chartHeight - barHeight;
+    
+    // Show tooltip with the same format as individual bar hover
+    this.tooltip.innerHTML = `<strong>${this.formatDateTime(nearestPoint.date)}</strong><br/>` +
+      `${this.options.valueLabel} ${nearestPoint.value} ${this.options.valueUnit}`;
+    this.tooltip.style.display = "block";
+    this.tooltip.style.opacity = "1";
+    
+    // Position tooltip
+    const tooltipX = containerRect.left + margin.left + x;
+    this.updateTooltipPosition(tooltipX - containerRect.left, y);
+    
+    // Update tooltip connector line
+    tooltipConnector.setAttribute("x1", x.toString());
+    tooltipConnector.setAttribute("y1", "-20"); // Extend above chart area to reach tooltip
+    tooltipConnector.setAttribute("x2", x.toString());
+    tooltipConnector.setAttribute("y2", y.toString());
+    tooltipConnector.setAttribute("display", "block");
+    
+    // Update hover point
+    hoverPoint.setAttribute("cx", x.toString());
+    hoverPoint.setAttribute("cy", y.toString());
+    hoverPoint.setAttribute("display", "block");
   }
 
   private drawHighlight(
