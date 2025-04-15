@@ -1,71 +1,42 @@
 ---
 import "../styles/weatherwidget.css";
 
-interface Props {
+interface WeatherProps {
   lat: number;
   lng: number;
   cityName: string;
   forecastDays?: number;
+  embed?: boolean;
 }
 
-const { lat, lng, cityName, forecastDays = 7 } = Astro.props;
+const {
+  lat,
+  lng,
+  cityName,
+  forecastDays = 7,
+  embed = false,
+} = Astro.props as WeatherProps;
 ---
 
 <div
-  class="weather-info"
+  class="weather-widget"
   id="weather-widget"
+  data-embed={embed}
   data-lat={lat}
   data-lng={lng}
+  data-city={cityName}
   data-forecast-days={forecastDays}
+  itemscope
+  itemtype="https://schema.org/WeatherForecast"
 >
-  <div class="weather-status">
-    <div id="icon" class="status-text">Temperatur wird geladen...</div>
-    <div id="temperature" class="status-text">Temperatur wird geladen...</div>
-
-    <div class="weather-metrics">
-      <div class="status-box">
-        <span class="status-icon">
-          <img src="/images/wind.svg" alt="Wind" height="48" width="48" />
-        </span>
-        <p class="status-label">Wind</p>
-        <p id="wind" class="status-value">Wird geladen...</p>
-      </div>
-
-      <div class="status-box">
-        <span class="status-icon">
-          <img
-            src="/images/humidity.svg"
-            alt="Luftfeuchtigkeit"
-            height="48"
-            width="48"
-          />
-        </span>
-        <p class="status-label">Luftfeuchtigkeit</p>
-        <p id="humidity" class="status-value">Wird geladen...</p>
-      </div>
-
-      <div class="status-box">
-        <span class="status-icon">
-          <img
-            src="/images/rain.svg"
-            alt="Niederschlag"
-            height="48"
-            width="48"
-          />
-        </span>
-        <p class="status-label">Niederschlag</p>
-        <p id="rainfall" class="status-value">Wird geladen...</p>
-      </div>
-    </div>
+  <div class="loading-container" id="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Wetterdaten werden geladen...</p>
   </div>
 
-  <div class="forecast-section">
-    <h2 class="forecast-title">Stündliche Vorhersage</h2>
-    <div class="forecast-container">
-      <button
-        class="scroll-button scroll-left"
-        aria-label="Nach links scrollen"
-      >
+  <div class="weather-content" id="weather-content" style="display: none;">
+    <div class="widget-header">
+      <div class="location-info">
         <svg
           width="24"
           height="24"
@@ -73,48 +44,521 @@ const { lat, lng, cityName, forecastDays = 7 } = Astro.props;
           fill="none"
           stroke="currentColor"
           stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
         >
-          <polyline points="15 18 9 12 15 6"></polyline>
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
         </svg>
-      </button>
-      <div class="forecast-grid" id="hourly-forecast">
-        <div class="forecast-loading">
-          Stündliche Vorhersage wird geladen...
+        <h2 id="location-name" itemprop="address">{cityName}</h2>
+      </div>
+
+      <div class="header-right">
+        <p class="update-info" id="update-info">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <time datetime="" itemprop="dateIssued"
+            >Aktualisiert: Wird geladen...</time
+          >
+        </p>
+
+        {
+          !embed && (
+            <div class="share-button-container">
+              <div
+                class="share-button"
+                id="share-weather-button"
+                aria-label="Widget teilen"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                </svg>
+              </div>
+            </div>
+          )
+        }
+      </div>
+    </div>
+
+    <!-- Current Weather Section with rich semantic data -->
+    <div
+      class="current-weather"
+      itemprop="currentConditions"
+      itemscope
+      itemtype="https://schema.org/WeatherObservation"
+    >
+      <div class="weather-primary">
+        <div id="icon" class="weather-icon">
+          <!-- Weather icon will be inserted here by JavaScript -->
+        </div>
+        <div class="temp-container">
+          <div id="temperature" class="current-temp" itemprop="temperature">
+            --°C
+          </div>
+          <div id="feels-like" class="feels-like">Fühlt sich wie --°C an</div>
+          <div
+            id="description"
+            class="weather-description"
+            itemprop="description"
+          >
+            --
+          </div>
         </div>
       </div>
-      <button
-        class="scroll-button scroll-right"
-        aria-label="Nach rechts scrollen"
-      >
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <polyline points="9 18 15 12 9 6"></polyline>
-        </svg>
-      </button>
-    </div>
-  </div>
 
-  <div class="forecast-section">
-    <h2 class="forecast-title">{forecastDays}-Tage Vorhersage</h2>
-    <div class="daily-forecast-list" id="daily-forecast">
-      <div class="forecast-loading">
-        {forecastDays}-Tage Vorhersage wird geladen...
+      <div class="weather-metrics">
+        <div class="metric-card">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path
+              d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"
+            ></path>
+          </svg>
+          <div>
+            <p class="metric-label">Wind</p>
+            <div class="metric-value-container">
+              <span id="wind" class="metric-value" itemprop="windSpeed"
+                >-- km/h</span
+              >
+              <span id="wind-direction" class="metric-direction">
+                <svg
+                  class="wind-arrow"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  aria-hidden="true"
+                >
+                  <path d="M12 19V5M5 12l7-7 7 7"></path>
+                </svg>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+          </svg>
+          <div>
+            <p class="metric-label">Luftfeuchtigkeit</p>
+            <div class="metric-value-container">
+              <span id="humidity" class="metric-value" itemprop="humidity"
+                >--%</span
+              >
+              <div class="progress-container">
+                <div id="humidity-bar" class="progress-bar" style="width: 0%">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M20 16.2A4.5 4.5 0 0 0 17.5 8h-1.8A7 7 0 1 0 4 14.9"
+            ></path>
+            <path d="M16 14v6"></path>
+            <path d="M8 14v6"></path>
+            <path d="M12 16v6"></path>
+          </svg>
+          <div>
+            <p class="metric-label">Niederschlag</p>
+            <div class="metric-value-container">
+              <span id="rainfall" class="metric-value" itemprop="precipitation"
+                >-- mm</span
+              >
+              <span id="rainfall-probability" class="metric-subvalue">--%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <div>
+            <p class="metric-label">UV-Index</p>
+            <div class="metric-value-container">
+              <span id="uv-index" class="metric-value">--</span>
+              <span id="uv-level" class="metric-subvalue">--</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hourly forecast section with SEO markup -->
+    <div class="forecast-section-title">Stündliche Vorhersage</div>
+    <div id="hourly-tab" class="forecast-section">
+      <div
+        class="forecast-container"
+        itemscope
+        itemtype="https://schema.org/HourlyForecast"
+      >
+        <button
+          class="scroll-button scroll-left"
+          aria-label="Nach links scrollen"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <div class="forecast-scroll" id="hourly-forecast">
+          <div class="forecast-loading">
+            <div class="loading-skeleton"></div>
+            <div class="loading-skeleton"></div>
+            <div class="loading-skeleton"></div>
+            <div class="loading-skeleton"></div>
+          </div>
+        </div>
+        <button
+          class="scroll-button scroll-right"
+          aria-label="Nach rechts scrollen"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Daily forecast section with SEO markup -->
+    <div class="forecast-section-title">Tägliche Vorhersage</div>
+    <div id="daily-tab" class="forecast-section">
+      <div
+        class="daily-forecast-list"
+        id="daily-forecast"
+        itemscope
+        itemtype="https://schema.org/DailyForecast"
+      >
+        <div class="forecast-loading">
+          <div class="loading-skeleton daily-skeleton"></div>
+          <div class="loading-skeleton daily-skeleton"></div>
+          <div class="loading-skeleton daily-skeleton"></div>
+        </div>
       </div>
     </div>
   </div>
+
+  {
+    !embed && (
+      <div class="share-dropdown" id="share-dropdown">
+        <h3>Widget einbetten</h3>
+        <div class="embed-options">
+          <div class="embed-option">
+            <label for="embed-hourly">Stündliche Vorhersage anzeigen</label>
+            <label class="toggle-switch">
+              <input type="checkbox" id="embed-hourly" checked />
+              <span class="toggle-slider" />
+            </label>
+          </div>
+          <div class="embed-option">
+            <label for="embed-daily">Tägliche Vorhersage anzeigen</label>
+            <label class="toggle-switch">
+              <input type="checkbox" id="embed-daily" checked />
+              <span class="toggle-slider" />
+            </label>
+          </div>
+        </div>
+        <div class="embed-code-section">
+          <div class="embed-code-tabs">
+            <div class="embed-code-tab active" data-tab="url">
+              URL
+            </div>
+            <div class="embed-code-tab" data-tab="iframe">
+              iFrame
+            </div>
+          </div>
+          <div class="code-display" id="url-code">
+            <button class="copy-button" id="copy-url">
+              Kopieren
+            </button>
+            <div id="url-display" />
+          </div>
+          <div class="code-display" id="iframe-code" style="display: none;">
+            <button class="copy-button" id="copy-iframe">
+              Kopieren
+            </button>
+            <div id="iframe-display" />
+          </div>
+          <p class="url-note">
+            Nutzen Sie diese URL, um das Widget in Ihre Website einzubetten.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  {
+    embed && (
+      <div class="embed-copyright">
+        <a
+          href="https://wetterkarte.org"
+          target="_blank"
+          title="wetterkarte.org"
+        >
+          <img src="/logo.svg" alt="Website Logo" width="24" height="24" />
+          <span>&copy wetterkarte.org</span>
+        </a>
+      </div>
+    )
+  }
 </div>
-<p class="update-info" id="update-info">
-  <time datetime="2024-02-20">Letzte Aktualisierung: Wird geladen...</time>
-</p>
 
 <script>
   import { weatherApi } from "../scripts/weather/WeatherAPI";
+
+  interface EmbedCryptoType {
+    SECRET_KEY: string;
+    encrypt: (data: any) => string;
+    decrypt: (encodedData: string) => any;
+    _xorEncrypt: (text: string, key: string) => string;
+    _generateRandomString: (length: number) => string;
+    _calculateChecksum: (data: string) => string;
+    _toUrlSafe: (base64: string) => string;
+    _fromUrlSafe: (urlSafe: string) => string;
+  }
+
+  const EmbedCrypto: EmbedCryptoType = {
+    SECRET_KEY: "WeatherWidgetSecretKey2025",
+
+    encrypt: function (data: any): string {
+      if (!data) return "";
+
+      try {
+        const jsonStr = typeof data === "string" ? data : JSON.stringify(data);
+
+        const encrypted = this._xorEncrypt(jsonStr, this.SECRET_KEY);
+        const checksum = this._calculateChecksum(jsonStr);
+        const combined = encrypted + "." + checksum;
+        return this._toUrlSafe(btoa(combined));
+      } catch (e) {
+        console.error("Encryption failed:", e);
+        return "";
+      }
+    },
+
+    decrypt: function (encodedData: string): any {
+      if (!encodedData) return null;
+
+      try {
+        const combined = atob(this._fromUrlSafe(encodedData));
+
+        const parts = combined.split(".");
+        if (parts.length !== 2) {
+          throw new Error("Invalid encoded data format");
+        }
+
+        const encrypted = parts[0];
+        const checksum = parts[1];
+
+        const decrypted = this._xorEncrypt(encrypted, this.SECRET_KEY);
+        const calculatedChecksum = this._calculateChecksum(decrypted);
+        if (calculatedChecksum !== checksum) {
+          throw new Error("Data integrity check failed");
+        }
+        try {
+          return JSON.parse(decrypted);
+        } catch (e) {
+          return decrypted;
+        }
+      } catch (e) {
+        console.error("Decryption failed:", e);
+        return null;
+      }
+    },
+
+    _xorEncrypt: function (text: string, key: string): string {
+      let result = "";
+      for (let i = 0; i < text.length; i++) {
+        const charCode = text.charCodeAt(i) ^ key.charCodeAt(i % key.length);
+        result += String.fromCharCode(charCode);
+      }
+      return result;
+    },
+
+    _generateRandomString: function (length: number): string {
+      const chars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let result = "";
+      const randomValues = new Uint8Array(length);
+      window.crypto.getRandomValues(randomValues);
+
+      for (let i = 0; i < length; i++) {
+        result += chars.charAt(randomValues[i] % chars.length);
+      }
+      return result;
+    },
+
+    _calculateChecksum: function (data: string): string {
+      let hash = 0;
+      for (let i = 0; i < data.length; i++) {
+        const char = data.charCodeAt(i);
+        hash = (hash << 5) - hash + char;
+        hash = hash & hash;
+      }
+      return Math.abs(hash).toString(16).padStart(8, "0");
+    },
+
+    _toUrlSafe: function (base64: string): string {
+      return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    },
+
+    _fromUrlSafe: function (urlSafe: string): string {
+      let base64 = urlSafe.replace(/-/g, "+").replace(/_/g, "/");
+      while (base64.length % 4) {
+        base64 += "=";
+      }
+      return base64;
+    },
+  };
+
+  interface WeatherDataCurrent {
+    temperature_2m: number;
+    relative_humidity_2m: number;
+    precipitation: number;
+    wind_speed_10m: number;
+    wind_direction_10m: number;
+    weather_code: number;
+    apparent_temperature: number;
+    uv_index: number;
+    time: string;
+  }
+
+  interface WeatherDataHourly {
+    time: string[];
+    temperature_2m: number[];
+    wind_speed_10m: number[];
+    wind_direction_10m: number[];
+    weather_code: number[];
+    precipitation_probability: number[];
+  }
+
+  interface WeatherDataDaily {
+    time: string[];
+    temperature_2m_max: number[];
+    temperature_2m_min: number[];
+    weather_code: number[];
+    precipitation_sum: number[];
+    precipitation_probability_max: number[];
+    uv_index_max: number[];
+  }
+
+  interface WeatherWidgetSettings {
+    showHourly: boolean;
+    showDaily: boolean;
+  }
+
+  interface EmbedCodeOptions {
+    forecastDays?: number;
+    showHourly?: boolean;
+    showDaily?: boolean;
+  }
+
+  interface EmbedCodeResult {
+    url: string;
+    iframe: string;
+    config: any;
+  }
+
+  declare global {
+    interface Window {
+      weatherWidgetSettings?: WeatherWidgetSettings;
+    }
+  }
 
   function formatHour(date: Date): string {
     return date.toLocaleTimeString("de-DE", {
@@ -125,110 +569,200 @@ const { lat, lng, cityName, forecastDays = 7 } = Astro.props;
 
   function isDayTime(date: Date): boolean {
     const hour = date.getHours();
-    return hour >= 6 && hour < 18;
+    return hour >= 6 && hour < 20;
   }
 
-  /**
-   * Returns a weather icon (img element) based on the WMO weather code.
-   */
+  function formatWeatherDescription(weatherCode: number): string {
+    const descriptions: Record<number, string> = {
+      0: "Klar",
+      1: "Überwiegend klar",
+      2: "Teilweise bewölkt",
+      3: "Bewölkt",
+      45: "Nebel",
+      48: "Dichter Nebel",
+      51: "Leichter Nieselregen",
+      53: "Mäßiger Nieselregen",
+      55: "Starker Nieselregen",
+      56: "Leichter gefrierender Nieselregen",
+      57: "Starker gefrierender Nieselregen",
+      61: "Leichter Regen",
+      63: "Mäßiger Regen",
+      65: "Starker Regen",
+      66: "Leichter gefrierender Regen",
+      67: "Starker gefrierender Regen",
+      71: "Leichter Schneefall",
+      73: "Mäßiger Schneefall",
+      75: "Starker Schneefall",
+      77: "Schneegriesel",
+      80: "Leichte Regenschauer",
+      81: "Mäßige Regenschauer",
+      82: "Starke Regenschauer",
+      85: "Leichte Schneeschauer",
+      86: "Starke Schneeschauer",
+      95: "Gewitter",
+      96: "Gewitter mit leichtem Hagel",
+      99: "Gewitter mit starkem Hagel",
+    };
+
+    return descriptions[weatherCode] || "Keine Daten";
+  }
+
+  function getUVIndexLevel(uvIndex: number): string {
+    if (uvIndex <= 2) return "Niedrig";
+    if (uvIndex <= 5) return "Mittel";
+    if (uvIndex <= 7) return "Hoch";
+    if (uvIndex <= 10) return "Sehr hoch";
+    return "Extrem";
+  }
+
+  function getWindDirectionIcon(degrees: number | undefined): string {
+    if (!degrees && degrees !== 0) return "";
+    return `transform: rotate(${degrees + 180}deg);`;
+  }
+
   function getWeatherIcon(weatherCode: number, date: Date): HTMLImageElement {
     let imageName = "";
-    let weatherTitle = "";
+    let weatherTitle = formatWeatherDescription(weatherCode);
+    const isDay = isDayTime(date);
 
-    if (weatherCode === 0 || weatherCode === 1) {
-      imageName = isDayTime(date) ? "clear-day.svg" : "clear-night.svg";
-      weatherTitle = "Klar";
+    if (weatherCode === 0) {
+      imageName = isDay ? "clear-day.svg" : "clear-night.svg";
+    } else if (weatherCode === 1) {
+      imageName = isDay ? "clear-day.svg" : "clear-night.svg";
     } else if (weatherCode === 2) {
-      imageName = isDayTime(date) ? "cloudy.svg" : "partly-cloudy-night.svg";
-      weatherTitle = "Wolkig";
+      imageName = isDay ? "partly-cloudy-day.svg" : "partly-cloudy-night.svg";
     } else if (weatherCode === 3) {
       imageName = "overcast.svg";
-      weatherTitle = "Überwiegend bewölkt";
     } else if ([45, 48].includes(weatherCode)) {
-      imageName = isDayTime(date) ? "fog-day.svg" : "fog-night.svg";
-      weatherTitle = "Nebel";
-    } else if ([51, 53, 55].includes(weatherCode)) {
+      imageName = isDay ? "fog-day.svg" : "fog-night.svg";
+    } else if ([51, 53, 55, 56, 57].includes(weatherCode)) {
       imageName = "drizzle.svg";
-      weatherTitle = "Nieselregen";
-    } else if ([56, 57].includes(weatherCode)) {
-      imageName = "drizzle.svg";
-      weatherTitle = "Nieselregen";
-    } else if ([61, 63, 65].includes(weatherCode)) {
+    } else if ([61, 63, 65, 66, 67].includes(weatherCode)) {
       imageName = "rain.svg";
-      weatherTitle = "Regen";
-    } else if ([66, 67].includes(weatherCode)) {
-      imageName = "sleet.svg";
-      weatherTitle = "Schneeregen";
     } else if ([71, 73, 75, 77].includes(weatherCode)) {
       imageName = "snowflake.svg";
-      weatherTitle = "Schneesturm";
     } else if ([80, 81, 82].includes(weatherCode)) {
-      imageName = isDayTime(date)
+      imageName = isDay
         ? "partly-cloudy-day-rain.svg"
         : "partly-cloudy-night-rain.svg";
-      weatherTitle = "Regen";
     } else if ([85, 86].includes(weatherCode)) {
-      imageName = isDayTime(date)
+      imageName = isDay
         ? "partly-cloudy-day-snow.svg"
         : "partly-cloudy-night-snow.svg";
-      weatherTitle = "Schnee";
     } else if ([95, 96, 99].includes(weatherCode)) {
       imageName = "thunderstorms.svg";
-      weatherTitle = "Gewitter";
     } else {
       imageName = "not-available.svg";
-      weatherTitle = "Keine Wetterdaten";
     }
 
     const imgElement = document.createElement("img");
-
     imgElement.src = `/images/${imageName}`;
     imgElement.alt = weatherTitle;
     imgElement.title = weatherTitle;
-    imgElement.style.width = "20rem";
-    imgElement.style.height = "auto";
-    imgElement.style.filter = "drop-shadow(5px 5px 10px #00000066)";
+    imgElement.className = "weather-icon-img";
 
     return imgElement;
   }
 
-  const widget = document.getElementById("weather-widget") as HTMLElement;
+  const widget = document.getElementById("weather-widget");
   if (!widget) {
     throw new Error("Weather widget Element nicht gefunden!");
   }
 
-  const lat = widget.getAttribute("data-lat")!;
-  const lng = widget.getAttribute("data-lng")!;
-  const forecastDays = widget.getAttribute("data-forecast-days")!;
+  const embed = widget.getAttribute("data-embed") === "true";
+  let lat = widget.getAttribute("data-lat");
+  let lng = widget.getAttribute("data-lng");
+  let cityName = widget.getAttribute("data-city");
+  let forecastDays = widget.getAttribute("data-forecast-days");
 
-  // Define the weather data parameters we need
+  let showHourly = true;
+  let showDaily = true;
+
+  if (embed) {
+    widget.classList.add("widget-embed");
+
+    const url = new URL(window.location.href);
+    const locParam = url.searchParams.get("config");
+
+    if (locParam) {
+      try {
+        const config = EmbedCrypto.decrypt(locParam);
+
+        if (config && typeof config === "object") {
+          if (config.lat) lat = config.lat.toString();
+          if (config.lng) lng = config.lng.toString();
+          if (config.city) cityName = config.city;
+          if (config.days) forecastDays = config.days.toString();
+
+          showHourly = config.hourly !== false;
+          showDaily = config.daily !== false;
+
+          console.log("Embed options:", {
+            lat,
+            lng,
+            cityName,
+            forecastDays,
+            showHourly,
+            showDaily,
+          });
+
+          window.weatherWidgetSettings = {
+            showHourly: showHourly,
+            showDaily: showDaily,
+          };
+        } else {
+          console.error("Invalid configuration parameter");
+        }
+      } catch (e) {
+        console.error("Failed to decode configuration parameter:", e);
+      }
+    }
+  }
+
   const CURRENT_PARAMS = [
     "temperature_2m",
     "relative_humidity_2m",
     "precipitation",
     "wind_speed_10m",
+    "wind_direction_10m",
     "weather_code",
-  ] as const;
+    "apparent_temperature",
+    "uv_index",
+  ];
 
   const HOURLY_PARAMS = [
     "temperature_2m",
     "wind_speed_10m",
     "wind_direction_10m",
     "weather_code",
-  ] as const;
+    "precipitation_probability",
+  ];
 
   const DAILY_PARAMS = [
     "temperature_2m_max",
     "temperature_2m_min",
     "weather_code",
-  ] as const;
+    "precipitation_sum",
+    "precipitation_probability_max",
+    "uv_index_max",
+  ];
 
   async function fetchWeatherData(): Promise<void> {
     try {
+      const loadingContainer = document.getElementById(
+        "loading-container",
+      ) as HTMLElement;
+      const weatherContent = document.getElementById(
+        "weather-content",
+      ) as HTMLElement;
+
+      loadingContainer.style.display = "flex";
+      weatherContent.style.display = "none";
+
       const weatherData = await weatherApi.getWeather({
-        latitude: parseFloat(lat),
-        longitude: parseFloat(lng),
-        forecastDays: parseInt(forecastDays),
+        latitude: parseFloat(lat!),
+        longitude: parseFloat(lng!),
+        forecastDays: parseInt(forecastDays!),
         timezone: "auto",
         current: CURRENT_PARAMS,
         hourly: HOURLY_PARAMS,
@@ -238,11 +772,13 @@ const { lat, lng, cityName, forecastDays = 7 } = Astro.props;
       const now = new Date();
       let currentIndex =
         weatherData.hourly?.time.findIndex((t) => new Date(t) >= now) ?? -1;
+
       if (currentIndex === -1 && weatherData.hourly) {
         currentIndex = weatherData.hourly.time.length - 1;
       }
 
-      // Current Temperature
+      document.getElementById("location-name")!.textContent = cityName;
+
       if (weatherData.current) {
         const currentTemp = weatherData.current.temperature_2m;
         const tempElement = document.getElementById(
@@ -250,49 +786,114 @@ const { lat, lng, cityName, forecastDays = 7 } = Astro.props;
         ) as HTMLElement;
         tempElement.innerHTML = `${currentTemp.toFixed(1)}°C`;
 
-        // Current Icon
+        const feelsLike = weatherData.current.apparent_temperature;
+        const feelsLikeElement = document.getElementById(
+          "feels-like",
+        ) as HTMLElement;
+        feelsLikeElement.innerHTML = `Fühlt sich wie ${feelsLike.toFixed(1)}°C an`;
+
+        const weatherDesc = formatWeatherDescription(
+          weatherData.current.weather_code,
+        );
+        const descElement = document.getElementById(
+          "description",
+        ) as HTMLElement;
+        descElement.innerHTML = weatherDesc;
+        // Add schema.org content
+        descElement.setAttribute("content", weatherDesc);
+
         const currentIcon = getWeatherIcon(
           weatherData.current.weather_code,
           new Date(weatherData.current.time),
         );
-        currentIcon.style.height = "10rem";
         const iconElement = document.getElementById("icon") as HTMLElement;
         iconElement.innerHTML = "";
         iconElement.append(currentIcon);
 
-        // Current Humidity
         const currentHumidity = weatherData.current.relative_humidity_2m;
         const humidityElement = document.getElementById(
           "humidity",
         ) as HTMLElement;
-        humidityElement.innerHTML = `${currentHumidity.toFixed(1)}%`;
+        humidityElement.innerHTML = `${currentHumidity.toFixed(0)}%`;
+        // Add schema.org content
+        humidityElement.setAttribute(
+          "content",
+          `${currentHumidity.toFixed(0)}`,
+        );
 
-        // Current Rainfall
+        const humidityBar = document.getElementById(
+          "humidity-bar",
+        ) as HTMLElement;
+        humidityBar.style.width = `${currentHumidity}%`;
+
+        if (currentHumidity < 30) {
+          humidityBar.style.backgroundColor = "#3498db";
+        } else if (currentHumidity < 60) {
+          humidityBar.style.backgroundColor = "#2ecc71";
+        } else {
+          humidityBar.style.backgroundColor = "#e74c3c";
+        }
+
         const currentRainfall = weatherData.current.precipitation;
         const rainfallElement = document.getElementById(
           "rainfall",
         ) as HTMLElement;
         rainfallElement.innerHTML = `${currentRainfall.toFixed(1)} mm`;
+        // Add schema.org content
+        rainfallElement.setAttribute(
+          "content",
+          `${currentRainfall.toFixed(1)}`,
+        );
 
-        // Update time
-        const updateInfoElement = document.getElementById(
-          "update-info",
+        if (weatherData.hourly && currentIndex >= 0) {
+          const rainProb =
+            weatherData.hourly.precipitation_probability[currentIndex] || 0;
+          const rainProbElement = document.getElementById(
+            "rainfall-probability",
+          ) as HTMLElement;
+          rainProbElement.innerHTML = `${rainProb}%`;
+        }
+
+        const uvIndex = weatherData.current.uv_index || 0;
+        const uvElement = document.getElementById("uv-index") as HTMLElement;
+        uvElement.innerHTML = uvIndex.toFixed(0);
+
+        const uvLevel = getUVIndexLevel(uvIndex);
+        const uvLevelElement = document.getElementById(
+          "uv-level",
         ) as HTMLElement;
+        uvLevelElement.innerHTML = uvLevel;
+
+        let uvColor = "#3498db";
+        if (uvIndex > 2) uvColor = "#2ecc71";
+        if (uvIndex > 5) uvColor = "#f39c12";
+        if (uvIndex > 7) uvColor = "#e74c3c";
+        if (uvIndex > 10) uvColor = "#9b59b6";
+
+        uvElement.style.color = uvColor;
+
+        const updateInfoElement = document.getElementById("update-info")!;
         const currentTime = new Date(weatherData.current.time);
         const formattedTime = formatHour(currentTime);
-        updateInfoElement.innerHTML = `Letzte Aktualisierung: ${formattedTime} Uhr`;
+        const timeElement = updateInfoElement.querySelector(
+          "time",
+        ) as HTMLElement;
+        timeElement.innerHTML = `Aktualisiert: ${formattedTime} Uhr`;
+        timeElement.setAttribute("datetime", weatherData.current.time);
       }
 
-      // Current Wind
       if (weatherData.hourly && currentIndex >= 0) {
         const currentWind = weatherData.hourly.wind_speed_10m[currentIndex];
         const windElement = document.getElementById("wind") as HTMLElement;
         windElement.innerHTML = `${currentWind.toFixed(1)} km/h`;
+        // Add schema.org content
+        windElement.setAttribute("content", `${currentWind.toFixed(1)}`);
 
-        // Hourly Forecast
-        const hourlyElement = document.getElementById(
-          "hourly-forecast",
-        ) as HTMLElement;
+        const windDir = weatherData.hourly.wind_direction_10m[currentIndex];
+        const windArrow = document.querySelector(".wind-arrow") as HTMLElement;
+        windArrow.style.cssText = getWindDirectionIcon(windDir);
+
+        const hourlyElement = document.getElementById("hourly-forecast")!;
         let hourlyHTML = "";
 
         for (
@@ -304,71 +905,219 @@ const { lat, lng, cityName, forecastDays = 7 } = Astro.props;
           const temp = weatherData.hourly.temperature_2m[i];
           const windSpeed = weatherData.hourly.wind_speed_10m[i];
           const weatherCode = weatherData.hourly.weather_code[i];
+          const precipProb = weatherData.hourly.precipitation_probability[i];
           const icon = getWeatherIcon(weatherCode, time);
           const isCurrentHour = i === currentIndex;
 
+          // Add structured data for hourly forecast
+          const weatherDesc = formatWeatherDescription(weatherCode);
+
           hourlyHTML += `
-          <div class=${isCurrentHour ? "current-hour" : ""}>
-            <div>${formatHour(time)}</div>
-            <div>${icon.outerHTML}</div>
-            <div>${temp.toFixed(1)}°C</div>
-            <div>
-              <div>${windSpeed.toFixed(1)} km/h</div>
+            <div class="hourly-item ${isCurrentHour ? "current-hour" : ""}" 
+                 itemprop="forecast" 
+                 itemscope 
+                 itemtype="https://schema.org/WeatherForecast">
+              <meta itemprop="validFrom" content="${weatherData.hourly.time[i]}">
+              <meta itemprop="validThrough" content="${i + 1 < weatherData.hourly.time.length ? weatherData.hourly.time[i + 1] : ""}">
+              <meta itemprop="temperature" content="${temp.toFixed(1)}">
+              <meta itemprop="description" content="${weatherDesc}">
+              <div class="hourly-time">${formatHour(time)}</div>
+              <div class="hourly-icon">${icon.outerHTML}</div>
+              <div class="hourly-temp">${temp.toFixed(1)}°C</div>
+              <div class="hourly-precip">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M20 16.2A4.5 4.5 0 0 0 17.5 8h-1.8A7 7 0 1 0 4 14.9"></path>
+                  <path d="M12 16v6"></path>
+                </svg>
+                <span>${precipProb}%</span>
+              </div>
+              <div class="hourly-wind">
+                <svg style="${getWindDirectionIcon(weatherData.hourly.wind_direction_10m[i])}" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M12 19V5M5 12l7-7 7 7"></path>
+                </svg>
+                <span>${windSpeed.toFixed(0)}</span>
+              </div>
             </div>
-          </div>
-        `;
+          `;
         }
         hourlyElement.innerHTML = hourlyHTML;
       }
 
-      // Daily Forecast
       if (weatherData.daily) {
         const dailyElement = document.getElementById(
           "daily-forecast",
         ) as HTMLElement;
         let dailyHTML = "";
+
         for (let i = 0; i < weatherData.daily.time.length; i++) {
           const date = new Date(weatherData.daily.time[i]);
           const maxTemp = weatherData.daily.temperature_2m_max[i];
           const minTemp = weatherData.daily.temperature_2m_min[i];
           const weatherCode = weatherData.daily.weather_code[i];
+          const precipSum = weatherData.daily.precipitation_sum[i];
+          const precipProb = weatherData.daily.precipitation_probability_max[i];
+          const uvIndex = weatherData.daily.uv_index_max[i];
           const icon = getWeatherIcon(weatherCode, date);
-          // Format date to show weekday and date (e.g., "Mo, 20.02.")
-          const formattedDate = date.toLocaleDateString("de-DE", {
-            weekday: "short",
-            day: "2-digit",
-            month: "2-digit",
-          });
+          const weatherDesc = formatWeatherDescription(weatherCode);
+
+          let formattedDate;
+          const today = new Date();
+          const tomorrow = new Date();
+          tomorrow.setDate(today.getDate() + 1);
+
+          if (date.toDateString() === today.toDateString()) {
+            formattedDate = "Heute";
+          } else if (date.toDateString() === tomorrow.toDateString()) {
+            formattedDate = "Morgen";
+          } else {
+            formattedDate = date.toLocaleDateString("de-DE", {
+              weekday: "short",
+              day: "2-digit",
+              month: "2-digit",
+            });
+          }
+
+          // Add structured data for daily forecast
           dailyHTML += `
-          <div class="daily-forecast-item forecast-card">
-            <div class="daily-date">${formattedDate}</div>
-            <div class="daily-icon">${icon.outerHTML}</div>
-            <div class="daily-temp">${maxTemp.toFixed(1)}°C / ${minTemp.toFixed(1)}°C</div>
-          </div>
-        `;
+            <div class="daily-forecast-item ${i === 0 ? "today" : ""}"
+                 itemprop="forecast" 
+                 itemscope 
+                 itemtype="https://schema.org/WeatherForecast">
+              <meta itemprop="validFrom" content="${weatherData.daily.time[i]}">
+              <meta itemprop="validThrough" content="${i + 1 < weatherData.daily.time.length ? weatherData.daily.time[i + 1] : ""}">
+              <meta itemprop="lowTemperature" content="${minTemp.toFixed(1)}">
+              <meta itemprop="highTemperature" content="${maxTemp.toFixed(1)}">
+              <meta itemprop="description" content="${weatherDesc}">
+              <div class="daily-date">${formattedDate}</div>
+              <div class="daily-icon">${icon.outerHTML}</div>
+              <div class="daily-temp-container">
+                <div class="temp-range">
+                  <span class="max-temp">${maxTemp.toFixed(1)}°</span>
+                  <span class="min-temp">${minTemp.toFixed(1)}°</span>
+                </div>
+                <div class="temp-bar">
+                  <div class="temp-fill" style="width: ${((maxTemp - minTemp) / 20) * 100}%; left: ${(minTemp / 40) * 100}%"></div>
+                </div>
+              </div>
+              <div class="daily-details">
+                <div class="daily-precip" title="Niederschlag">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M20 16.2A4.5 4.5 0 0 0 17.5 8h-1.8A7 7 0 1 0 4 14.9"></path>
+                    <path d="M12 16v6"></path>
+                  </svg>
+                  <span>${precipSum.toFixed(1)}mm</span>
+                  <span>(${precipProb}%)</span>
+                </div>
+                <div class="daily-uv" title="UV-Index">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                  </svg>
+                  <span>${uvIndex.toFixed(0)}</span>
+                  <span>${getUVIndexLevel(uvIndex)}</span>
+                </div>
+              </div>
+            </div>
+          `;
         }
         dailyElement.innerHTML = dailyHTML;
       }
+
+      loadingContainer.style.display = "none";
+      weatherContent.style.display = "block";
+
+      if (window.weatherWidgetSettings) {
+        if (!window.weatherWidgetSettings.showHourly) {
+          const hourlyTitles = document.querySelectorAll(
+            ".forecast-section-title",
+          );
+          const hourlyTab = document.getElementById("hourly-tab");
+
+          if (hourlyTitles.length > 0) {
+            const element = hourlyTitles[0] as HTMLElement;
+            element.style.display = "none";
+          }
+          if (hourlyTab) {
+            hourlyTab.style.display = "none";
+          }
+        }
+
+        if (!window.weatherWidgetSettings.showDaily) {
+          const dailyTitles = document.querySelectorAll(
+            ".forecast-section-title",
+          );
+          const dailyTab = document.getElementById("daily-tab");
+
+          if (dailyTitles.length > 1) {
+            const element = dailyTitles[1] as HTMLElement;
+            element.style.display = "none";
+          }
+          if (dailyTab) {
+            dailyTab.style.display = "none";
+          }
+        }
+      }
+
+      new ForecastScroll();
     } catch (error) {
       console.error("Fehler beim Laden der Wetterdaten:", error);
-      widget.innerHTML = `<p>Wetterdaten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.</p>`;
+
+      const loadingContainer = document.getElementById(
+        "loading-container",
+      ) as HTMLElement;
+      loadingContainer.innerHTML = `
+        <div class="error-container">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-octagon"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>          <p>Wetterdaten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.</p>
+          <button id="retry-button" class="retry-button">Erneut versuchen</button>
+        </div>
+      `;
+
+      document
+        .getElementById("retry-button")!
+        .addEventListener("click", fetchWeatherData);
     }
   }
-
-  fetchWeatherData();
 
   class ForecastScroll {
     private container: HTMLElement;
     private scrollContainer: HTMLElement;
     private leftButton: HTMLButtonElement;
     private rightButton: HTMLButtonElement;
-    private scrollAmount: number = 240;
+    private scrollAmount: number = 300;
+    private isMouseDown: boolean = false;
+    private startX: number = 0;
+    private scrollLeft: number = 0;
 
     constructor() {
-      this.container = document.querySelector(".forecast-container")!;
-      this.scrollContainer = this.container.querySelector(".forecast-grid")!;
-      this.leftButton = this.container.querySelector(".scroll-left")!;
-      this.rightButton = this.container.querySelector(".scroll-right")!;
+      this.container = document.querySelector(
+        ".forecast-container",
+      ) as HTMLElement;
+      this.scrollContainer = document.querySelector(
+        ".forecast-scroll",
+      ) as HTMLElement;
+      this.leftButton = document.querySelector(
+        ".scroll-left",
+      ) as HTMLButtonElement;
+      this.rightButton = document.querySelector(
+        ".scroll-right",
+      ) as HTMLButtonElement;
+
+      if (
+        !this.container ||
+        !this.scrollContainer ||
+        !this.leftButton ||
+        !this.rightButton
+      ) {
+        console.error("Could not find forecast elements");
+        return;
+      }
 
       this.init();
     }
@@ -376,6 +1125,30 @@ const { lat, lng, cityName, forecastDays = 7 } = Astro.props;
     private init(): void {
       this.leftButton.addEventListener("click", () => this.scroll("left"));
       this.rightButton.addEventListener("click", () => this.scroll("right"));
+
+      this.scrollContainer.addEventListener("mousedown", (e: MouseEvent) =>
+        this.startDrag(e),
+      );
+      this.scrollContainer.addEventListener(
+        "touchstart",
+        (e: TouchEvent) => this.startDrag(e),
+        { passive: true },
+      );
+
+      this.scrollContainer.addEventListener("mousemove", (e: MouseEvent) =>
+        this.drag(e),
+      );
+      this.scrollContainer.addEventListener(
+        "touchmove",
+        (e: TouchEvent) => this.drag(e),
+        {
+          passive: true,
+        },
+      );
+
+      this.scrollContainer.addEventListener("mouseup", () => this.endDrag());
+      this.scrollContainer.addEventListener("mouseleave", () => this.endDrag());
+      this.scrollContainer.addEventListener("touchend", () => this.endDrag());
 
       this.scrollContainer.addEventListener("scroll", () =>
         this.updateButtonStates(),
@@ -391,15 +1164,36 @@ const { lat, lng, cityName, forecastDays = 7 } = Astro.props;
         attributes: true,
       });
 
-      this.checkForOverflow();
+      this.updateButtonStates();
       window.addEventListener("resize", () => this.updateButtonStates());
     }
 
-    private checkForOverflow(): void {
-      this.updateButtonStates();
-      setTimeout(() => {
-        this.updateButtonStates();
-      }, 100);
+    private startDrag(e: MouseEvent | TouchEvent): void {
+      this.isMouseDown = true;
+      this.scrollContainer.classList.add("grabbing");
+      this.startX =
+        "touches" in e ? e.touches[0].pageX : (e as MouseEvent).pageX;
+      this.scrollLeft = this.scrollContainer.scrollLeft;
+    }
+
+    private drag(e: MouseEvent | TouchEvent): void {
+      if (!this.isMouseDown) return;
+      e.preventDefault();
+
+      let x: number | null = null;
+      if ("touches" in e) {
+        x = e.touches[0].pageX;
+      } else {
+        x = (e as MouseEvent).pageX;
+      }
+
+      const walk = x - this.startX;
+      this.scrollContainer.scrollLeft = this.scrollLeft - walk;
+    }
+
+    private endDrag(): void {
+      this.isMouseDown = false;
+      this.scrollContainer.classList.remove("grabbing");
     }
 
     private scroll(direction: "left" | "right"): void {
@@ -415,17 +1209,206 @@ const { lat, lng, cityName, forecastDays = 7 } = Astro.props;
     private updateButtonStates(): void {
       const { scrollLeft, scrollWidth, clientWidth } = this.scrollContainer;
       const canScroll = scrollWidth > clientWidth;
+
       this.leftButton.style.display = canScroll ? "flex" : "none";
       this.rightButton.style.display = canScroll ? "flex" : "none";
 
       if (canScroll) {
         this.leftButton.disabled = scrollLeft <= 0;
-        this.rightButton.disabled = scrollLeft >= scrollWidth - clientWidth;
+        this.rightButton.disabled = scrollLeft >= scrollWidth - clientWidth - 5;
       }
     }
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
-    new ForecastScroll();
-  });
+  function initShareButton(): void {
+    const shareButton = document.getElementById("share-weather-button");
+    const shareDropdown = document.getElementById("share-dropdown");
+
+    if (!shareButton || !shareDropdown) {
+      return;
+    }
+
+    const embedHourlyToggle = document.getElementById(
+      "embed-hourly",
+    ) as HTMLInputElement;
+    const embedDailyToggle = document.getElementById(
+      "embed-daily",
+    ) as HTMLInputElement;
+
+    const urlDisplay = document.getElementById("url-display") as HTMLElement;
+    const iframeDisplay = document.getElementById(
+      "iframe-display",
+    ) as HTMLElement;
+    const copyUrlButton = document.getElementById("copy-url") as HTMLElement;
+    const copyIframeButton = document.getElementById(
+      "copy-iframe",
+    ) as HTMLElement;
+
+    const tabs = document.querySelectorAll(".embed-code-tab");
+    const codeDisplays = document.querySelectorAll(".code-display");
+
+    if (!embed && shareButton) {
+      shareButton.addEventListener("click", (e: Event) => {
+        e.stopPropagation();
+        shareDropdown.classList.toggle("active");
+
+        updateEmbedCode();
+      });
+
+      document.addEventListener("click", (e: MouseEvent) => {
+        if (
+          !shareDropdown.contains(e.target as Node) &&
+          !shareButton.contains(e.target as Node)
+        ) {
+          shareDropdown.classList.remove("active");
+        }
+      });
+
+      embedHourlyToggle.addEventListener("change", updateEmbedCode);
+      embedDailyToggle.addEventListener("change", updateEmbedCode);
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          tabs.forEach((t) => t.classList.remove("active"));
+
+          tab.classList.add("active");
+
+          codeDisplays.forEach((display) => {
+            (display as HTMLElement).style.display = "none";
+          });
+
+          const tabId = tab.getAttribute("data-tab");
+          const codeElement = document.getElementById(`${tabId}-code`);
+          if (codeElement) {
+            codeElement.style.display = "block";
+          }
+        });
+      });
+
+      copyUrlButton.addEventListener("click", () => {
+        copyToClipboard(urlDisplay.innerText);
+        showCopySuccess(copyUrlButton);
+      });
+
+      copyIframeButton.addEventListener("click", () => {
+        copyToClipboard(iframeDisplay.innerText);
+        showCopySuccess(copyIframeButton);
+      });
+    }
+
+    function updateEmbedCode(): void {
+      const currentLat = lat;
+      const currentLng = lng;
+      const currentCity = cityName;
+
+      const options = {
+        forecastDays: 7,
+        showHourly: embedHourlyToggle.checked,
+        showDaily: embedDailyToggle.checked,
+      };
+
+      const embedCode = createEmbedCode(
+        currentLat,
+        currentLng,
+        currentCity,
+        options,
+      );
+
+      urlDisplay.innerText = embedCode.url;
+      iframeDisplay.innerText = embedCode.iframe;
+    }
+
+    function copyToClipboard(text: string): void {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "absolute";
+      textarea.style.left = "-9999px";
+
+      document.body.appendChild(textarea);
+
+      const isIOS = navigator.userAgent.match(/ipad|iphone/i);
+
+      if (isIOS) {
+        const range = document.createRange();
+        range.selectNodeContents(textarea);
+
+        const selection = window.getSelection();
+        if (selection) {
+          selection.removeAllRanges();
+          selection.addRange(range);
+          textarea.setSelectionRange(0, 999999);
+        }
+      } else {
+        textarea.select();
+      }
+
+      try {
+        const successful = document.execCommand("copy");
+        if (!successful) {
+          console.error("Copy command failed");
+        }
+      } catch (err) {
+        console.error("Error during copy", err);
+      }
+
+      document.body.removeChild(textarea);
+    }
+
+    function showCopySuccess(button: HTMLElement): void {
+      const originalText = button.innerText;
+      button.innerText = "✓ Kopiert";
+      setTimeout(() => {
+        button.innerText = originalText;
+      }, 2000);
+    }
+  }
+
+  function createEmbedCode(
+    lat: string | null,
+    lng: string | null,
+    cityName: string | null,
+    options: EmbedCodeOptions = {},
+  ): EmbedCodeResult {
+    const config = {
+      lat: lat,
+      lng: lng,
+      city: cityName,
+      days: options.forecastDays || 7,
+      hourly: options.showHourly !== false,
+      daily: options.showDaily !== false,
+    };
+
+    const encryptedConfig = EmbedCrypto.encrypt(config);
+
+    const baseUrl = window.location.origin + "/wetter/embed";
+    const embedUrl = `${baseUrl}?config=${encryptedConfig}`;
+
+    let iframeWidth = "400";
+    let iframeHeight = "400";
+
+    if (config.hourly) {
+      iframeWidth = "600";
+      iframeHeight = "500";
+    }
+
+    if (config.daily) {
+      iframeHeight = config.hourly ? "650" : "550";
+    }
+
+    const iframeCode = `<iframe src="${embedUrl}" width="${iframeWidth}" height="${iframeHeight}" style="border:none; overflow:hidden;" allowtransparency="true"></iframe>`;
+
+    return {
+      url: embedUrl,
+      iframe: iframeCode,
+      config: config,
+    };
+  }
+
+  fetchWeatherData();
+
+  initShareButton();
+
+  setInterval(fetchWeatherData, 30 * 60 * 1000);
 </script>
