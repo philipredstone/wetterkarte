@@ -5,7 +5,7 @@ import 'leaflet.fullscreen';
 import { WindOverlay } from "./WindOverlay";
 import { LegendControl } from "./LegendControl";
 import { LayerControl } from "./LayerControl";
-import { WeatherLayer } from "./WeatherLayer";
+// import { WeatherLayer } from "./WeatherLayer";
 
 type LayerType = 'temp' | 'wind' | 'radar' | 'satellit' | 'lightpollution';
 
@@ -279,12 +279,12 @@ class WeatherMap {
       maxNativeZoom: 10,
     }).addTo(this.map);
 
-    new WeatherLayer({
-      url: 'https://cdn.wetterkarte.org/map.weather',
-      prioritizeExtremes: true,
-      onDataLoaded: (data) => console.log('Data loaded:', data.cities.length, 'cities'),
-      onLoadError: (error) => console.error('Failed to load data:', error.message)
-    }).addTo(this.map);
+    // new WeatherLayer({
+    //   url: 'https://cdn.wetterkarte.org/map.weather',
+    //   prioritizeExtremes: true,
+    //   onDataLoaded: (data) => console.log('Data loaded:', data.cities.length, 'cities'),
+    //   onLoadError: (error) => console.error('Failed to load data:', error.message)
+    // }).addTo(this.map);
 
     if (showMarker) {
       const divIcon = L.divIcon({
