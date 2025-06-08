@@ -4,9 +4,18 @@ interface Props {
   currentPath: string;
 }
 
+interface NavItem {
+  path?: string;
+  label: string;
+  items?: Array<{
+    path: string;
+    label: string;
+  }>;
+}
+
 const { currentPath = "/" } = Astro.props;
 
-const navItems = [
+const navItems: NavItem[] = [
   {
     label: "Karten",
     items: [
@@ -73,22 +82,40 @@ const navItems = [
         {
           navItems.map((item) => (
             <li class={`nav-item ${item.items ? "has-submenu" : ""}`}>
-              <a
-                href={item.path}
-                class:list={[
-                  currentPath === item.path ? "active" : "",
-                  item.items && currentPath.startsWith(item.path!)
-                    ? "parent-active"
-                    : "",
-                ]}
-              >
-                {item.label}
-                {item.items && (
-                  <svg class="arrow" viewBox="0 0 24 24" width="20" height="20">
-                    <path d="M7 10l5 5 5-5H7z" fill="currentColor" />
-                  </svg>
-                )}
-              </a>
+              {item.path ? (
+                <a
+                  href={item.path}
+                  class:list={[
+                    currentPath === item.path ? "active" : "",
+                    item.items && currentPath.startsWith(item.path)
+                      ? "parent-active"
+                      : "",
+                  ]}
+                >
+                  {item.label}
+                  {item.items && (
+                    <svg class="arrow" viewBox="0 0 24 24" width="20" height="20">
+                      <path d="M7 10l5 5 5-5H7z" fill="currentColor" />
+                    </svg>
+                  )}
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  class:list={[
+                    item.items && item.items.some(subItem => currentPath === subItem.path)
+                      ? "parent-active"
+                      : "",
+                  ]}
+                >
+                  {item.label}
+                  {item.items && (
+                    <svg class="arrow" viewBox="0 0 24 24" width="20" height="20">
+                      <path d="M7 10l5 5 5-5H7z" fill="currentColor" />
+                    </svg>
+                  )}
+                </button>
+              )}
               {item.items && (
                 <ul
                   class={`submenu ${
@@ -225,7 +252,29 @@ const navItems = [
     transition: color 0.2s;
   }
 
+  .nav-item button {
+    color: #333;
+    text-decoration: none;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 1rem;
+    transition: color 0.2s;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    margin: 0;
+    width: auto;
+    text-align: left;
+  }
+
   .nav-item a:hover {
+    color: #115597;
+  }
+
+  .nav-item button:hover {
     color: #115597;
   }
 
@@ -349,7 +398,8 @@ const navItems = [
       border-bottom: none;
     }
 
-    .nav-item a {
+    .nav-item a,
+    .nav-item button {
       padding: 1rem;
     }
 
