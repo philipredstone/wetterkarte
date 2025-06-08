@@ -5,7 +5,6 @@ import 'leaflet.fullscreen';
 import { WindOverlay } from "./WindOverlay";
 import { LegendControl } from "./LegendControl";
 import { LayerControl } from "./LayerControl";
-// import { WeatherLayer } from "./WeatherLayer";
 
 type LayerType = 'temp' | 'wind' | 'radar' | 'satellit' | 'lightpollution';
 
@@ -59,6 +58,17 @@ class DateUtils {
     const date = this.getTimestampDate(offset);
     return `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}${String(date.getHours()).padStart(2, '0')}00`;
   }
+
+  static getCurrentRadarTimestamp(): Date {
+    const now = new Date();
+    now.setMinutes(Math.round(now.getMinutes() / 5) * 5, 0, 0);
+    return now;
+  }
+
+  static getRadarTimestampString(): string {
+    const timestamp = this.getCurrentRadarTimestamp();
+    return timestamp.toISOString().slice(0, 16).replace(/[-T:]/g, '');
+  }
 }
 
 // Layer configuration data
@@ -89,11 +99,11 @@ const LAYERS: Record<LayerType, LayerConfig> = {
     type: 'radar',
     layerType: 'tile',
     maxNativeZoom: 10,
-    opacity: 0.7,
+    opacity: 0.8,
     gradient: ['#075cb4', '#0e5bb3', '#155ab1', '#1c59b0', '#2458af', '#fc5370', '#fc755a', '#fdb92f', '#fedb1a', '#fffd05'],
     labels: ['5dBZ', '10dBZ', '15dBZ', '20dBZ', '25dBZ', '30dBZ', '35dBZ', '40dBZ', '45dBZ', '50dBZ'],
     borderColor: '#000000',
-    urlTemplate: (dateString: string) => 'https://radar.rainmap.app/latest/{z}/{x}/{y}.webp',
+    urlTemplate: (dateString: string) => `https://tiles.wetterkarte.org/radar/${DateUtils.getRadarTimestampString()}/{z}/{x}/{y}.webp`,
     isTimeDependent: false
   },
   lightpollution: {
@@ -181,6 +191,9 @@ class WeatherMap {
   private windOverlay: WindOverlay | null = null;
   private legendControl!: LegendControl;
   private layerControl!: LayerControl;
+  
+  private radarUpdateInterval: number | null = null;
+  private lastRadarTimestamp: string | null = null;
 
   constructor() {
     this.initMap = this.initMap.bind(this);
@@ -189,6 +202,42 @@ class WeatherMap {
     this.handleLayerChange = this.handleLayerChange.bind(this);
     this.handleForecastChange = this.handleForecastChange.bind(this);
     this.handleForecastSlide = this.handleForecastSlide.bind(this);
+    this.checkRadarUpdate = this.checkRadarUpdate.bind(this);
+    this.startRadarAutoUpdate = this.startRadarAutoUpdate.bind(this);
+    this.stopRadarAutoUpdate = this.stopRadarAutoUpdate.bind(this);
+  }
+
+  private checkRadarUpdate(): void {
+    if (this.currentLayerType !== 'radar') return;
+
+    const currentTimestamp = DateUtils.getRadarTimestampString();
+    
+    if (this.lastRadarTimestamp && currentTimestamp !== this.lastRadarTimestamp) {
+      console.log(`Radar data updated: ${this.lastRadarTimestamp} -> ${currentTimestamp}`);
+      this.setMapLayer('radar');
+    }
+    
+    this.lastRadarTimestamp = currentTimestamp;
+  }
+
+  private startRadarAutoUpdate(): void {
+    if (this.radarUpdateInterval) return; // Already running
+    
+    this.lastRadarTimestamp = DateUtils.getRadarTimestampString();
+    
+    // Check every 30 seconds for new radar data
+    this.radarUpdateInterval = window.setInterval(this.checkRadarUpdate, 30000);
+    
+    console.log('Radar auto-update started');
+  }
+
+  private stopRadarAutoUpdate(): void {
+    if (this.radarUpdateInterval) {
+      clearInterval(this.radarUpdateInterval);
+      this.radarUpdateInterval = null;
+      this.lastRadarTimestamp = null;
+      console.log('Radar auto-update stopped');
+    }
   }
 
   setMapLayer(layerType: LayerType, offset: number = this.forecastOffset): void {
@@ -219,6 +268,15 @@ class WeatherMap {
 
     this.legendControl.update(layerType);
 
+    // Handle radar auto-update
+    if (layerType === 'radar' && this.currentLayerType !== 'radar') {
+      // Starting radar layer - begin auto-update
+      this.startRadarAutoUpdate();
+    } else if (layerType !== 'radar' && this.currentLayerType === 'radar') {
+      // Leaving radar layer - stop auto-update
+      this.stopRadarAutoUpdate();
+    }
+
     this.currentLayerType = layerType;
   }
 
@@ -241,6 +299,14 @@ class WeatherMap {
 
     if (LAYERS[this.currentLayerType].isTimeDependent) {
       this.setMapLayer(this.currentLayerType, value);
+    }
+  }
+
+  // Clean up when map is destroyed
+  destroy(): void {
+    this.stopRadarAutoUpdate();
+    if (this.map) {
+      this.map.remove();
     }
   }
 
@@ -278,13 +344,6 @@ class WeatherMap {
       attribution: '© OpenStreetMap contributors',
       maxNativeZoom: 10,
     }).addTo(this.map);
-
-    // new WeatherLayer({
-    //   url: 'https://cdn.wetterkarte.org/map.weather',
-    //   prioritizeExtremes: true,
-    //   onDataLoaded: (data) => console.log('Data loaded:', data.cities.length, 'cities'),
-    //   onLoadError: (error) => console.error('Failed to load data:', error.message)
-    // }).addTo(this.map);
 
     if (showMarker) {
       const divIcon = L.divIcon({
@@ -330,6 +389,11 @@ class WeatherMap {
       });
 
     this.setMapLayer(initialLayerType);
+
+    // Clean up on page unload
+    window.addEventListener('beforeunload', () => {
+      this.destroy();
+    });
   }
 }
 
