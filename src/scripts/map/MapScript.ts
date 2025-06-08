@@ -191,7 +191,7 @@ class WeatherMap {
   private windOverlay: WindOverlay | null = null;
   private legendControl!: LegendControl;
   private layerControl!: LayerControl;
-  
+
   private radarUpdateInterval: number | null = null;
   private lastRadarTimestamp: string | null = null;
 
@@ -211,23 +211,23 @@ class WeatherMap {
     if (this.currentLayerType !== 'radar') return;
 
     const currentTimestamp = DateUtils.getRadarTimestampString();
-    
+
     if (this.lastRadarTimestamp && currentTimestamp !== this.lastRadarTimestamp) {
       console.log(`Radar data updated: ${this.lastRadarTimestamp} -> ${currentTimestamp}`);
       this.setMapLayer('radar');
     }
-    
+
     this.lastRadarTimestamp = currentTimestamp;
   }
 
   private startRadarAutoUpdate(): void {
     if (this.radarUpdateInterval) return; // Already running
-    
+
     this.lastRadarTimestamp = DateUtils.getRadarTimestampString();
-    
+
     // Check every 30 seconds for new radar data
     this.radarUpdateInterval = window.setInterval(this.checkRadarUpdate, 30000);
-    
+
     console.log('Radar auto-update started');
   }
 
@@ -298,6 +298,11 @@ class WeatherMap {
     this.forecastOffset = value;
 
     if (LAYERS[this.currentLayerType].isTimeDependent) {
+
+      if (this.currentLayerType === 'wind') {
+        return;
+      }
+      
       this.setMapLayer(this.currentLayerType, value);
     }
   }
