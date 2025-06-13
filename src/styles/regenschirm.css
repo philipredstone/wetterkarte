@@ -1,0 +1,254 @@
+.content-section {
+    padding: 2rem 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.card-header {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.card-header h1 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+}
+
+.weather-info {
+    background: #f7f9fc;
+    border: 1px solid #e1e8f0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.weather-info h3 {
+    margin-top: 0;
+    font-size: 1.25rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 1.25rem;
+}
+
+.umbrella-main-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.25rem;
+}
+
+.umbrella-main-item {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.umbrella-main-item h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    color: #555;
+}
+
+.umbrella-main-item p {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.update-info {
+    color: #707070;
+    text-align: right;
+}
+
+.back-link {
+    color: #000;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* Rain Details Section */
+.rain-details-info {
+    margin-top: 2rem;
+    background-color: #fafbfc;
+    border: 1px solid #e9eef5;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.rain-details-info h3 {
+    margin-top: 0;
+    font-size: 1.25rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 1.25rem;
+}
+
+.rain-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+}
+
+.rain-details-item {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.rain-details-item h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    color: #555;
+}
+
+.rain-details-item p {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Hourly Forecast Section */
+.hourly-forecast {
+    margin-top: 2rem;
+    background-color: #f0f8ff;
+    border: 1px solid #d1e7ff;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.hourly-forecast h3 {
+    margin-top: 0;
+    font-size: 1.25rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 1.25rem;
+}
+
+.hourly-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 1rem;
+}
+
+.hourly-item {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.hourly-time {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.hourly-prob {
+    color: #1e40af;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.hourly-rain {
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+/* Tips Section */
+.umbrella-tips {
+    margin-top: 2rem;
+    background-color: #fff8f5;
+    border: 1px solid #ffe0d1;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.umbrella-tips h3 {
+    margin-top: 0;
+    font-size: 1.25rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 1.25rem;
+}
+
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+}
+
+.tip-item {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.tip-item h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    color: #555;
+}
+
+.tip-item p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+    .content-section {
+        padding: 1rem 0.75rem;
+    }
+   
+    .card-header h1 {
+        font-size: 1.5rem;
+    }
+   
+    .card-body {
+        padding: 1rem;
+    }
+   
+    .weather-info {
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+   
+    .umbrella-main-grid,
+    .rain-details-grid,
+    .tips-grid {
+        grid-template-columns: 1fr;
+    }
+   
+    .hourly-grid {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    }
+   
+    .rain-details-info,
+    .hourly-forecast,
+    .umbrella-tips {
+        padding: 1rem;
+    }
+}

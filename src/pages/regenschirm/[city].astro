@@ -1,0 +1,328 @@
+---
+import "../../styles/regenschirm.css";
+
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Faq from "../../components/Faq.astro";
+import WeatherMap from "../../components/WeatherMap.astro";
+import { getCity, getStatics } from "../../utils/city";
+import HorizontalNavigation from "../../components/HorizontalNavigation.astro";
+
+export async function getStaticPaths() {
+  return getStatics();
+}
+
+const city = getCity(Astro.params.city);
+
+const title = `Regenschirm für ${city.name} - Brauche ich einen?`;
+const description = `Brauchen Sie heute einen Regenschirm in ${city.name}? Aktuelle Regenvorhersage und praktische Empfehlungen basierend auf aktuellen Wetterdaten.`;
+
+const questions = [
+  {
+    question: "Wie wird entschieden, ob ich einen Regenschirm brauche?",
+    answer:
+      "Die Empfehlung basiert auf aktuellen Wetterdaten und der Regenwahrscheinlichkeit für die nächsten 8 Stunden. Wenn es bereits regnet oder eine hohe Wahrscheinlichkeit (>30%) für Regen besteht, empfehlen wir einen Regenschirm.",
+  },
+  {
+    question: "Wie genau sind die Empfehlungen?",
+    answer:
+      "Unsere Empfehlungen basieren auf den präzisen <a href='https://www.dwd.de/DE/forschung/wettervorhersage/num_modellierung/01_num_vorhersagemodelle/regionalmodell_icon_d2.html' target='_blank'><strong>DWD ICON D2</strong></a>-Modelldaten sowie Radolan-Radardaten, die alle 5 Minuten aktualisiert werden. Die Genauigkeit ist für die nächsten 6-8 Stunden sehr hoch.",
+  },
+  {
+    question: "Was bedeuten die verschiedenen Empfehlungen?",
+    answer:
+      "<strong>Ja, unbedingt:</strong> Es regnet bereits oder wird sehr wahrscheinlich regnen.<br><strong>Ja, sicherheitshalber:</strong> Mittlere Regenwahrscheinlichkeit - besser vorbereitet sein.<br><strong>Nein:</strong> Keine oder sehr geringe Regenwahrscheinlichkeit.<br><strong>Möglicherweise:</strong> Unsichere Wetterlage, je nach Risikobereitschaft entscheiden.",
+  },
+  {
+    question: "Für welchen Zeitraum gilt die Empfehlung?",
+    answer:
+      "Die Regenschirm-Empfehlung gilt hauptsächlich für die nächsten 6-8 Stunden. Für längere Zeiträume sollten Sie die detaillierte Wettervorhersage konsultieren.",
+  },
+  {
+    question: "Was ist bei unterschiedlichen Regenarten zu beachten?",
+    answer:
+      "Die Empfehlung berücksichtigt verschiedene Niederschlagsarten: leichter Nieselregen, normaler Regen, Schauer und Gewitter. Bei Gewittern wird grundsätzlich ein Regenschirm oder besser noch Schutz in Gebäuden empfohlen.",
+  },
+  {
+    question: "Werden auch Wind und andere Faktoren berücksichtigt?",
+    answer:
+      "Ja, bei starkem Wind kann ein Regenschirm weniger effektiv oder sogar gefährlich sein. In solchen Fällen weisen wir darauf hin und empfehlen alternative Regenschutzkleidung.",
+  },
+];
+---
+
+<Layout title={title} description={description}>
+  <Header currentPath="/regenschirm/" />
+
+  <main>
+    <section class="content-section">
+      <article>
+        <div class="card">
+          <div class="card-header">
+            <h1>Regenschirm für {city.name}</h1>
+          </div>
+          <HorizontalNavigation city={city.key} currentPath="regenschirm" />
+          <div class="card-body">
+            <p>
+              Basierend auf aktuellen Wetterdaten und Regenprognosen erhalten
+              Sie hier eine klare Empfehlung, ob Sie heute einen Regenschirm für {
+                city.name
+              } benötigen. Die Analyse berücksichtigt aktuelle Niederschläge und
+              die Wahrscheinlichkeit für Regen in den nächsten Stunden.
+            </p>
+
+            <div
+              class="weather-info"
+              id="umbrella-widget"
+              data-lat={city.coords[0]}
+              data-lng={city.coords[1]}
+              data-city={city.name}
+            >
+              <h3>Regenschirm-Empfehlung für heute</h3>
+              <div class="umbrella-main-grid">
+                <div class="umbrella-main-item">
+                  <img
+                    src="/images/umbrella.svg"
+                    alt="Regenschirm"
+                    height="64"
+                    width="64"
+                  />
+                  <h4>Empfehlung</h4>
+                  <p id="umbrella-recommendation">Daten werden geladen…</p>
+                </div>
+              </div>
+            </div>
+
+            <p class="update-info" id="update-info">&nbsp;</p>
+
+            <div class="rain-details-info">
+              <h3>Aktuelle Regendaten</h3>
+              <div class="rain-details-grid">
+                <div class="rain-details-item">
+                  <h4>Aktueller Niederschlag</h4>
+                  <p id="current-rain">Daten werden geladen…</p>
+                </div>
+                <div class="rain-details-item">
+                  <h4>Nächste 3 Stunden</h4>
+                  <p id="next-3h-rain">Daten werden geladen…</p>
+                </div>
+                <div class="rain-details-item">
+                  <h4>Nächste 6 Stunden</h4>
+                  <p id="next-6h-rain">Daten werden geladen…</p>
+                </div>
+                <div class="rain-details-item">
+                  <h4>Windgeschwindigkeit</h4>
+                  <p id="wind-speed">Daten werden geladen…</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="umbrella-tips">
+              <h3>Regenschirm-Tipps</h3>
+              <div class="tips-grid">
+                <div class="tip-item">
+                  <h4>☂️ Bei leichtem Regen</h4>
+                  <p>
+                    Ein kompakter Regenschirm reicht aus. Ideal für den
+                    täglichen Gebrauch.
+                  </p>
+                </div>
+                <div class="tip-item">
+                  <h4>🌧️ Bei starkem Regen</h4>
+                  <p>
+                    Großer Regenschirm oder wasserfeste Jacke empfohlen. Auf
+                    rutschige Gehwege achten.
+                  </p>
+                </div>
+                <div class="tip-item">
+                  <h4>💨 Bei Wind</h4>
+                  <p>
+                    Sturmsichere Regenschirme verwenden oder wasserfeste
+                    Kleidung bevorzugen.
+                  </p>
+                </div>
+                <div class="tip-item">
+                  <h4>⛈️ Bei Gewitter</h4>
+                  <p>
+                    Schutz in Gebäuden suchen. Regenschirme bei Blitzgefahr
+                    meiden.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h2>Live Regenradar</h2>
+        <br />
+        <WeatherMap
+          layerselect={false}
+          layer="radar"
+          type="widget"
+          center={[city.coords[0], city.coords[1]]}
+          marker={true}
+        />
+
+        <Faq questions={questions} />
+      </article>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script>
+    import { weatherApi } from "../../scripts/weather/WeatherAPI";
+
+    const umbrellaWidget = document.getElementById(
+      "umbrella-widget"
+    ) as HTMLElement;
+    const lat = umbrellaWidget.getAttribute("data-lat")!;
+    const lng = umbrellaWidget.getAttribute("data-lng")!;
+
+    function getUmbrellaRecommendation(
+      currentRain: number,
+      hourlyRain: number[],
+      hourlyProbability: number[]
+    ): string {
+      // Currently raining
+      if (currentRain > 0.1) {
+        return "Ja, unbedingt!";
+      }
+
+      // Check next 6 hours for significant rain
+      const next6Hours = hourlyRain.slice(0, 6);
+      const next6HoursProbability = hourlyProbability.slice(0, 6);
+
+      const maxRainNext6h = Math.max(...next6Hours);
+      const maxProbabilityNext6h = Math.max(...next6HoursProbability);
+      const avgProbabilityNext6h =
+        next6HoursProbability.reduce((a, b) => a + b, 0) /
+        next6HoursProbability.length;
+
+      // High probability or significant rain expected
+      if (maxRainNext6h > 1.0 || maxProbabilityNext6h > 70) {
+        return "Ja, unbedingt!";
+      }
+
+      // Medium probability
+      if (
+        maxRainNext6h > 0.2 ||
+        maxProbabilityNext6h > 30 ||
+        avgProbabilityNext6h > 25
+      ) {
+        return "Ja, sicherheitshalber";
+      }
+
+      // Low probability but some chance
+      if (maxProbabilityNext6h > 10 || maxRainNext6h > 0) {
+        return "Möglicherweise";
+      }
+
+      // No rain expected
+      return "Nein";
+    }
+
+    async function fetchUmbrellaRecommendation(): Promise<void> {
+      try {
+        const weatherData = await weatherApi.getWeather({
+          latitude: parseFloat(lat),
+          longitude: parseFloat(lng),
+          current: ["precipitation", "wind_speed_10m"] as const,
+          hourly: ["precipitation", "precipitation_probability"] as const,
+          forecastDays: 1,
+        });
+
+        const currentRain = weatherData.current.precipitation;
+        const currentWind = weatherData.current.wind_speed_10m;
+
+        // Get next 8 hours of data
+        const now = new Date();
+        const next8HoursIndices = weatherData.hourly.time
+          .map((timeStr, index) => ({ time: new Date(timeStr), index }))
+          .filter(
+            ({ time }) =>
+              time >= now &&
+              time <= new Date(now.getTime() + 8 * 60 * 60 * 1000)
+          )
+          .slice(0, 8)
+          .map(({ index }) => index);
+
+        const hourlyRain = next8HoursIndices.map(
+          (i) => weatherData.hourly.precipitation[i]
+        );
+        const hourlyProbability = next8HoursIndices.map(
+          (i) => weatherData.hourly.precipitation_probability[i]
+        );
+
+        const recommendation = getUmbrellaRecommendation(
+          currentRain,
+          hourlyRain,
+          hourlyProbability
+        );
+
+        // Update main recommendation
+        const umbrellaRecommendationEl = document.getElementById(
+          "umbrella-recommendation"
+        );
+
+        if (umbrellaRecommendationEl) {
+          umbrellaRecommendationEl.textContent = recommendation;
+        }
+
+        // Update rain details
+        const currentRainEl = document.getElementById("current-rain");
+        const next3hRainEl = document.getElementById("next-3h-rain");
+        const next6hRainEl = document.getElementById("next-6h-rain");
+        const windSpeedEl = document.getElementById("wind-speed");
+
+        if (currentRainEl) {
+          currentRainEl.textContent =
+            currentRain > 0 ? `${currentRain.toFixed(1)} mm/h` : "Kein Regen";
+        }
+
+        if (next3hRainEl) {
+          const max3h = Math.max(...hourlyRain.slice(0, 3));
+          const prob3h = Math.max(...hourlyProbability.slice(0, 3));
+          next3hRainEl.textContent = `${prob3h}% (${max3h.toFixed(1)} mm/h)`;
+        }
+
+        if (next6hRainEl) {
+          const max6h = Math.max(...hourlyRain);
+          const prob6h = Math.max(...hourlyProbability);
+          next6hRainEl.textContent = `${prob6h}% (${max6h.toFixed(1)} mm/h)`;
+        }
+
+        if (windSpeedEl) {
+          const windText =
+            currentWind > 25
+              ? `${currentWind.toFixed(0)} km/h (stark)`
+              : `${currentWind.toFixed(0)} km/h`;
+          windSpeedEl.textContent = windText;
+        }
+
+        // Update timestamp
+        const updateInfoEl = document.getElementById("update-info");
+        if (updateInfoEl) {
+          const currentTime = new Date(weatherData.current.time);
+          const formattedTime = currentTime.toLocaleTimeString("de-DE", {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+          updateInfoEl.innerHTML = `Letzte Aktualisierung: <time datetime="${currentTime.toISOString()}">${formattedTime}</time> Uhr`;
+        }
+      } catch (error) {
+        console.error("Fehler beim Laden der Wetterdaten:", error);
+
+        const umbrellaRecommendationEl = document.getElementById(
+          "umbrella-recommendation"
+        );
+        if (umbrellaRecommendationEl) {
+          umbrellaRecommendationEl.textContent = "Fehler beim Laden der Daten.";
+        }
+      }
+    }
+
+    fetchUmbrellaRecommendation();
+  </script>
+</Layout>
