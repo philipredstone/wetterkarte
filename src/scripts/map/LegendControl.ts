@@ -311,8 +311,7 @@ export class LegendControl extends L.Control {
     });
   }
 
-  onRemove(map: L.Map): void {
+  onRemove(_map: L.Map): void {
     this._currentType = null;
-    super.onRemove(map);
   }
 }

@@ -3,6 +3,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet.fullscreen';
 
 import { WindOverlay } from "./WindOverlay";
+import { GridOverlay } from "./GridOverlay";
 import { LegendControl } from "./LegendControl";
 import { LayerControl } from "./LayerControl";
 
@@ -165,6 +166,15 @@ class LayerService {
     }
   }
 
+  static createGridOverlay(type: 'temp' | 'wind', forecastOffset: number): GridOverlay {
+    const dateString = DateUtils.getDateString(forecastOffset);
+    const prefix = type === 'temp' ? 'T_2M_GRID' : 'WIND_GRID';
+    return new GridOverlay({
+      baseURL: `https://cdn.wetterkarte.org/${prefix}/${dateString}.grid`,
+      opacity: 0.7,
+    });
+  }
+
   static createWindOverlay(forecastOffset: number): WindOverlay {
     return new WindOverlay({
       baseURL: `https://cdn.wetterkarte.org/UV_COMP/${DateUtils.getDateString(forecastOffset)}.wind`,
@@ -254,8 +264,13 @@ class WeatherMap {
       this.windOverlay = null;
     }
 
-    this.currentLayer = LayerService.createLayer(layerConfig, offset);
-    this.map.addLayer(this.currentLayer);
+    if (layerType === 'temp' || layerType === 'wind') {
+      this.currentLayer = LayerService.createGridOverlay(layerType, offset);
+      this.map.addLayer(this.currentLayer);
+    } else {
+      this.currentLayer = LayerService.createLayer(layerConfig, offset);
+      this.map.addLayer(this.currentLayer);
+    }
 
     if (layerType === 'wind') {
       this.windOverlay = LayerService.createWindOverlay(offset);
